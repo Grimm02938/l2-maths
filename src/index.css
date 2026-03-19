@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 220 13% 13%;
+    --foreground: 0 0% 95%;
+ 
+    --card: 220 13% 18%;
+    --card-foreground: 0 0% 95%;
+ 
+    --popover: 220 13% 13%;
+    --popover-foreground: 0 0% 95%;
+ 
+    --primary: 0 0% 95%;
+    --primary-foreground: 220 13% 10%;
+ 
+    --secondary: 220 10% 22%;
+    --secondary-foreground: 0 0% 90%;
+ 
+    --muted: 220 10% 22%;
+    --muted-foreground: 220 8% 55%;
+ 
+    --accent: 220 10% 22%;
+    --accent-foreground: 0 0% 95%;
+ 
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 10% 22%;
+    --input: 220 10% 22%;
+    --ring: 220 10% 70%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 220 13% 13%;
+    --foreground: 0 0% 95%;
+ 
+    --card: 220 13% 18%;
+    --card-foreground: 0 0% 95%;
+ 
+    --popover: 220 13% 13%;
+    --popover-foreground: 0 0% 95%;
+ 
+    --primary: 0 0% 95%;
+    --primary-foreground: 220 13% 10%;
+ 
+    --secondary: 220 10% 22%;
+    --secondary-foreground: 0 0% 90%;
+ 
+    --muted: 220 10% 22%;
+    --muted-foreground: 220 8% 55%;
+ 
+    --accent: 220 10% 22%;
+    --accent-foreground: 0 0% 95%;
+ 
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 10% 22%;
+    --input: 220 10% 22%;
+    --ring: 220 10% 70%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @keyframes page-fade-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.995);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  .page-transition-in {
+    animation: page-fade-slide-in 340ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+    will-change: transform, opacity, filter;
+  }
+
+  @keyframes semester-catalogue-in-from-right {
+    from {
+      opacity: 0;
+      filter: blur(3px);
+      transform: translateX(70px) rotateY(-13deg) rotateX(3deg) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
+    }
+  }
+
+  @keyframes semester-catalogue-in-from-left {
+    from {
+      opacity: 0;
+      filter: blur(3px);
+      transform: translateX(-70px) rotateY(13deg) rotateX(3deg) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
+    }
+  }
+
+  .semester-catalogue-flow {
+    perspective: 1300px;
+    transform-style: preserve-3d;
+  }
+
+  .semester-card-in-from-right {
+    animation: semester-catalogue-in-from-right 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+  }
+
+  .semester-card-in-from-left {
+    animation: semester-catalogue-in-from-left 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+  }
+
+  .catalogue-3d-card {
+    transform-style: preserve-3d;
+    will-change: transform, box-shadow;
+    transition: transform 280ms ease, box-shadow 280ms ease, filter 280ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .catalogue-3d-card:hover {
+      transform: perspective(1100px) rotateX(5deg) rotateY(-6deg) translateY(-6px) scale(1.01);
+    }
+  }
+
+  .catalogue-3d-layer {
+    transform: translateZ(26px);
+  }
+
+  .semester-switch-3d {
+    perspective: 900px;
+    transform-style: preserve-3d;
+  }
+
+  .semester-tab-3d {
+    transform-style: preserve-3d;
+    will-change: transform, box-shadow;
+    transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .semester-tab-3d:hover {
+      transform: translateZ(8px) rotateX(8deg);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  .semester-tab-3d-active {
+    transform: translateZ(12px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-in,
+  .semester-card-in-from-right,
+  .semester-card-in-from-left,
+  .catalogue-3d-card,
+  .semester-tab-3d,
+  .semester-tab-3d-active {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+
+  .catalogue-3d-layer {
+    transform: none;
+  }
+}

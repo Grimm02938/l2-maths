@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Public upload path for contact form screenshots/images.
+    match /contact-images/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource != null &&
+                   request.resource.size < 10 * 1024 * 1024 &&
+                   request.resource.contentType.matches('image/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth.uid == 'iw4t9QYWJgeWiCwKbiPTlyrSBlk2';
+    }
+  }
+}
