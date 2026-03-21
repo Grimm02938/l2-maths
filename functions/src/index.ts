@@ -97,10 +97,16 @@ export const createDonationIntent = https.onRequest(
                 return;
             }
 
-            const secretKey = stripeSecretKey.value();
+            const secretKey = stripeSecretKey.value()?.trim();
             if (!secretKey) {
                 logger.error("Clé Stripe secrète manquante");
                 response.status(500).json({ error: "Stripe key not configured" });
+                return;
+            }
+
+            if (!secretKey.startsWith("sk_")) {
+                logger.error("Format de clé Stripe invalide", { prefix: secretKey.slice(0, 4), length: secretKey.length });
+                response.status(500).json({ error: "Stripe key format invalid" });
                 return;
             }
 
