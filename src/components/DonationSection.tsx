@@ -143,7 +143,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 donation-grid-overlay">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Montants prédéfinis */}
       <div>
         <label className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200/90 mb-3 block">
@@ -155,10 +155,10 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
               key={value}
               type="button"
               onClick={() => handleAmountClick(value)}
-              className={`donation-chip py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
+              className={`py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
                 amount === value && !customAmount
-                  ? 'bg-cyan-200 text-slate-950 shadow-[0_0_24px_rgba(103,232,249,0.45)]'
-                  : 'bg-slate-800/80 text-slate-100 hover:bg-slate-700/90 border border-white/10'
+                  ? 'bg-primary text-primary-foreground shadow-[0_0_0_1px_hsl(var(--primary))]'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/60'
               }`}
             >
               {value}€
@@ -189,24 +189,24 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
       {/* Informations */}
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-1 block">Nom</label>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Nom</label>
           <Input
             type="text"
             placeholder="Votre nom"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
+            className="bg-background/70 border-border/80 focus-visible:ring-ring/50"
             required
           />
         </div>
         <div>
-          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-1 block">Email</label>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Email</label>
           <Input
             type="email"
             placeholder="Votre email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
+            className="bg-background/70 border-border/80 focus-visible:ring-ring/50"
             required
           />
         </div>
@@ -214,16 +214,16 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
       {/* Élément carte */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-2 block">Détails de la carte</label>
-        <div className="p-3 border border-cyan-200/25 rounded-lg bg-slate-900/70 shadow-[inset_0_0_30px_rgba(56,189,248,0.08)]">
+        <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-2 block">Détails de la carte</label>
+        <div className="p-3 border border-border/80 rounded-lg bg-background/70">
           <CardElement
             options={{
               style: {
                 base: {
                   fontSize: '16px',
-                  color: '#e2e8f0',
+                  color: '#f4f4f5',
                   '::placeholder': {
-                    color: '#94a3b8',
+                    color: '#9ca3af',
                   },
                 },
                 invalid: {
@@ -239,7 +239,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
       <Button
         type="submit"
         disabled={!stripe || !elements || isLoading}
-        className="w-full bg-gradient-to-r from-cyan-300 via-blue-300 to-emerald-300 text-slate-950 hover:opacity-95"
+        className="w-full"
         size="lg"
       >
         {isLoading ? (
@@ -255,7 +255,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
         )}
       </Button>
 
-      <p className="text-xs text-slate-300/85 text-center leading-relaxed">
+      <p className="text-xs text-muted-foreground text-center leading-relaxed">
         Votre don aide a maintenir les ressources, publier de nouveaux contenus et ameliorer le site.
       </p>
     </form>
@@ -266,24 +266,23 @@ export const DonationSection: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="relative py-14 border-t border-cyan-200/15 overflow-hidden donation-shell">
-      <div className="pointer-events-none absolute inset-0 donation-aurora" />
+    <section className="py-14 border-t border-border/60 bg-background">
       <div className="container mx-auto px-4 max-w-md">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center justify-center gap-2 font-['Space_Grotesk',sans-serif]">
-            <Heart className="w-6 h-6 text-cyan-300" />
+            <Heart className="w-6 h-6 text-primary" />
             Soutenez ce projet
           </h2>
-          <p className="text-slate-200/85 max-w-sm mx-auto leading-relaxed">
+          <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
             Une contribution pour garder une archive de maths claire, moderne et utile a tous les etudiants.
           </p>
-          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-cyan-100/85 border border-cyan-200/20 rounded-full px-3 py-1.5 bg-slate-900/50">
+          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border/70 rounded-full px-3 py-1.5 bg-card/60">
             <ShieldCheck className="w-3.5 h-3.5" /> Paiement securise via Stripe
           </p>
         </div>
 
         {isExpanded ? (
-          <div className="relative bg-slate-950/75 rounded-2xl p-6 border border-cyan-200/20 shadow-[0_24px_80px_rgba(15,23,42,0.7)] backdrop-blur-xl">
+          <div className="rounded-2xl p-6 border border-border/70 bg-card/70 shadow-[0_16px_42px_rgba(0,0,0,0.32)] backdrop-blur-sm">
             <Elements stripe={stripePromise}>
               <DonationForm onSuccess={() => setIsExpanded(false)} />
             </Elements>
@@ -292,7 +291,8 @@ export const DonationSection: React.FC = () => {
           <Button
             onClick={() => setIsExpanded(true)}
             size="lg"
-            className="w-full bg-gradient-to-r from-cyan-300 via-blue-300 to-emerald-300 text-slate-950 hover:opacity-95"
+            className="w-full"
+            variant="outline"
           >
             Faire un don
           </Button>
