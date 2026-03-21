@@ -189,3 +189,91 @@
     transform: none;
   }
 }
+
+.blog-bg-pattern {
+  background:
+    radial-gradient(900px 420px at 15% 0%, rgba(40, 120, 255, 0.12), transparent 60%),
+    radial-gradient(700px 400px at 88% 12%, rgba(31, 210, 180, 0.08), transparent 65%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+.blog-typewriter-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.blog-typewriter {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: blog-type 3.4s steps(52, end) 260ms forwards;
+}
+
+.blog-cursor {
+  width: 0.7ch;
+  height: 1.05em;
+  border-radius: 2px;
+  background: hsl(var(--foreground));
+  transform: translateY(-0.05em);
+  animation: blog-caret-blink 1s step-end infinite, blog-caret-drift 620ms ease-in-out infinite;
+}
+
+@keyframes blog-type {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: 52ch;
+  }
+}
+
+@keyframes blog-caret-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  52%,
+  100% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes blog-caret-drift {
+  0% {
+    transform: translateY(-0.05em) translateX(0);
+  }
+  50% {
+    transform: translateY(-0.02em) translateX(1px);
+  }
+  100% {
+    transform: translateY(-0.05em) translateX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .blog-typewriter {
+    white-space: normal;
+    max-width: 100%;
+    animation: none;
+  }
+
+  .blog-cursor {
+    animation: blog-caret-blink 1s step-end infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-typewriter {
+    animation: none;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .blog-cursor {
+    animation: none;
+    opacity: 0.65;
+  }
+}

@@ -8,7 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { GraduationCap, User, LogOut, Mail, Upload } from 'lucide-react';
+import { GraduationCap, User, LogOut, Mail, Upload, NotebookPen } from 'lucide-react';
 import React, { useState } from 'react';
 
 export const Navbar = ({ children }: { children?: React.ReactNode }) => {
@@ -45,6 +45,12 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
 
           {/* Auth Section */}
           <div className="flex items-center gap-4">
+            <Link to="/blog">
+              <Button variant="ghost" className="hidden sm:inline-flex items-center gap-2">
+                <NotebookPen className="h-4 w-4" />
+                Blog
+              </Button>
+            </Link>
             <Link to="/contact">
               <Button variant="ghost" size="icon">
                 <Mail className="h-5 w-5" />

@@ -4,6 +4,7 @@ import Index from '@/pages/Index';
 import ProfilePage from '@/pages/Profile';
 import ContactPage from '@/pages/Contact';
 import SubjectPage from '@/pages/SubjectPage';
+import BlogPage from '@/pages/Blog';
 import { Navbar } from '@/components/Navbar';
 import LoginModal from '@/components/LoginModal';
 import { Toaster } from '@/components/ui/sonner';
@@ -28,6 +29,7 @@ const AppContent = () => {
             <Route path="/subject/:id" element={<SubjectPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/blog" element={<BlogPage />} />
           </Routes>
         </div>
       </main>
