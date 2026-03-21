@@ -1,6 +1,7 @@
 
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { https } from "firebase-functions/v2";
+import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import axios from "axios";
 import Stripe from "stripe";
@@ -54,10 +55,8 @@ export const notifyoncontact = onDocumentCreated(
     }
 );
 
-// Stripe Payment Intent Handler
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2026-02-25.clover",
-});
+// Stripe Secret Key
+const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
 
 type DonationPayload = {
     amount: number;
@@ -66,7 +65,7 @@ type DonationPayload = {
 };
 
 export const createDonationIntent = https.onRequest(
-    { region: "europe-west1", cors: true },
+    { region: "europe-west1", cors: true, secrets: [stripeSecretKey] },
     async (request, response) => {
         // Vérifier que c'est une requête POST
         if (request.method !== "POST") {
@@ -88,11 +87,17 @@ export const createDonationIntent = https.onRequest(
                 return;
             }
 
-            if (!process.env.STRIPE_SECRET_KEY) {
+            const secretKey = stripeSecretKey.value();
+            if (!secretKey) {
                 logger.error("Clé Stripe secrète manquante");
                 response.status(500).json({ error: "Erreur serveur" });
                 return;
             }
+
+            // Initialiser Stripe avec le secret injecté
+            const stripe = new Stripe(secretKey, {
+                apiVersion: "2026-02-25.clover",
+            });
 
             // Créer l'intention de paiement
             const paymentIntent = await stripe.paymentIntents.create({
