@@ -67,22 +67,32 @@ type DonationPayload = {
 export const createDonationIntent = https.onRequest(
     { region: "europe-west1", cors: true, secrets: [stripeSecretKey] },
     async (request, response) => {
+        logger.log("Received request:", {
+            method: request.method,
+            headers: request.headers,
+            body: request.body,
+        });
+
         // Vérifier que c'est une requête POST
         if (request.method !== "POST") {
+            logger.error("Invalid method:", request.method);
             response.status(405).json({ error: "Method not allowed" });
             return;
         }
 
         try {
             const { amount, email, name } = request.body as DonationPayload;
+            logger.log("Processing donation:", { amount, email, name });
 
             // Validation
             if (!amount || amount < 100) {
+                logger.error("Invalid amount:", amount);
                 response.status(400).json({ error: "Montant invalide (minimum 1€)" });
                 return;
             }
 
             if (!email || !name) {
+                logger.error("Missing donor info");
                 response.status(400).json({ error: "Email et nom requis" });
                 return;
             }
@@ -90,14 +100,18 @@ export const createDonationIntent = https.onRequest(
             const secretKey = stripeSecretKey.value();
             if (!secretKey) {
                 logger.error("Clé Stripe secrète manquante");
-                response.status(500).json({ error: "Erreur serveur" });
+                response.status(500).json({ error: "Stripe key not configured" });
                 return;
             }
+
+            logger.log("Initializing Stripe with secret key");
 
             // Initialiser Stripe avec le secret injecté
             const stripe = new Stripe(secretKey, {
                 apiVersion: "2026-02-25.clover",
             });
+
+            logger.log("Creating payment intent for amount:", amount);
 
             // Créer l'intention de paiement
             const paymentIntent = await stripe.paymentIntents.create({
@@ -114,14 +128,15 @@ export const createDonationIntent = https.onRequest(
 
             logger.log(`Payment intent created: ${paymentIntent.id}`);
 
-            response.json({
+            response.status(200).json({
                 clientSecret: paymentIntent.client_secret,
                 paymentIntentId: paymentIntent.id,
             });
         } catch (error) {
             logger.error("Error creating payment intent:", error);
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
             response.status(500).json({
-                error: error instanceof Error ? error.message : "Erreur serveur",
+                error: errorMessage,
             });
         }
     }

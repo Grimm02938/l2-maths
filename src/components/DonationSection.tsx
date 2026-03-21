@@ -60,26 +60,54 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
     try {
       // Appeler la Cloud Function pour créer l'intention de paiement
-      const response = await fetch(
-        `${import.meta.env.VITE_FIREBASE_FUNCTIONS_URL || 'https://europe-west1-l2-maths.cloudfunctions.net'}/createDonationIntent`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: Math.round(amount * 100), // Montant en centimes
-            email,
-            name,
-          }),
-        }
-      );
+      const functionUrl = `https://europe-west1-l2-maths.cloudfunctions.net/createDonationIntent`;
+      
+      console.log('Calling function at:', functionUrl);
+      console.log('Payload:', {
+        amount: Math.round(amount * 100),
+        email,
+        name,
+      });
+
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: Math.round(amount * 100), // Montant en centimes
+          email,
+          name,
+        }),
+      });
+
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response body:', responseText);
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la création du paiement');
+        let errorMessage = 'Erreur lors de la création du paiement';
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = responseText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      const { clientSecret } = await response.json();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error('Réponse invalide du serveur');
+      }
+
+      const { clientSecret } = data;
+
+      if (!clientSecret) {
+        throw new Error('Pas de client secret reçu');
+      }
 
       // Confirmer le paiement avec Stripe
       const cardElement = elements.getElement(CardElement);
