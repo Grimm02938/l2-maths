@@ -7,6 +7,7 @@ import SubjectPage from '@/pages/SubjectPage';
 import { Navbar } from '@/components/Navbar';
 import LoginModal from '@/components/LoginModal';
 import { Toaster } from '@/components/ui/sonner';
+import { DonationSection } from '@/components/DonationSection';
 
 const AppContent = () => {
   const location = useLocation();
@@ -16,11 +17,11 @@ const AppContent = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <LoginModal />
       <Toaster />
-      <main className="container mx-auto px-4 pb-8">
+      <main className="container mx-auto px-4 pb-8 flex-1">
         <div key={location.pathname} className="page-transition-in">
           <Routes location={location}>
             <Route path="/" element={<Index />} />
@@ -30,6 +31,7 @@ const AppContent = () => {
           </Routes>
         </div>
       </main>
+      <DonationSection />
     </div>
   );
 };

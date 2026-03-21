@@ -1,7 +1,9 @@
 
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { https } from "firebase-functions/v2";
 import * as logger from "firebase-functions/logger";
 import axios from "axios";
+import Stripe from "stripe";
 
 type ContactPayload = {
     email?: string;
@@ -48,6 +50,74 @@ export const notifyoncontact = onDocumentCreated(
             logger.log(`Successfully sent contact message to Discord (${imageUrls.length} image(s)).`);
         } catch (error) {
             logger.error("Error sending message to Discord:", error);
+        }
+    }
+);
+
+// Stripe Payment Intent Handler
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+    apiVersion: "2026-02-25.clover",
+});
+
+type DonationPayload = {
+    amount: number;
+    email: string;
+    name: string;
+};
+
+export const createDonationIntent = https.onRequest(
+    { region: "europe-west1", cors: true },
+    async (request, response) => {
+        // Vérifier que c'est une requête POST
+        if (request.method !== "POST") {
+            response.status(405).json({ error: "Method not allowed" });
+            return;
+        }
+
+        try {
+            const { amount, email, name } = request.body as DonationPayload;
+
+            // Validation
+            if (!amount || amount < 100) {
+                response.status(400).json({ error: "Montant invalide (minimum 1€)" });
+                return;
+            }
+
+            if (!email || !name) {
+                response.status(400).json({ error: "Email et nom requis" });
+                return;
+            }
+
+            if (!process.env.STRIPE_SECRET_KEY) {
+                logger.error("Clé Stripe secrète manquante");
+                response.status(500).json({ error: "Erreur serveur" });
+                return;
+            }
+
+            // Créer l'intention de paiement
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount,
+                currency: "eur",
+                receipt_email: email,
+                metadata: {
+                    donor_name: name,
+                    donor_email: email,
+                    donation_purpose: "L2 Maths Archive Support",
+                },
+                description: `Donation to L2 Maths Archive - ${name}`,
+            });
+
+            logger.log(`Payment intent created: ${paymentIntent.id}`);
+
+            response.json({
+                clientSecret: paymentIntent.client_secret,
+                paymentIntentId: paymentIntent.id,
+            });
+        } catch (error) {
+            logger.error("Error creating payment intent:", error);
+            response.status(500).json({
+                error: error instanceof Error ? error.message : "Erreur serveur",
+            });
         }
     }
 );
