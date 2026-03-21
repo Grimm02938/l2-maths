@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Heart, Loader2, ShieldCheck } from 'lucide-react';
+import { CreditCard, Heart, Loader2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(
@@ -11,32 +12,28 @@ const stripePromise = loadStripe(
 );
 
 interface DonationFormProps {
-  onSuccess?: () => void;
+  amount: number;
+  email: string;
+  name: string;
 }
 
-const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
+interface StripeFormProps extends DonationFormProps {
+  onSuccess?: () => void;
+  setEmail: (value: string) => void;
+  setName: (value: string) => void;
+}
+
+const StripeForm: React.FC<StripeFormProps> = ({
+  amount,
+  email,
+  name,
+  setEmail,
+  setName,
+  onSuccess,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [amount, setAmount] = useState<number>(10);
-  const [customAmount, setCustomAmount] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-
-  const predefinedAmounts = [5, 10, 25, 50];
-
-  const handleAmountClick = (value: number) => {
-    setAmount(value);
-    setCustomAmount('');
-  };
-
-  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCustomAmount(value);
-    if (value) {
-      setAmount(parseFloat(value) || 0);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,49 +141,6 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Montants prédéfinis */}
-      <div>
-        <label className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground mb-3 block">
-          Sélectionnez un montant
-        </label>
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          {predefinedAmounts.map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => handleAmountClick(value)}
-              className={`py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
-                amount === value && !customAmount
-                  ? 'bg-primary text-primary-foreground shadow-[0_0_0_1px_hsl(var(--primary))]'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/60'
-              }`}
-            >
-              {value}€
-            </button>
-          ))}
-        </div>
-
-        {/* Montant personnalisé */}
-        <div>
-          <label className="text-xs text-muted-foreground mb-2 block uppercase tracking-[0.12em]">
-            Ou entrez un montant personnalisé
-          </label>
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              min="1"
-              step="0.01"
-              placeholder="Montant en €"
-              value={customAmount}
-              onChange={handleCustomAmountChange}
-              className="flex-1 bg-background border-border focus-visible:ring-ring/50"
-            />
-            <span className="text-sm font-medium text-muted-foreground">€</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Informations */}
       <div className="space-y-3">
         <div>
           <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Nom</label>
@@ -262,8 +216,90 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
   );
 };
 
+const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
+  const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || '';
+
+  if (!paypalClientId) {
+    return (
+      <p className="text-sm text-muted-foreground text-center border border-border rounded-lg px-4 py-3 bg-background/70">
+        PayPal n'est pas encore configure. Ajoutez `VITE_PAYPAL_CLIENT_ID` dans l'environnement.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Nom</label>
+          <Input type="text" value={name} readOnly className="bg-background/70 border-border/80" />
+        </div>
+        <div>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Email</label>
+          <Input type="email" value={email} readOnly className="bg-background/70 border-border/80" />
+        </div>
+      </div>
+
+      <PayPalScriptProvider
+        options={{
+          clientId: paypalClientId,
+          currency: 'EUR',
+          intent: 'capture',
+        }}
+      >
+        <PayPalButtons
+          style={{ layout: 'vertical', shape: 'rect', label: 'paypal', color: 'gold' }}
+          forceReRender={[amount, email, name]}
+          createOrder={(_, actions) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: {
+                    value: amount.toFixed(2),
+                    currency_code: 'EUR',
+                  },
+                  description: 'Don pour L2 Maths Archive',
+                },
+              ],
+              payer: {
+                name: { given_name: name || 'Donateur' },
+                email_address: email || undefined,
+              },
+            });
+          }}
+          onApprove={async (_, actions) => {
+            await actions.order?.capture();
+            toast.success('Merci pour votre don via PayPal!');
+          }}
+          onError={() => {
+            toast.error('Erreur PayPal. Veuillez reessayer.');
+          }}
+        />
+      </PayPalScriptProvider>
+    </div>
+  );
+};
+
 export const DonationSection: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [amount, setAmount] = useState<number>(10);
+  const [customAmount, setCustomAmount] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'paypal'>('stripe');
+
+  const predefinedAmounts = [5, 10, 25, 50];
+
+  const handleAmountClick = (value: number) => {
+    setAmount(value);
+    setCustomAmount('');
+  };
+
+  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCustomAmount(value);
+    setAmount(value ? parseFloat(value) || 0 : 0);
+  };
 
   return (
     <section className="py-14 border-t border-border/60 bg-background">
@@ -283,9 +319,84 @@ export const DonationSection: React.FC = () => {
 
         {isExpanded ? (
           <div className="rounded-3xl p-6 border border-border bg-card shadow-[0_8px_24px_rgba(0,0,0,0.22)] overflow-hidden">
-            <Elements stripe={stripePromise}>
-              <DonationForm onSuccess={() => setIsExpanded(false)} />
-            </Elements>
+            <div className="space-y-6">
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground mb-3 block">
+                  Sélectionnez un montant
+                </label>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  {predefinedAmounts.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleAmountClick(value)}
+                      className={`py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
+                        amount === value && !customAmount
+                          ? 'bg-primary text-primary-foreground shadow-[0_0_0_1px_hsl(var(--primary))]'
+                          : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/60'
+                      }`}
+                    >
+                      {value}€
+                    </button>
+                  ))}
+                </div>
+
+                <label className="text-xs text-muted-foreground mb-2 block uppercase tracking-[0.12em]">
+                  Ou entrez un montant personnalisé
+                </label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    placeholder="Montant en €"
+                    value={customAmount}
+                    onChange={handleCustomAmountChange}
+                    className="flex-1 bg-background border-border focus-visible:ring-ring/50"
+                  />
+                  <span className="text-sm font-medium text-muted-foreground">€</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 rounded-xl border border-border p-1 bg-background/70">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('stripe')}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    paymentMethod === 'stripe' ? 'bg-card text-foreground border border-border' : 'text-muted-foreground'
+                  }`}
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <CreditCard className="h-4 w-4" />
+                    Carte
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('paypal')}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    paymentMethod === 'paypal' ? 'bg-card text-foreground border border-border' : 'text-muted-foreground'
+                  }`}
+                >
+                  PayPal
+                </button>
+              </div>
+
+              {paymentMethod === 'stripe' ? (
+                <Elements stripe={stripePromise}>
+                  <StripeForm
+                    amount={amount}
+                    email={email}
+                    name={name}
+                    setEmail={setEmail}
+                    setName={setName}
+                    onSuccess={() => setIsExpanded(false)}
+                  />
+                </Elements>
+              ) : (
+                <PayPalForm amount={amount} email={email} name={name} />
+              )}
+            </div>
           </div>
         ) : (
           <Button
