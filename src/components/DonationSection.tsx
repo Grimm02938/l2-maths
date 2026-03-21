@@ -60,7 +60,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
     try {
       // Appeler la Cloud Function pour créer l'intention de paiement
-      const functionUrl = `https://europe-west1-l2-maths.cloudfunctions.net/createDonationIntent`;
+      const functionUrl = import.meta.env.VITE_DONATION_FUNCTION_URL || 'https://createdonationintent-hgbaakmcna-ew.a.run.app';
       
       console.log('Calling function at:', functionUrl);
       console.log('Payload:', {
