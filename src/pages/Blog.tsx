@@ -51,24 +51,25 @@ const posts: BlogPost[] = [
 
 const BlogPage = () => {
   return (
-    <div className="relative min-h-full py-10">
+    <div className="relative min-h-full py-10 blog-space overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 blog-bg-pattern" />
+      <div className="pointer-events-none absolute inset-0 -z-10 blog-math-grid" />
 
       <section className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="mb-10 rounded-2xl border border-white/10 bg-card/70 backdrop-blur-xl p-6 sm:p-10 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="mb-10 rounded-3xl border border-cyan-200/20 bg-slate-950/70 backdrop-blur-xl p-6 sm:p-10 shadow-[0_24px_90px_rgba(2,6,23,0.7)]">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/20 bg-cyan-300/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-cyan-100">
             <Sparkles className="h-3.5 w-3.5" />
-            Journal L2 Maths
+            L2 Maths Logbook
           </p>
 
-          <h1 className="blog-typewriter-wrap font-['Space_Grotesk',sans-serif] text-3xl sm:text-5xl font-bold leading-tight text-foreground">
-            <span className="blog-typewriter">Reflexions, methodes et notes de progression</span>
+          <h1 className="blog-typewriter-wrap font-['Space_Grotesk',sans-serif] text-3xl sm:text-5xl font-bold leading-tight text-cyan-50 max-w-full">
+            <span className="blog-typewriter">Math Notes_ Building intuition, rigor and speed</span>
             <span className="blog-cursor" aria-hidden="true" />
           </h1>
 
-          <p className="mt-5 max-w-2xl text-sm sm:text-base text-muted-foreground">
-            Un espace editorial pour avancer plus vite en mathematiques: techniques de travail,
-            erreurs frequentes et routines qui aident vraiment.
+          <p className="mt-5 max-w-2xl text-sm sm:text-base text-slate-200/85 leading-relaxed break-words">
+            Un blog futuriste pour etudiants en maths: methodes, strategies, routine de revision et analyse
+            fine des erreurs qui font perdre des points.
           </p>
         </div>
 
@@ -76,20 +77,20 @@ const BlogPage = () => {
           {posts.map((post, index) => (
             <article
               key={post.id}
-              className="group rounded-2xl border border-white/10 bg-card/55 p-5 sm:p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/25 hover:bg-card/70"
+              className="group min-w-0 rounded-2xl border border-cyan-200/15 bg-slate-950/65 p-5 sm:p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/40 hover:shadow-[0_20px_50px_rgba(6,182,212,0.2)]"
               style={{ animationDelay: `${index * 70}ms` }}
             >
-              <p className="mb-4 inline-flex rounded-full border border-white/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="mb-4 inline-flex rounded-full border border-cyan-200/25 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-cyan-100/90">
                 {post.category}
               </p>
 
-              <h2 className="font-['Space_Grotesk',sans-serif] text-xl font-semibold leading-snug text-foreground">
+              <h2 className="font-['Space_Grotesk',sans-serif] text-xl font-semibold leading-snug text-cyan-50 break-words">
                 {post.title}
               </h2>
 
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{post.excerpt}</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-200/80 break-words">{post.excerpt}</p>
 
-              <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
+              <div className="mt-5 flex items-center justify-between text-xs text-slate-300/75">
                 <span>{post.date}</span>
                 <span className="inline-flex items-center gap-1.5">
                   <Clock3 className="h-3.5 w-3.5" />
@@ -99,7 +100,7 @@ const BlogPage = () => {
 
               <Link
                 to="/contact"
-                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/90 transition-colors group-hover:text-foreground"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-cyan-100 transition-colors group-hover:text-cyan-50"
               >
                 Lire l article
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

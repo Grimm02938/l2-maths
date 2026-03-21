@@ -3,7 +3,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Heart, Loader2 } from 'lucide-react';
+import { Heart, Loader2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(
@@ -59,15 +59,8 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      // Appeler la Cloud Function pour créer l'intention de paiement
+      // Appeler la Cloud Function pour creer l'intention de paiement
       const functionUrl = import.meta.env.VITE_DONATION_FUNCTION_URL || 'https://createdonationintent-hgbaakmcna-ew.a.run.app';
-      
-      console.log('Calling function at:', functionUrl);
-      console.log('Payload:', {
-        amount: Math.round(amount * 100),
-        email,
-        name,
-      });
 
       const response = await fetch(functionUrl, {
         method: 'POST',
@@ -81,9 +74,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
         }),
       });
 
-      console.log('Response status:', response.status);
       const responseText = await response.text();
-      console.log('Response body:', responseText);
 
       if (!response.ok) {
         let errorMessage = 'Erreur lors de la création du paiement';
@@ -96,10 +87,10 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
         throw new Error(errorMessage);
       }
 
-      let data;
+      let data: { clientSecret?: string };
       try {
         data = JSON.parse(responseText);
-      } catch (e) {
+      } catch {
         throw new Error('Réponse invalide du serveur');
       }
 
@@ -152,10 +143,10 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 donation-grid-overlay">
       {/* Montants prédéfinis */}
       <div>
-        <label className="text-sm font-medium mb-3 block">
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200/90 mb-3 block">
           Sélectionnez un montant
         </label>
         <div className="grid grid-cols-2 gap-2 mb-3">
@@ -164,10 +155,10 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
               key={value}
               type="button"
               onClick={() => handleAmountClick(value)}
-              className={`py-2 px-4 rounded-lg font-semibold transition-colors ${
+              className={`donation-chip py-2 px-4 rounded-lg font-semibold transition-all duration-300 ${
                 amount === value && !customAmount
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary hover:bg-secondary/80'
+                  ? 'bg-cyan-200 text-slate-950 shadow-[0_0_24px_rgba(103,232,249,0.45)]'
+                  : 'bg-slate-800/80 text-slate-100 hover:bg-slate-700/90 border border-white/10'
               }`}
             >
               {value}€
@@ -177,7 +168,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
         {/* Montant personnalisé */}
         <div>
-          <label className="text-sm text-muted-foreground mb-2 block">
+          <label className="text-xs text-slate-300/85 mb-2 block uppercase tracking-[0.15em]">
             Ou entrez un montant personnalisé
           </label>
           <div className="flex items-center gap-2">
@@ -188,9 +179,9 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
               placeholder="Montant en €"
               value={customAmount}
               onChange={handleCustomAmountChange}
-              className="flex-1"
+              className="flex-1 bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
             />
-            <span className="text-sm font-medium">€</span>
+            <span className="text-sm font-medium text-cyan-100">€</span>
           </div>
         </div>
       </div>
@@ -198,22 +189,24 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
       {/* Informations */}
       <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium mb-1 block">Nom</label>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-1 block">Nom</label>
           <Input
             type="text"
             placeholder="Votre nom"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
             required
           />
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block">Email</label>
+          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-1 block">Email</label>
           <Input
             type="email"
             placeholder="Votre email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
             required
           />
         </div>
@@ -221,16 +214,16 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
       {/* Élément carte */}
       <div>
-        <label className="text-sm font-medium mb-2 block">Détails de la carte</label>
-        <div className="p-3 border rounded-lg bg-card">
+        <label className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100/90 mb-2 block">Détails de la carte</label>
+        <div className="p-3 border border-cyan-200/25 rounded-lg bg-slate-900/70 shadow-[inset_0_0_30px_rgba(56,189,248,0.08)]">
           <CardElement
             options={{
               style: {
                 base: {
                   fontSize: '16px',
-                  color: '#fff',
+                  color: '#e2e8f0',
                   '::placeholder': {
-                    color: '#aab7c4',
+                    color: '#94a3b8',
                   },
                 },
                 invalid: {
@@ -246,7 +239,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
       <Button
         type="submit"
         disabled={!stripe || !elements || isLoading}
-        className="w-full"
+        className="w-full bg-gradient-to-r from-cyan-300 via-blue-300 to-emerald-300 text-slate-950 hover:opacity-95"
         size="lg"
       >
         {isLoading ? (
@@ -262,8 +255,8 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
         )}
       </Button>
 
-      <p className="text-xs text-muted-foreground text-center">
-        Votre don nous aide à maintenir et améliorer cette archive de cours.
+      <p className="text-xs text-slate-300/85 text-center leading-relaxed">
+        Votre don aide a maintenir les ressources, publier de nouveaux contenus et ameliorer le site.
       </p>
     </form>
   );
@@ -273,20 +266,24 @@ export const DonationSection: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="py-12 border-t bg-gradient-to-b from-background to-secondary/20">
+    <section className="relative py-14 border-t border-cyan-200/15 overflow-hidden donation-shell">
+      <div className="pointer-events-none absolute inset-0 donation-aurora" />
       <div className="container mx-auto px-4 max-w-md">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
-            <Heart className="w-6 h-6 text-red-500" />
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center justify-center gap-2 font-['Space_Grotesk',sans-serif]">
+            <Heart className="w-6 h-6 text-cyan-300" />
             Soutenez ce projet
           </h2>
-          <p className="text-muted-foreground">
-            Une contribution pour nous aider à maintenir cette archive de cours
+          <p className="text-slate-200/85 max-w-sm mx-auto leading-relaxed">
+            Une contribution pour garder une archive de maths claire, moderne et utile a tous les etudiants.
+          </p>
+          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-cyan-100/85 border border-cyan-200/20 rounded-full px-3 py-1.5 bg-slate-900/50">
+            <ShieldCheck className="w-3.5 h-3.5" /> Paiement securise via Stripe
           </p>
         </div>
 
         {isExpanded ? (
-          <div className="bg-card rounded-lg p-6 border shadow-lg">
+          <div className="relative bg-slate-950/75 rounded-2xl p-6 border border-cyan-200/20 shadow-[0_24px_80px_rgba(15,23,42,0.7)] backdrop-blur-xl">
             <Elements stripe={stripePromise}>
               <DonationForm onSuccess={() => setIsExpanded(false)} />
             </Elements>
@@ -295,8 +292,7 @@ export const DonationSection: React.FC = () => {
           <Button
             onClick={() => setIsExpanded(true)}
             size="lg"
-            className="w-full"
-            variant="outline"
+            className="w-full bg-gradient-to-r from-cyan-300 via-blue-300 to-emerald-300 text-slate-950 hover:opacity-95"
           >
             Faire un don
           </Button>
