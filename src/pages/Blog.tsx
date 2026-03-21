@@ -54,8 +54,8 @@ const BlogPage = () => {
     <div className="relative min-h-full py-10 bg-background">
 
       <section className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="mb-10 rounded-3xl border border-border/70 bg-card/70 backdrop-blur-sm p-6 sm:p-10 shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/40 px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="mb-10 rounded-3xl border border-border bg-card p-6 sm:p-10 shadow-[0_8px_24px_rgba(0,0,0,0.22)] overflow-hidden">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5" />
             L2 Maths Logbook
           </p>
@@ -75,7 +75,7 @@ const BlogPage = () => {
           {posts.map((post, index) => (
             <article
               key={post.id}
-              className="group min-w-0 rounded-2xl border border-border/70 bg-card/65 p-5 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-foreground/25 hover:shadow-[0_16px_36px_rgba(0,0,0,0.30)]"
+              className="group min-w-0 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-[0_6px_18px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_12px_28px_rgba(0,0,0,0.26)] overflow-hidden"
               style={{ animationDelay: `${index * 70}ms` }}
             >
               <p className="mb-4 inline-flex rounded-full border border-border/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

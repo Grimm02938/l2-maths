@@ -146,7 +146,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Montants prédéfinis */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200/90 mb-3 block">
+        <label className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground mb-3 block">
           Sélectionnez un montant
         </label>
         <div className="grid grid-cols-2 gap-2 mb-3">
@@ -168,7 +168,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
 
         {/* Montant personnalisé */}
         <div>
-          <label className="text-xs text-slate-300/85 mb-2 block uppercase tracking-[0.15em]">
+          <label className="text-xs text-muted-foreground mb-2 block uppercase tracking-[0.12em]">
             Ou entrez un montant personnalisé
           </label>
           <div className="flex items-center gap-2">
@@ -179,9 +179,9 @@ const DonationForm: React.FC<DonationFormProps> = ({ onSuccess }) => {
               placeholder="Montant en €"
               value={customAmount}
               onChange={handleCustomAmountChange}
-              className="flex-1 bg-slate-900/70 border-cyan-200/20 focus-visible:ring-cyan-300/40"
+              className="flex-1 bg-background border-border focus-visible:ring-ring/50"
             />
-            <span className="text-sm font-medium text-cyan-100">€</span>
+            <span className="text-sm font-medium text-muted-foreground">€</span>
           </div>
         </div>
       </div>
@@ -269,20 +269,20 @@ export const DonationSection: React.FC = () => {
     <section className="py-14 border-t border-border/60 bg-background">
       <div className="container mx-auto px-4 max-w-md">
         <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center justify-center gap-2 font-['Space_Grotesk',sans-serif]">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center justify-center gap-2 font-['Space_Grotesk',sans-serif] tracking-tight">
             <Heart className="w-6 h-6 text-primary" />
             Soutenez ce projet
           </h2>
           <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
             Une contribution pour garder une archive de maths claire, moderne et utile a tous les etudiants.
           </p>
-          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border/70 rounded-full px-3 py-1.5 bg-card/60">
+          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-full px-3 py-1.5 bg-card">
             <ShieldCheck className="w-3.5 h-3.5" /> Paiement securise via Stripe
           </p>
         </div>
 
         {isExpanded ? (
-          <div className="rounded-2xl p-6 border border-border/70 bg-card/70 shadow-[0_16px_42px_rgba(0,0,0,0.32)] backdrop-blur-sm">
+          <div className="rounded-3xl p-6 border border-border bg-card shadow-[0_8px_24px_rgba(0,0,0,0.22)] overflow-hidden">
             <Elements stripe={stripePromise}>
               <DonationForm onSuccess={() => setIsExpanded(false)} />
             </Elements>
