@@ -5,8 +5,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, ClipboardList, ClipboardCheck, ExternalLink } from "lucide-react";
-import type { Chapter } from "@/lib/themes";
+import { Archive, BookOpen, ClipboardList, ExternalLink, FilePlus2, Lock, NotebookPen } from "lucide-react";
+import { getChapterResources } from "@/lib/themes";
+import type { Chapter, ChapterResource, ResourceType } from "@/lib/themes";
+import type { ReactNode } from "react";
 
 interface ChapterAccordionProps {
   chapters: Chapter[];
@@ -14,12 +16,50 @@ interface ChapterAccordionProps {
 }
 
 interface PdfLinkProps {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
+  resource: ChapterResource;
 }
 
-function PdfLink({ href, label, icon }: PdfLinkProps) {
+const resourceIconMap: Record<ResourceType, ReactNode> = {
+  cours: <BookOpen className="h-3.5 w-3.5" />,
+  td: <ClipboardList className="h-3.5 w-3.5" />,
+  "corrige-perso": <NotebookPen className="h-3.5 w-3.5" />,
+  annale: <Archive className="h-3.5 w-3.5" />,
+  complement: <FilePlus2 className="h-3.5 w-3.5" />,
+};
+
+function getResourceHref(resource: ChapterResource) {
+  if (!resource.url || resource.visibility === "private") return null;
+
+  if (resource.url.startsWith("/") && resource.url.toLowerCase().endsWith(".pdf")) {
+    return `/document?src=${encodeURIComponent(resource.url)}&title=${encodeURIComponent(resource.title)}`;
+  }
+
+  return resource.url;
+}
+
+function PdfLink({ resource }: PdfLinkProps) {
+  const isPrivate = resource.visibility === "private";
+  const href = getResourceHref(resource);
+  const content = (
+    <>
+      {resourceIconMap[resource.type]}
+      {resource.title}
+      {isPrivate ? (
+        <Lock className="h-3 w-3 opacity-60" />
+      ) : (
+        <ExternalLink className="h-3 w-3 opacity-60" />
+      )}
+    </>
+  );
+
+  if (!href) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+        {content}
+      </span>
+    );
+  }
+
   return (
     <a
       href={href}
@@ -27,9 +67,7 @@ function PdfLink({ href, label, icon }: PdfLinkProps) {
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors"
     >
-      {icon}
-      {label}
-      <ExternalLink className="h-3 w-3 opacity-60" />
+      {content}
     </a>
   );
 }
@@ -70,6 +108,7 @@ export function ChapterAccordion({ chapters, accentColor }: ChapterAccordionProp
     <Accordion type="multiple" className="space-y-2">
       {chapters.map((chapter) => {
         const isAvailable = chapter.available;
+        const resources = getChapterResources(chapter);
 
         return (
           <AccordionItem
@@ -111,27 +150,9 @@ export function ChapterAccordion({ chapters, accentColor }: ChapterAccordionProp
             {isAvailable && (
               <AccordionContent className="px-4 pb-4 pt-1">
                 <div className="flex flex-wrap gap-4 pl-7">
-                  {chapter.cours && (
-                    <PdfLink
-                      href={chapter.cours}
-                      label="Cours"
-                      icon={<BookOpen className="h-3.5 w-3.5" />}
-                    />
-                  )}
-                  {chapter.td && (
-                    <PdfLink
-                      href={chapter.td}
-                      label="TD - Enonce"
-                      icon={<ClipboardList className="h-3.5 w-3.5" />}
-                    />
-                  )}
-                  {chapter.tdCorrection && (
-                    <PdfLink
-                      href={chapter.tdCorrection}
-                      label="TD - Correction"
-                      icon={<ClipboardCheck className="h-3.5 w-3.5" />}
-                    />
-                  )}
+                  {resources.map((resource) => (
+                    <PdfLink key={resource.id} resource={resource} />
+                  ))}
                 </div>
               </AccordionContent>
             )}

@@ -1,232 +1,310 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  BriefcaseBusiness,
+  Crown,
+  GraduationCap,
+  LockKeyhole,
+  Mail,
+  PenLine,
+  Save,
+  UserRound,
+  X,
+} from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import UploadForm from '@/components/UploadForm';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Briefcase, GraduationCap, Mail, User } from 'lucide-react';
-import { userProfileService, UserProfile } from '@/lib/firebase-database';
-import { Skeleton } from "@/components/ui/skeleton";
-
+import { Skeleton } from '@/components/ui/skeleton';
+import { userProfileService, type UserProfile } from '@/lib/firebase-database';
 
 const ADMIN_UID = 'iw4t9QYWJgeWiCwKbiPTlyrSBlk2';
 
-const ProfilePage = () => {
+type ProfileDraft = Pick<UserProfile, 'displayName' | 'university' | 'fieldOfStudy'>;
+
+export default function ProfilePage() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [draft, setDraft] = useState<ProfileDraft | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const isAdmin = user && user.uid === ADMIN_UID;
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isAdmin = user?.uid === ADMIN_UID;
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      if (user) {
-        try {
-          const userProfile = await userProfileService.getOrCreateProfile(user.uid, {
-            email: user.email,
-            displayName: user.displayName,
-          });
-          setProfile(userProfile);
-        } catch (error) {
-          console.error("Failed to fetch or create profile:", error);
-          setProfile(null);
-        }
-      } else {
+      setError(null);
+
+      if (!user) {
         setProfile(null);
+        setDraft(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const userProfile = await userProfileService.getOrCreateProfile(user.uid, {
+          email: user.email,
+          displayName: user.displayName,
+        });
+
+        setProfile(userProfile);
+        setDraft({
+          displayName: userProfile.displayName || '',
+          university: userProfile.university || '',
+          fieldOfStudy: userProfile.fieldOfStudy || '',
+        });
+      } catch (nextError) {
+        console.error('Failed to fetch or create profile:', nextError);
+        setError('Impossible de charger le profil.');
+        setProfile(null);
+        setDraft(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchProfile();
   }, [user]);
 
-  const handleUpdate = async () => {
-    if (profile) {
-      await userProfileService.updateProfile(profile.id, {
-        displayName: profile.displayName,
-        university: profile.university,
-        fieldOfStudy: profile.fieldOfStudy,
-      });
+  const handleSave = async () => {
+    if (!profile || !draft) return;
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      await userProfileService.updateProfile(profile.id, draft);
+      setProfile({ ...profile, ...draft });
       setIsEditing(false);
+    } catch (nextError) {
+      console.error('Failed to update profile:', nextError);
+      setError("Impossible d'enregistrer les modifications.");
+    } finally {
+      setSaving(false);
     }
   };
 
-  const getInitials = (email: string) => {
-    const parts = email.split('@')[0];
-    return parts.substring(0, 2).toUpperCase();
+  const handleCancel = () => {
+    if (profile) {
+      setDraft({
+        displayName: profile.displayName || '',
+        university: profile.university || '',
+        fieldOfStudy: profile.fieldOfStudy || '',
+      });
+    }
+
+    setError(null);
+    setIsEditing(false);
   };
 
-  if (loading) {
-    return <ProfileSkeleton />;
-  }
+  if (loading) return <ProfileSkeleton />;
 
-  if (!user || !profile) {
+  if (!user || !profile || !draft) {
     return (
-        <div className="flex items-center justify-center h-full">
-            <Card className="w-full max-w-md p-8 text-center">
-                <CardTitle>Profil introuvable</CardTitle>
-                <CardDescription>
-                { !user ? "Veuillez vous connecter pour voir votre profil." : "Impossible de charger votre profil. Veuillez actualiser la page."}
-                </CardDescription>
-            </Card>
-        </div>
+      <main className="mx-auto flex min-h-[62vh] w-full max-w-md items-center px-4">
+        <section className="w-full rounded-lg border border-border bg-card p-5 text-center">
+          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-border bg-background/50 text-muted-foreground">
+            <LockKeyhole className="h-5 w-5" />
+          </div>
+          <h1 className="text-lg font-semibold text-foreground">Profil inaccessible</h1>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {error || 'Connecte-toi pour ouvrir ton profil.'}
+          </p>
+        </section>
+      </main>
     );
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8 space-y-8">
-      <UserProfileCard 
-        user={user} 
-        profile={profile} 
-        setProfile={setProfile}
-        isEditing={isEditing} 
-        setIsEditing={setIsEditing}
-        handleUpdate={handleUpdate}
-        getInitials={getInitials}
-      />
-      
-      {isAdmin && <AdminPanel />}
-    </div>
-  );
-};
+    <main className="mx-auto w-full max-w-2xl px-4 py-5 sm:py-8">
+      <section className="space-y-5">
+        <section className="neo-panel border border-border bg-card p-4 sm:p-5">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Informations</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Tes infos visibles dans ton espace.</p>
+            </div>
 
-// Main Profile Card Component
-const UserProfileCard = ({ user, profile, setProfile, isEditing, setIsEditing, handleUpdate, getInitials }) => {
-    return (
-        <Card className="bg-card/80 backdrop-blur-sm">
-            <CardHeader>
-                <CardTitle>Mon Profil</CardTitle>
-                <CardDescription>Consultez et modifiez vos informations personnelles.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="flex items-center space-x-4">
-                    <Avatar className="w-20 h-20">
-                        <AvatarImage src={user.photoURL || undefined} alt="User avatar" />
-                        <AvatarFallback className="text-2xl">{getInitials(user.email || 'U')}</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                        <p className="text-xl font-semibold">{profile.displayName}</p>
-                        <p className="text-sm text-muted-foreground">{profile.email}</p>
-                    </div>
-                </div>
-                <Separator />
-                {isEditing ? (
-                    <EditProfileForm profile={profile} setProfile={setProfile} handleUpdate={handleUpdate} setIsEditing={setIsEditing} />
-                ) : (
-                    <DisplayProfileInfo profile={profile} setIsEditing={setIsEditing} />
-                )}
-            </CardContent>
-        </Card>
-    );
+            {!isEditing && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="neo-button-shape h-9 shrink-0"
+              >
+                <PenLine className="mr-2 h-4 w-4" />
+                Modifier
+              </Button>
+            )}
+          </div>
+
+          {isEditing ? (
+            <div className="space-y-4">
+              <ProfileField
+                id="displayName"
+                label="Nom affiché"
+                value={draft.displayName || ''}
+                icon={<UserRound className="h-4 w-4" />}
+                onChange={(value) => setDraft((current) => current && { ...current, displayName: value })}
+              />
+              <ProfileField
+                id="university"
+                label="Université"
+                value={draft.university || ''}
+                icon={<GraduationCap className="h-4 w-4" />}
+                onChange={(value) => setDraft((current) => current && { ...current, university: value })}
+              />
+              <ProfileField
+                id="fieldOfStudy"
+                label="Parcours"
+                value={draft.fieldOfStudy || ''}
+                icon={<BriefcaseBusiness className="h-4 w-4" />}
+                onChange={(value) => setDraft((current) => current && { ...current, fieldOfStudy: value })}
+              />
+
+              {error && <p className="text-sm text-red-300">{error}</p>}
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Button type="button" variant="outline" onClick={handleCancel} className="neo-button-shape h-10">
+                  <X className="mr-2 h-4 w-4" />
+                  Annuler
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="neo-button-shape h-10 bg-foreground text-background hover:bg-foreground/90"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {saving ? '...' : 'Enregistrer'}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/80">
+              <InfoRow
+                icon={<GraduationCap className="h-4 w-4" />}
+                label="Université"
+                value={profile.university || 'Non renseignée'}
+              />
+              <InfoRow
+                icon={<BriefcaseBusiness className="h-4 w-4" />}
+                label="Parcours"
+                value={profile.fieldOfStudy || 'Non renseigné'}
+              />
+              <InfoRow
+                icon={<Mail className="h-4 w-4" />}
+                label="Email"
+                value={profile.email}
+              />
+            </div>
+          )}
+        </section>
+
+        {isAdmin && <AdminPanel />}
+      </section>
+    </main>
+  );
 }
 
-// Component to Display Profile Information
-const DisplayProfileInfo = ({ profile, setIsEditing }) => (
-    <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InfoItem icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />} label="Université" value={profile.university || 'Non spécifiée'} />
-            <InfoItem icon={<Briefcase className="h-5 w-5 text-muted-foreground" />} label="Niveau d'études" value={profile.fieldOfStudy || 'Non spécifié'} />
-        </div>
-        <div className="flex justify-end pt-4">
-            <Button onClick={() => setIsEditing(true)}>Modifier le profil</Button>
-        </div>
+function ProfileField({
+  id,
+  label,
+  value,
+  icon,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id} className="text-sm font-medium text-muted-foreground">
+        {label}
+      </Label>
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+          {icon}
+        </span>
+        <Input
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="neo-button-shape h-11 border-border bg-background/70 pl-10 text-base text-foreground shadow-none placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-foreground/25 sm:text-sm"
+        />
+      </div>
     </div>
-);
+  );
+}
 
-
-// Component to Edit Profile Information
-const EditProfileForm = ({ profile, setProfile, handleUpdate, setIsEditing }) => (
-    <div className="space-y-4">
-        <div>
-            <Label htmlFor="displayName">Nom d'utilisateur</Label>
-            <Input id="displayName" value={profile.displayName || ''} onChange={(e) => setProfile({ ...profile, displayName: e.target.value })} />
-        </div>
-        <div>
-            <Label htmlFor="university">Université</Label>
-            <Input id="university" value={profile.university || ''} onChange={(e) => setProfile({ ...profile, university: e.target.value })} />
-        </div>
-        <div>
-            <Label htmlFor="fieldOfStudy">Niveau d'études</Label>
-            <Input id="fieldOfStudy" value={profile.fieldOfStudy || ''} onChange={(e) => setProfile({ ...profile, fieldOfStudy: e.target.value })} />
-        </div>
-        <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" onClick={() => setIsEditing(false)}>Annuler</Button>
-            <Button onClick={handleUpdate}>Enregistrer</Button>
-        </div>
-    </div>
-);
-
-
-// Reusable Info Item
-const InfoItem = ({ icon, label, value }) => (
-    <div className="flex items-center space-x-3">
+function InfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-3 py-3 first:pt-0 last:pb-0">
+      <div className="neo-icon flex h-9 w-9 shrink-0 items-center justify-center bg-background/55 text-muted-foreground">
         {icon}
-        <div>
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="font-medium">{value}</p>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="mt-0.5 truncate text-sm font-medium text-foreground">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function AdminPanel() {
+  return (
+    <section className="neo-panel border border-border bg-card p-4 sm:p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="neo-icon flex h-9 w-9 shrink-0 items-center justify-center bg-background/55 text-muted-foreground">
+          <Crown className="h-4 w-4" />
         </div>
-    </div>
-);
+        <div className="min-w-0">
+          <h2 className="text-base font-semibold text-foreground">Administration</h2>
+          <p className="truncate text-sm text-muted-foreground">Publication de ressources</p>
+        </div>
+      </div>
+      <UploadForm />
+    </section>
+  );
+}
 
-
-// Admin Panel Component
-const AdminPanel = () => (
-    <Card className="border-red-500 border-2 bg-card/80 backdrop-blur-sm">
-        <CardHeader>
-            <CardTitle>Panneau d'Administration</CardTitle>
-            <CardDescription>Cette section est réservée à l'administrateur du site.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <UploadForm />
-        </CardContent>
-    </Card>
-);
-
-// Skeleton loader for the profile page
-const ProfileSkeleton = () => (
-    <div className="container mx-auto p-4 md:p-8">
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-8 w-1/4" />
-                <Skeleton className="h-4 w-1/2" />
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="flex items-center space-x-4">
-                    <Skeleton className="h-20 w-20 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-6 w-48" />
-                        <Skeleton className="h-4 w-64" />
-                    </div>
-                </div>
-                <Separator />
-                <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center space-x-3">
-                            <Skeleton className="h-8 w-8 rounded" />
-                            <div className="space-y-2">
-                                <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-5 w-40" />
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                            <Skeleton className="h-8 w-8 rounded" />
-                            <div className="space-y-2">
-                                <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-5 w-40" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex justify-end pt-4">
-                         <Skeleton className="h-10 w-32" />
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    </div>
-);
-
-export default ProfilePage;
+function ProfileSkeleton() {
+  return (
+    <main className="mx-auto w-full max-w-2xl px-4 py-5 sm:py-8">
+      <section className="space-y-5">
+        <div className="neo-panel border border-border bg-card p-4 sm:p-5">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-14 w-14 rounded-lg" />
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-6 w-44" />
+              <Skeleton className="h-4 w-full max-w-64" />
+            </div>
+          </div>
+        </div>
+        <div className="neo-panel border border-border bg-card p-4 sm:p-5">
+          <Skeleton className="mb-5 h-6 w-32" />
+          <div className="space-y-3">
+            <Skeleton className="h-12 rounded-md" />
+            <Skeleton className="h-12 rounded-md" />
+            <Skeleton className="h-12 rounded-md" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

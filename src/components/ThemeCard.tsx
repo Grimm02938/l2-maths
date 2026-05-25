@@ -37,10 +37,10 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
     <div
       onClick={handleClick}
       className={`
-        group relative flex flex-col h-full transition-all duration-200
+        neo-panel neo-panel-interactive group relative flex flex-col h-full
         bg-card hover:bg-card/80
         border border-border/30 hover:border-border/60
-        rounded-xl cursor-pointer overflow-hidden
+        cursor-pointer overflow-hidden
       `}
     >
       {/* Barre colorée en haut uniquement */}
@@ -49,7 +49,7 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
       <div className="flex flex-col flex-1 p-5">
         {/* Icône + Titre */}
         <div className="flex items-start gap-3 flex-1">
-          <div className={`mt-0.5 ${color}`}>
+          <div className={`neo-icon mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-border/40 bg-background/45 ${color}`}>
               <IconComponent className="h-5 w-5" />
           </div>
           <div className="flex-1 min-w-0">

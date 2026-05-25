@@ -4,6 +4,7 @@ import Index from '@/pages/Index';
 import ProfilePage from '@/pages/Profile';
 import ContactPage from '@/pages/Contact';
 import SubjectPage from '@/pages/SubjectPage';
+import DocumentViewerPage from '@/pages/DocumentViewer';
 import BlogPage from '@/pages/Blog';
 import { Navbar } from '@/components/Navbar';
 import LoginModal from '@/components/LoginModal';
@@ -27,13 +28,14 @@ const AppContent = () => {
           <Routes location={location}>
             <Route path="/" element={<Index />} />
             <Route path="/subject/:id" element={<SubjectPage />} />
+            <Route path="/document" element={<DocumentViewerPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blog" element={<BlogPage />} />
           </Routes>
         </div>
       </main>
-      <DonationSection />
+      {/* <DonationSection /> */}
     </div>
   );
 };

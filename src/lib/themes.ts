@@ -1,8 +1,22 @@
 
+export type ResourceType = 'cours' | 'td' | 'corrige-perso' | 'annale' | 'complement';
+export type ResourceVisibility = 'public' | 'private';
+export type ResourceSource = 'site' | 'ecampus' | 'personnel';
+
+export interface ChapterResource {
+  id: string;
+  type: ResourceType;
+  title: string;
+  url?: string;
+  visibility: ResourceVisibility;
+  source?: ResourceSource;
+}
+
 export interface Chapter {
   id: string;
   title: string;
   available: boolean;
+  resources?: ChapterResource[];
   cours?: string;
   td?: string;
   tdCorrection?: string;
@@ -19,6 +33,31 @@ export interface Theme {
   chapters: Chapter[];
 }
 
+const legacyResourceLabels: Record<string, { type: ResourceType; title: string; source: ResourceSource }> = {
+  cours: { type: 'cours', title: 'Cours', source: 'site' },
+  td: { type: 'td', title: 'TD', source: 'site' },
+  tdCorrection: { type: 'corrige-perso', title: 'Corrige', source: 'personnel' },
+};
+
+export function getChapterResources(chapter: Chapter): ChapterResource[] {
+  if (chapter.resources?.length) return chapter.resources;
+
+  return (['cours', 'td', 'tdCorrection'] as const).flatMap((key) => {
+    const url = chapter[key];
+    if (!url) return [];
+
+    const label = legacyResourceLabels[key];
+    return [{
+      id: `${chapter.id}-${key}`,
+      type: label.type,
+      title: label.title,
+      url,
+      visibility: 'public' as const,
+      source: label.source,
+    }];
+  });
+}
+
 export const themes: Theme[] = [
   {
     id: 'analyse',
@@ -33,17 +72,62 @@ export const themes: Theme[] = [
         id: 'a1',
         title: 'Suites et Séries Numériques',
         available: true,
-        cours: '/documents/analyse/a1_cours.pdf',
-        td: '/documents/analyse/a1_td.pdf',
-        tdCorrection: '/documents/analyse/a1_td_corr.pdf',
+        resources: [
+          {
+            id: 'a1-cours',
+            type: 'cours',
+            title: 'Cours',
+            url: '/documents/analyse/a1_cours.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'a1-td',
+            type: 'td',
+            title: 'TD',
+            url: '/documents/analyse/a1_td.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'a1-corrige-perso',
+            type: 'corrige-perso',
+            title: 'Corrige personnel',
+            url: '/documents/analyse/a1_td_corr.pdf',
+            visibility: 'public',
+            source: 'personnel',
+          },
+        ],
       },
       {
         id: 'a2',
         title: 'Séries de Fonctions',
         available: true,
-        cours: '/documents/analyse/a2_cours.pdf',
-        td: 'https://drive.google.com/drive/folders/1QmUf7OxAv5rzbuBnHkBuq0XDF6qGmFeK',
-        tdCorrection: '/documents/analyse/a2_td_corr.pdf',
+        resources: [
+          {
+            id: 'a2-cours',
+            type: 'cours',
+            title: 'Cours',
+            url: '/documents/analyse/a2_cours.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'a2-td',
+            type: 'td',
+            title: 'TD import eCampus',
+            visibility: 'private',
+            source: 'ecampus',
+          },
+          {
+            id: 'a2-corrige-perso',
+            type: 'corrige-perso',
+            title: 'Corrige personnel',
+            url: '/documents/analyse/a2_td_corr.pdf',
+            visibility: 'public',
+            source: 'personnel',
+          },
+        ],
       },
     ],
   },
@@ -60,9 +144,32 @@ export const themes: Theme[] = [
         id: 'al1',
         title: 'Espaces Vectoriels et Applications Linéaires',
         available: true,
-        cours: '/documents/algebre/al1_cours.pdf',
-        td: '/documents/algebre/al1_td.pdf',
-        tdCorrection: '/documents/algebre/al1_td_corr.pdf',
+        resources: [
+          {
+            id: 'al1-cours',
+            type: 'cours',
+            title: 'Cours',
+            url: '/documents/algebre/al1_cours.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'al1-td',
+            type: 'td',
+            title: 'TD',
+            url: '/documents/algebre/al1_td.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'al1-corrige-perso',
+            type: 'corrige-perso',
+            title: 'Corrige personnel',
+            url: '/documents/algebre/al1_td_corr.pdf',
+            visibility: 'public',
+            source: 'personnel',
+          },
+        ],
       },
       {
         id: 'al2',
@@ -74,14 +181,104 @@ export const themes: Theme[] = [
   {
     id: 'topologie',
     title: 'Topologie',
-    description: "Espaces topologiques, connexité, compacité et espaces métriques.",
+    description: "Poly de Girand et TD associés aux 4 chapitres du cours.",
     color: 'text-amber-300',
     border: 'border-amber-300/35',
     icon: 'Orbit',
     semesters: ['s1', 's2'],
     chapters: [
-      { id: 't1', title: 'Espaces Topologiques', available: false },
-      { id: 't2', title: 'Continuité et Homéomorphismes', available: false },
+      {
+        id: 'topologie-i',
+        title: 'Chapitre I — Cadre d’étude et définitions',
+        available: true,
+        resources: [
+          {
+            id: 'topologie-i-cours',
+            type: 'cours',
+            title: 'Poly Girand',
+            url: '/documents/topologie/s2/poly-girand.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'topologie-i-td',
+            type: 'td',
+            title: 'TD 1',
+            url: '/documents/topologie/s2/td1.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+        ],
+      },
+      {
+        id: 'topologie-ii',
+        title: 'Chapitre II — Étude locale et asymptotique',
+        available: true,
+        resources: [
+          {
+            id: 'topologie-ii-cours',
+            type: 'cours',
+            title: 'Poly Girand',
+            url: '/documents/topologie/s2/poly-girand.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'topologie-ii-td',
+            type: 'td',
+            title: 'TD 2',
+            url: '/documents/topologie/s2/td2.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+        ],
+      },
+      {
+        id: 'topologie-iii',
+        title: 'Chapitre III — Tracé d’une courbe paramétrée',
+        available: true,
+        resources: [
+          {
+            id: 'topologie-iii-cours',
+            type: 'cours',
+            title: 'Poly Girand',
+            url: '/documents/topologie/s2/poly-girand.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'topologie-iii-td',
+            type: 'td',
+            title: 'TD 3',
+            url: '/documents/topologie/s2/td3.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+        ],
+      },
+      {
+        id: 'topologie-iv',
+        title: 'Chapitre IV — Étude métrique des courbes',
+        available: true,
+        resources: [
+          {
+            id: 'topologie-iv-cours',
+            type: 'cours',
+            title: 'Poly Girand',
+            url: '/documents/topologie/s2/poly-girand.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+          {
+            id: 'topologie-iv-td',
+            type: 'td',
+            title: 'TD 4',
+            url: '/documents/topologie/s2/td4.pdf',
+            visibility: 'public',
+            source: 'site',
+          },
+        ],
+      },
     ],
   },
   {

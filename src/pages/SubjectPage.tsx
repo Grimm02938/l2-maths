@@ -1,77 +1,103 @@
 import { useParams, Link } from "react-router-dom";
-import { themes } from "@/lib/themes";
+import { getChapterResources, themes } from "@/lib/themes";
 import { iconMap } from "@/lib/iconMap";
-import { ArrowLeft, BookOpen, ChevronRight, ClipboardList, ClipboardCheck, ExternalLink, Lock } from "lucide-react";
-import type { Chapter } from "@/lib/themes";
+import {
+  Archive,
+  ArrowLeft,
+  BookOpen,
+  ChevronRight,
+  ClipboardList,
+  ExternalLink,
+  FilePlus2,
+  Lock,
+  NotebookPen,
+} from "lucide-react";
+import type { Chapter, ChapterResource, ResourceType } from "@/lib/themes";
+import type { ReactNode } from "react";
 import { useState } from "react";
 
-const actionToneMap: Record<string, { container: string; icon: string; text: string }> = {
-  "text-blue-300": {
-    container: "border-blue-300/20 bg-blue-300/5 hover:bg-blue-300/10",
-    icon: "bg-blue-300/10 text-blue-300",
-    text: "text-blue-200",
+const resourceTypeConfig: Record<ResourceType, {
+  label: string;
+  icon: ReactNode;
+}> = {
+  cours: {
+    label: "Cours",
+    icon: <BookOpen className="h-3 w-3" />,
   },
-  "text-emerald-300": {
-    container: "border-emerald-300/20 bg-emerald-300/5 hover:bg-emerald-300/10",
-    icon: "bg-emerald-300/10 text-emerald-300",
-    text: "text-emerald-200",
+  td: {
+    label: "TD",
+    icon: <ClipboardList className="h-3 w-3" />,
   },
-  "text-amber-300": {
-    container: "border-amber-300/20 bg-amber-300/5 hover:bg-amber-300/10",
-    icon: "bg-amber-300/10 text-amber-300",
-    text: "text-amber-200",
+  "corrige-perso": {
+    label: "Corrige perso",
+    icon: <NotebookPen className="h-3 w-3" />,
   },
-  "text-violet-300": {
-    container: "border-violet-300/20 bg-violet-300/5 hover:bg-violet-300/10",
-    icon: "bg-violet-300/10 text-violet-300",
-    text: "text-violet-200",
+  annale: {
+    label: "Annale",
+    icon: <Archive className="h-3 w-3" />,
   },
-  "text-pink-300": {
-    container: "border-pink-300/20 bg-pink-300/5 hover:bg-pink-300/10",
-    icon: "bg-pink-300/10 text-pink-300",
-    text: "text-pink-200",
-  },
-  "text-teal-300": {
-    container: "border-teal-300/20 bg-teal-300/5 hover:bg-teal-300/10",
-    icon: "bg-teal-300/10 text-teal-300",
-    text: "text-teal-200",
-  },
-  "text-orange-300": {
-    container: "border-orange-300/20 bg-orange-300/5 hover:bg-orange-300/10",
-    icon: "bg-orange-300/10 text-orange-300",
-    text: "text-orange-200",
+  complement: {
+    label: "Complement",
+    icon: <FilePlus2 className="h-3 w-3" />,
   },
 };
 
+function getResourceHref(resource: ChapterResource) {
+  if (!resource.url || resource.visibility === "private") return null;
+
+  if (resource.url.startsWith("/") && resource.url.toLowerCase().endsWith(".pdf")) {
+    const src = encodeURIComponent(resource.url);
+    const title = encodeURIComponent(resource.title);
+    return `/document?src=${src}&title=${title}`;
+  }
+
+  return resource.url;
+}
+
 function ChapterAction({
-  href,
-  label,
-  color,
-  icon,
+  resource,
 }: {
-  href: string;
-  label: string;
-  color: string;
-  icon: React.ReactNode;
+  resource: ChapterResource;
 }) {
-  const tone = actionToneMap[color] ?? {
-    container: "border-border bg-accent/20 hover:bg-accent/30",
-    icon: "bg-accent text-foreground",
-    text: "text-foreground",
-  };
+  const config = resourceTypeConfig[resource.type];
+  const isPrivate = resource.visibility === "private";
+  const href = getResourceHref(resource);
+  const content = (
+    <>
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-background/60 text-muted-foreground">
+        {config.icon}
+      </span>
+      <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground">
+        {resource.title}
+      </span>
+      {isPrivate ? (
+        <Lock className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
+      ) : (
+        <ExternalLink className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
+      )}
+    </>
+  );
+
+  if (!href) {
+    return (
+      <span
+        aria-label={`${config.label} - ${resource.title}`}
+        className="neo-button-shape inline-flex items-center gap-1.5 border border-border/60 bg-background/35 px-2 py-1.5 whitespace-nowrap opacity-70"
+      >
+        {content}
+      </span>
+    );
+  }
 
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 transition-colors whitespace-nowrap ${tone.container}`}
+      aria-label={`${config.label} - ${resource.title}`}
+      className="neo-button-shape group inline-flex items-center gap-1.5 border border-border/60 bg-background/35 px-2 py-1.5 transition-colors whitespace-nowrap hover:border-border hover:bg-background/60"
     >
-      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-sm ${tone.icon}`}>
-        {icon}
-      </span>
-      <span className={`text-[11px] font-medium ${tone.text}`}>{label}</span>
-      <ExternalLink className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
+      {content}
     </a>
   );
 }
@@ -86,7 +112,7 @@ function ChapterRow({ chapter, index, color, border }: {
 
   if (!chapter.available) {
     return (
-      <div className="flex items-center justify-between px-5 py-4 rounded-lg bg-card border border-border opacity-50">
+      <div className="neo-panel flex items-center justify-between px-5 py-4 bg-card border border-border opacity-50">
         <div className="flex items-center gap-3">
           <Lock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">{chapter.title}</span>
@@ -98,8 +124,10 @@ function ChapterRow({ chapter, index, color, border }: {
     );
   }
 
+  const resources = getChapterResources(chapter);
+
   return (
-    <div className={`rounded-lg bg-card border ${open ? border : "border-border"} overflow-hidden transition-all`}>
+    <div className={`neo-panel bg-card border ${open ? border : "border-border"} overflow-hidden transition-all`}>
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-accent/30 transition-colors"
@@ -115,32 +143,15 @@ function ChapterRow({ chapter, index, color, border }: {
 
       {open && (
         <div className="px-5 pb-4 pt-3 border-t border-border">
-          <div className="flex flex-wrap gap-1.5">
-            {chapter.cours && (
-              <ChapterAction
-                href={chapter.cours}
-                label="Cours"
-                color={color}
-                icon={<BookOpen className="h-3 w-3" />}
-              />
-            )}
-            {chapter.td && (
-              <ChapterAction
-                href={chapter.td}
-                label="TD"
-                color={color}
-                icon={<ClipboardList className="h-3 w-3" />}
-              />
-            )}
-            {chapter.tdCorrection && (
-              <ChapterAction
-                href={chapter.tdCorrection}
-                label="Corrigé"
-                color={color}
-                icon={<ClipboardCheck className="h-3 w-3" />}
-              />
-            )}
-          </div>
+          {resources.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {resources.map((resource) => (
+                <ChapterAction key={resource.id} resource={resource} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">Ressources a ajouter.</p>
+          )}
         </div>
       )}
     </div>
@@ -162,8 +173,6 @@ export default function SubjectPage() {
   }
 
   const IconComponent = iconMap[theme.icon];
-  const availableCount = theme.chapters.filter((c) => c.available).length;
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
@@ -173,7 +182,7 @@ export default function SubjectPage() {
 
       <div className="flex items-center gap-4 mb-8">
         {IconComponent && (
-          <div className={`p-3 rounded-xl border ${theme.border} ${theme.color} bg-card`}>
+          <div className={`neo-icon flex h-12 w-12 items-center justify-center border ${theme.border} ${theme.color} bg-card`}>
             <IconComponent className="h-6 w-6" />
           </div>
         )}
@@ -181,17 +190,6 @@ export default function SubjectPage() {
           <h1 className={`text-2xl font-semibold ${theme.color}`}>{theme.title}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{theme.description}</p>
         </div>
-      </div>
-
-      <div className="flex gap-2 mb-8">
-        <span className="text-xs border border-border text-muted-foreground rounded-full px-3 py-1">
-          {availableCount} / {theme.chapters.length} chapitres
-        </span>
-        {theme.semesters.map((s) => (
-          <span key={s} className="text-xs border border-border text-muted-foreground rounded-full px-3 py-1">
-            {s.toUpperCase()}
-          </span>
-        ))}
       </div>
 
       <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3">Chapitres</p>

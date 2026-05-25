@@ -33,7 +33,7 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
             {children} {/* This will render the SidebarTrigger */}
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="p-2 rounded-xl bg-primary/10">
+              <div className="neo-icon flex h-10 w-10 items-center justify-center bg-primary/10">
                 <GraduationCap className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -59,8 +59,8 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
             {user ? (
               <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 rounded-full px-2.5">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Button variant="ghost" className="flex items-center gap-2 px-2.5">
+                    <div className="neo-icon w-8 h-8 bg-primary/20 flex items-center justify-center">
                       <User className="w-4 h-4 text-primary" />
                     </div>
                     <span className="hidden md:block text-sm max-w-[140px] truncate">
@@ -75,7 +75,7 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
                   <div className="flex flex-col h-full">
                     <div className="px-4 py-5 border-b border-border">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <div className="neo-icon w-8 h-8 bg-primary/10 flex items-center justify-center shrink-0">
                           <User className="w-3.5 h-3.5 text-primary" />
                         </div>
                         <div className="min-w-0">
@@ -91,7 +91,7 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
                       <SheetClose asChild>
                         <Link
                           to="/profile"
-                          className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-accent transition-colors"
+                          className="neo-button-shape flex items-center gap-2.5 px-3 py-2 hover:bg-accent transition-colors"
                         >
                           <User className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm text-foreground">Profil</span>
@@ -101,7 +101,7 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
                       <SheetClose asChild>
                         <Link
                           to="/upload"
-                          className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-accent transition-colors"
+                          className="neo-button-shape flex items-center gap-2.5 px-3 py-2 hover:bg-accent transition-colors"
                         >
                           <Upload className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm text-foreground">Téléverser</span>
@@ -112,7 +112,7 @@ export const Navbar = ({ children }: { children?: React.ReactNode }) => {
                     <div className="px-2 py-2 border-t border-border">
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-destructive/10 transition-colors w-full text-left"
+                        className="neo-button-shape flex items-center gap-2.5 px-3 py-2 hover:bg-destructive/10 transition-colors w-full text-left"
                       >
                         <LogOut className="h-4 w-4 text-destructive" />
                         <span className="text-sm text-destructive">Déconnexion</span>

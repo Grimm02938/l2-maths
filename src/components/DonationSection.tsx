@@ -216,7 +216,30 @@ const StripeForm: React.FC<StripeFormProps> = ({
   );
 };
 
-const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
+const CryptoForm: React.FC<PayPalFormProps> = ({ amount }) => {
+  return (
+    <div className="space-y-4">
+      <div className="p-4 border border-border rounded-lg bg-background/70 text-center">
+        <p className="text-sm text-muted-foreground mb-3">
+          Pour un don en crypto, veuillez nous contacter à :
+        </p>
+        <p className="text-primary font-semibold break-all">contact@l2-maths.fr</p>
+        <p className="text-xs text-muted-foreground mt-3">
+          Montant demandé: <span className="font-semibold">{amount.toFixed(2)}€</span>
+        </p>
+      </div>
+      <p className="text-xs text-muted-foreground text-center leading-relaxed">
+        Votre don aide a maintenir les ressources, publier de nouveaux contenus et ameliorer le site.
+      </p>
+    </div>
+  );
+};
+
+interface PayPalFormProps {
+  amount: number;
+}
+
+const PayPalForm: React.FC<PayPalFormProps> = ({ amount }) => {
   const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || '';
 
   if (!paypalClientId) {
@@ -229,17 +252,6 @@ const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-3">
-        <div>
-          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Nom</label>
-          <Input type="text" value={name} readOnly className="bg-background/70 border-border/80" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/90 mb-1 block">Email</label>
-          <Input type="email" value={email} readOnly className="bg-background/70 border-border/80" />
-        </div>
-      </div>
-
       <PayPalScriptProvider
         options={{
           clientId: paypalClientId,
@@ -249,7 +261,7 @@ const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
       >
         <PayPalButtons
           style={{ layout: 'vertical', shape: 'rect', label: 'paypal', color: 'gold' }}
-          forceReRender={[amount, email, name]}
+          forceReRender={[amount]}
           createOrder={(_, actions) => {
             return actions.order.create({
               purchase_units: [
@@ -261,10 +273,6 @@ const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
                   description: 'Don pour L2 Maths Archive',
                 },
               ],
-              payer: {
-                name: { given_name: name || 'Donateur' },
-                email_address: email || undefined,
-              },
             });
           }}
           onApprove={async (_, actions) => {
@@ -276,6 +284,10 @@ const PayPalForm: React.FC<DonationFormProps> = ({ amount, email, name }) => {
           }}
         />
       </PayPalScriptProvider>
+
+      <p className="text-xs text-muted-foreground text-center leading-relaxed">
+        Votre don aide a maintenir les ressources, publier de nouveaux contenus et ameliorer le site.
+      </p>
     </div>
   );
 };
@@ -352,7 +364,10 @@ export const DonationSection: React.FC = () => {
                     placeholder="Montant en €"
                     value={customAmount}
                     onChange={handleCustomAmountChange}
-                    className="flex-1 bg-background border-border focus-visible:ring-ring/50"
+                    className="flex-1 bg-background border-border focus-visible:ring-ring/50 cursor-pointer"
+                    style={{
+                      scrollbarWidth: 'thin',
+                    }}
                   />
                   <span className="text-sm font-medium text-muted-foreground">€</span>
                 </div>
@@ -383,18 +398,22 @@ export const DonationSection: React.FC = () => {
               </div>
 
               {paymentMethod === 'stripe' ? (
-                <Elements stripe={stripePromise}>
-                  <StripeForm
-                    amount={amount}
-                    email={email}
-                    name={name}
-                    setEmail={setEmail}
-                    setName={setName}
-                    onSuccess={() => setIsExpanded(false)}
-                  />
-                </Elements>
+                <div key="stripe-form">
+                  <Elements stripe={stripePromise}>
+                    <StripeForm
+                      amount={amount}
+                      email={email}
+                      name={name}
+                      setEmail={setEmail}
+                      setName={setName}
+                      onSuccess={() => setIsExpanded(false)}
+                    />
+                  </Elements>
+                </div>
               ) : (
-                <PayPalForm amount={amount} email={email} name={name} />
+                <div key="paypal-form">
+                  <PayPalForm amount={amount} />
+                </div>
               )}
             </div>
           </div>

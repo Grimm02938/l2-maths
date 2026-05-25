@@ -45,6 +45,7 @@ exports.notifyoncontact = (0, firestore_1.onDocumentCreated)({ document: "contac
 // Stripe Secret Key
 const stripeSecretKey = (0, params_1.defineSecret)("STRIPE_SECRET_KEY");
 exports.createDonationIntent = v2_1.https.onRequest({ region: "europe-west1", cors: true, secrets: [stripeSecretKey] }, async (request, response) => {
+    var _a;
     logger.log("Received request:", {
         method: request.method,
         headers: request.headers,
@@ -70,10 +71,15 @@ exports.createDonationIntent = v2_1.https.onRequest({ region: "europe-west1", co
             response.status(400).json({ error: "Email et nom requis" });
             return;
         }
-        const secretKey = stripeSecretKey.value();
+        const secretKey = (_a = stripeSecretKey.value()) === null || _a === void 0 ? void 0 : _a.trim();
         if (!secretKey) {
             logger.error("Clé Stripe secrète manquante");
             response.status(500).json({ error: "Stripe key not configured" });
+            return;
+        }
+        if (!secretKey.startsWith("sk_")) {
+            logger.error("Format de clé Stripe invalide", { prefix: secretKey.slice(0, 4), length: secretKey.length });
+            response.status(500).json({ error: "Stripe key format invalid" });
             return;
         }
         logger.log("Initializing Stripe with secret key");

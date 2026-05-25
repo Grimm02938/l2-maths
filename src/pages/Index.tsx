@@ -33,10 +33,10 @@ const Index = () => {
       </header>
 
       <div className="flex justify-center mb-8">
-        <div className="semester-switch-3d bg-card p-1 rounded-full flex items-center space-x-1">
+        <div className="semester-switch-3d neo-panel bg-card p-1 flex items-center space-x-1">
           <button
             onClick={() => handleSemesterChange('s1')}
-            className={`semester-tab-3d px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`semester-tab-3d neo-button-shape px-6 py-2 text-sm font-semibold transition-all duration-300 ${
               semester === 's1'
                 ? 'semester-tab-3d-active bg-background/80 text-foreground shadow-md'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -46,7 +46,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => handleSemesterChange('s2')}
-            className={`semester-tab-3d px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`semester-tab-3d neo-button-shape px-6 py-2 text-sm font-semibold transition-all duration-300 ${
               semester === 's2'
                 ? 'semester-tab-3d-active bg-background/80 text-foreground shadow-md'
                 : 'text-muted-foreground hover:text-foreground/80'

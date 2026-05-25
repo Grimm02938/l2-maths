@@ -1,44 +1,26 @@
-import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { useRef, useState } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { storage, db } from '@/lib/firebase';
-import { Input } from '@/components/ui/input';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { FileUp } from 'lucide-react';
+import { db, storage } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const formSchema = z.object({
-  title: z.string().min(3, 'Le titre doit contenir au moins 3 caractères'),
-  description: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
-  tags: z.string(),
-  file: z.instanceof(FileList).refine(files => files?.length === 1, 'Un fichier est requis'),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 const UploadForm = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    const file = data.file[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     setIsUploading(true);
+    setUploadProgress(0);
+
+    const title = file.name.replace(/\.[^/.]+$/, '');
     const storageRef = ref(storage, `documents/${Date.now()}_${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -51,70 +33,71 @@ const UploadForm = () => {
       (error) => {
         console.error('Upload error:', error);
         setIsUploading(false);
-        toast({ title: 'Erreur', description: "Échec de l'upload.", variant: 'destructive' });
+        setUploadProgress(null);
+        toast({ title: 'Erreur', description: "Échec de l'importation.", variant: 'destructive' });
       },
       async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        const tagsArray = data.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
-        
-        await addDoc(collection(db, 'documents'), {
-          title: data.title,
-          description: data.description,
-          tags: tagsArray,
-          url: downloadURL,
-          fileName: file.name,
-          fileType: file.type,
-          fileSize: file.size,
-          createdAt: serverTimestamp(),
-        });
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-        setIsUploading(false);
-        setUploadProgress(null);
-        reset();
-        toast({ title: 'Succès', description: 'Le fichier a été uploadé.' });
-      }
+          await addDoc(collection(db, 'documents'), {
+            title,
+            description: '',
+            tags: [],
+            url: downloadURL,
+            fileName: file.name,
+            fileType: file.type,
+            fileSize: file.size,
+            createdAt: serverTimestamp(),
+          });
+
+          if (inputRef.current) inputRef.current.value = '';
+          toast({ title: 'Document importé', description: file.name });
+        } catch (error) {
+          console.error('Upload finalization error:', error);
+          toast({
+            title: 'Erreur',
+            description: "Le fichier est monté, mais l'enregistrement a échoué.",
+            variant: 'destructive',
+          });
+        } finally {
+          setIsUploading(false);
+          setUploadProgress(null);
+        }
+      },
     );
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto border-dashed border-primary/50">
-      <CardHeader>
-        <CardTitle className="text-center text-xl">Uploader un nouveau document</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <Input placeholder="Titre du document" {...register('title')} />
-            {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
-          </div>
+    <div className="space-y-3">
+      <input
+        ref={inputRef}
+        type="file"
+        className="hidden"
+        onChange={handleFileChange}
+        disabled={isUploading}
+      />
 
-          <div className="space-y-2">
-            <Textarea placeholder="Description..." {...register('description')} />
-            {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
-          </div>
+      <Button
+        type="button"
+        variant="outline"
+        disabled={isUploading}
+        onClick={() => inputRef.current?.click()}
+        className="neo-button-shape h-11 w-full justify-center"
+      >
+        <FileUp className="mr-2 h-4 w-4" />
+        {isUploading ? 'Importation...' : 'Importer un document'}
+      </Button>
 
-          <div className="space-y-2">
-            <Input placeholder="Tags (séparés par des virgules)" {...register('tags')} />
-          </div>
-
-          <div className="space-y-2">
-            <Input type="file" {...register('file')} />
-            {errors.file && <p className="text-sm text-destructive">{errors.file.message}</p>}
-          </div>
-
-          {isUploading && (
-            <div className="space-y-2">
-              <Progress value={uploadProgress} />
-              <p className="text-sm text-center text-muted-foreground">{Math.round(uploadProgress || 0)}%</p>
-            </div>
-          )}
-
-          <Button type="submit" disabled={isUploading} className="w-full">
-            {isUploading ? 'Upload en cours...' : 'Uploader'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      {isUploading && (
+        <div className="space-y-2">
+          <Progress value={uploadProgress || 0} />
+          <p className="text-center text-xs text-muted-foreground">
+            {Math.round(uploadProgress || 0)}%
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
