@@ -9,7 +9,6 @@ import BlogPage from '@/pages/Blog';
 import { Navbar } from '@/components/Navbar';
 import LoginModal from '@/components/LoginModal';
 import { Toaster } from '@/components/ui/sonner';
-import { DonationSection } from '@/components/DonationSection';
 
 const AppContent = () => {
   const location = useLocation();
@@ -23,7 +22,7 @@ const AppContent = () => {
       <Navbar />
       <LoginModal />
       <Toaster />
-      <main className="container mx-auto px-4 pb-8 flex-1">
+      <main className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6 lg:px-8 flex-1">
         <div key={location.pathname} className="page-transition-in">
           <Routes location={location}>
             <Route path="/" element={<Index />} />
@@ -35,7 +34,6 @@ const AppContent = () => {
           </Routes>
         </div>
       </main>
-      {/* <DonationSection /> */}
     </div>
   );
 };
