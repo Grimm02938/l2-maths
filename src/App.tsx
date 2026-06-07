@@ -18,11 +18,11 @@ const AppContent = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="archive-shell min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <LoginModal />
       <Toaster />
-      <main className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6 lg:px-8 flex-1">
+      <main className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6 lg:px-8 flex-1">
         <div key={location.pathname} className="page-transition-in">
           <Routes location={location}>
             <Route path="/" element={<Index />} />
