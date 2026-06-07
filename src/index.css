@@ -1,92 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 220 13% 13%;
-    --foreground: 0 0% 95%;
- 
-    --card: 220 13% 18%;
-    --card-foreground: 0 0% 95%;
- 
-    --popover: 220 13% 13%;
-    --popover-foreground: 0 0% 95%;
- 
-    --primary: 0 0% 95%;
-    --primary-foreground: 220 13% 10%;
- 
-    --secondary: 220 10% 22%;
-    --secondary-foreground: 0 0% 90%;
- 
-    --muted: 220 10% 22%;
-    --muted-foreground: 220 8% 55%;
- 
-    --accent: 220 10% 22%;
-    --accent-foreground: 0 0% 95%;
- 
+    --background: 226 39% 6%;
+    --foreground: 216 40% 96%;
+
+    --card: 224 35% 10%;
+    --card-foreground: 216 40% 96%;
+
+    --popover: 224 35% 8%;
+    --popover-foreground: 216 40% 96%;
+
+    --primary: 186 100% 66%;
+    --primary-foreground: 225 48% 6%;
+
+    --secondary: 224 28% 15%;
+    --secondary-foreground: 216 35% 91%;
+
+    --muted: 224 24% 14%;
+    --muted-foreground: 220 13% 67%;
+
+    --accent: 258 78% 66%;
+    --accent-foreground: 216 40% 96%;
+
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 10% 22%;
-    --input: 220 10% 22%;
-    --ring: 220 10% 70%;
- 
-    --radius: 0.5rem;
+    --border: 221 24% 22%;
+    --input: 221 24% 22%;
+    --ring: 186 100% 66%;
+
+    --radius: 1.1rem;
   }
- 
+
   .dark {
-    --background: 220 13% 13%;
-    --foreground: 0 0% 95%;
- 
-    --card: 220 13% 18%;
-    --card-foreground: 0 0% 95%;
- 
-    --popover: 220 13% 13%;
-    --popover-foreground: 0 0% 95%;
- 
-    --primary: 0 0% 95%;
-    --primary-foreground: 220 13% 10%;
- 
-    --secondary: 220 10% 22%;
-    --secondary-foreground: 0 0% 90%;
- 
-    --muted: 220 10% 22%;
-    --muted-foreground: 220 8% 55%;
- 
-    --accent: 220 10% 22%;
-    --accent-foreground: 0 0% 95%;
- 
+    --background: 226 39% 6%;
+    --foreground: 216 40% 96%;
+    --card: 224 35% 10%;
+    --card-foreground: 216 40% 96%;
+    --popover: 224 35% 8%;
+    --popover-foreground: 216 40% 96%;
+    --primary: 186 100% 66%;
+    --primary-foreground: 225 48% 6%;
+    --secondary: 224 28% 15%;
+    --secondary-foreground: 216 35% 91%;
+    --muted: 224 24% 14%;
+    --muted-foreground: 220 13% 67%;
+    --accent: 258 78% 66%;
+    --accent-foreground: 216 40% 96%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 220 10% 22%;
-    --input: 220 10% 22%;
-    --ring: 220 10% 70%;
+    --border: 221 24% 22%;
+    --input: 221 24% 22%;
+    --ring: 186 100% 66%;
   }
-}
- 
-@layer base {
+
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01" on, "cv01" on;
   }
 }
 
 @layer utilities {
+  .archive-shell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .archive-shell::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(34, 211, 238, 0.16), transparent 26rem),
+      radial-gradient(circle at 88% 10%, rgba(168, 85, 247, 0.14), transparent 24rem),
+      radial-gradient(circle at 52% 78%, rgba(16, 185, 129, 0.08), transparent 30rem),
+      linear-gradient(135deg, hsl(var(--background)), #070814 42%, #0b1020);
+  }
+
+  .archive-shell::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.3;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+    background-size: 54px 54px;
+    mask-image: radial-gradient(circle at 50% 25%, black, transparent 70%);
+  }
+
   @keyframes page-fade-slide-in {
-    from {
-      opacity: 0;
-      transform: translateY(18px) scale(0.995);
-      filter: blur(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
+    from { opacity: 0; transform: translateY(18px) scale(0.995); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
   .page-transition-in {
@@ -94,240 +109,97 @@
     will-change: transform, opacity, filter;
   }
 
-  @keyframes semester-catalogue-in-from-right {
-    from {
-      opacity: 0;
-      filter: blur(3px);
-      transform: translateX(70px) rotateY(-13deg) rotateX(3deg) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
-    }
+  @keyframes archive-card-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); filter: blur(5px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
-  @keyframes semester-catalogue-in-from-left {
-    from {
-      opacity: 0;
-      filter: blur(3px);
-      transform: translateX(-70px) rotateY(13deg) rotateX(3deg) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
-    }
+  .archive-card-in {
+    animation: archive-card-in 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
   }
 
-  .semester-catalogue-flow {
-    perspective: 1300px;
-    transform-style: preserve-3d;
+  .glass-panel {
+    border: 1px solid hsl(var(--border) / 0.72);
+    background: linear-gradient(135deg, hsl(var(--card) / 0.84), hsl(var(--card) / 0.58));
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
   }
 
-  .semester-card-in-from-right {
-    animation: semester-catalogue-in-from-right 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
-  }
-
-  .semester-card-in-from-left {
-    animation: semester-catalogue-in-from-left 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
-  }
-
-  .catalogue-3d-card {
-    transform-style: preserve-3d;
-    will-change: transform, box-shadow;
-    transition: transform 280ms ease, box-shadow 280ms ease, filter 280ms ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .catalogue-3d-card:hover {
-      transform: perspective(1100px) rotateX(5deg) rotateY(-6deg) translateY(-6px) scale(1.01);
-    }
-  }
-
-  .catalogue-3d-layer {
-    transform: translateZ(26px);
-  }
-
-  .semester-switch-3d {
-    perspective: 900px;
-    transform-style: preserve-3d;
-  }
-
-  .semester-tab-3d {
-    transform-style: preserve-3d;
-    will-change: transform, box-shadow;
-    transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .semester-tab-3d:hover {
-      transform: translateZ(8px) rotateX(8deg);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-    }
-  }
-
-  .semester-tab-3d-active {
-    transform: translateZ(12px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-  }
-
-  .neo-panel {
+  .archive-card {
     position: relative;
-    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    overflow: hidden;
+    border: 1px solid hsl(var(--border) / 0.72);
+    background: linear-gradient(150deg, hsl(var(--card) / 0.96), hsl(var(--secondary) / 0.62));
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
   }
 
-  .neo-panel::before {
+  .archive-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    opacity: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 0%), hsl(var(--primary) / 0.16), transparent 18rem);
+    transition: opacity 220ms ease;
+    pointer-events: none;
+  }
+
+  .archive-card:hover {
+    transform: translateY(-5px);
+    border-color: hsl(var(--primary) / 0.42);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36), 0 0 34px hsl(var(--primary) / 0.08);
+  }
+
+  .archive-card:hover::before {
+    opacity: 1;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid hsl(var(--border) / 0.74);
+    background: hsl(var(--background) / 0.48);
+    padding: 0.42rem 0.72rem;
+    font-size: 0.72rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanline::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    border: 1px solid hsl(var(--border) / 0.72);
-    clip-path: inherit;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.045), transparent);
+    transform: translateY(-100%);
+    animation: scanline 5s ease-in-out infinite;
   }
 
-  .neo-panel-interactive {
-    transition: transform 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  @keyframes scanline {
+    0%, 45% { transform: translateY(-100%); }
+    62%, 100% { transform: translateY(100%); }
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .neo-panel-interactive:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
-    }
-  }
-
-  .neo-icon {
-    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-  }
-
-  .neo-button-shape {
-    clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
-  }
+  .blog-typewriter-wrap { position: relative; display: inline-flex; align-items: flex-end; gap: 0.25rem; max-width: 100%; }
+  .blog-typewriter { display: inline-block; width: 52ch; max-width: 0; overflow: hidden; white-space: nowrap; animation: blog-type 3.4s steps(52, end) 260ms forwards; }
+  .blog-cursor { width: 0.7ch; height: 1.05em; border-radius: 2px; background: hsl(var(--primary)); transform: translateY(-0.05em); animation: blog-caret-blink 1s step-end infinite; }
+  @keyframes blog-type { from { max-width: 0; } to { max-width: 52ch; } }
+  @keyframes blog-caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-transition-in,
-  .semester-card-in-from-right,
-  .semester-card-in-from-left,
-  .catalogue-3d-card,
-  .semester-tab-3d,
-  .semester-tab-3d-active {
+  .archive-card-in,
+  .blog-typewriter,
+  .blog-cursor,
+  .scanline::after {
     animation: none;
     transition: none;
-    transform: none;
   }
-
-  .catalogue-3d-layer {
-    transform: none;
-  }
-}
-
-.blog-typewriter-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 0.25rem;
-  max-width: 100%;
-}
-
-.blog-typewriter {
-  display: inline-block;
-  width: 52ch;
-  max-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: blog-type 3.4s steps(52, end) 260ms forwards;
-}
-
-.blog-cursor {
-  width: 0.7ch;
-  height: 1.05em;
-  border-radius: 2px;
-  background: hsl(var(--foreground));
-  transform: translateY(-0.05em);
-  animation: blog-caret-blink 1s step-end infinite, blog-caret-drift 620ms ease-in-out infinite;
-}
-
-@keyframes blog-type {
-  from {
-    max-width: 0;
-  }
-  to {
-    max-width: 52ch;
-  }
-}
-
-@keyframes blog-caret-blink {
-  0%,
-  48% {
-    opacity: 1;
-  }
-  52%,
-  100% {
-    opacity: 0.1;
-  }
-}
-
-@keyframes blog-caret-drift {
-  0% {
-    transform: translateY(-0.05em) translateX(0);
-  }
-  50% {
-    transform: translateY(-0.02em) translateX(1px);
-  }
-  100% {
-    transform: translateY(-0.05em) translateX(0);
-  }
-}
-
-@media (max-width: 640px) {
-  .blog-typewriter {
-    white-space: normal;
-    width: 100%;
-    max-width: 100%;
-    animation: none;
-  }
-
-  .blog-cursor {
-    animation: blog-caret-blink 1s step-end infinite;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .blog-typewriter {
-    animation: none;
-    width: 100%;
-    max-width: 100%;
-    white-space: normal;
-  }
-
-  .blog-cursor {
-    animation: none;
-    opacity: 0.65;
-  }
-}
-
-/* Donation amount input styling */
-input[type="number"] {
-  cursor: pointer;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 200ms ease;
-}
-
-input[type="number"]:hover::-webkit-outer-spin-button,
-input[type="number"]:hover::-webkit-inner-spin-button {
-  opacity: 1;
-}
-
-/* Firefox number input spinner styling */
-input[type="number"] {
-  font-variant-numeric: tabular-nums;
 }
