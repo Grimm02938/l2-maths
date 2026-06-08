@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModal } from "../hooks/use-login-modal";
@@ -15,11 +15,22 @@ interface ThemeCardProps {
   chapters?: { id: string; title: string; available: boolean }[];
 }
 
-export function ThemeCard({ id, title, description, color, border = 'border-border/20', professor, icon, chapters = [] }: ThemeCardProps) {
+const subjectAccents: Record<string, { text: string; bg: string; border: string }> = {
+  analyse: { text: "text-[hsl(var(--analysis))]", bg: "bg-[hsl(var(--analysis))]", border: "border-[hsl(var(--analysis)/0.45)]" },
+  algebre: { text: "text-[hsl(var(--algebra))]", bg: "bg-[hsl(var(--algebra))]", border: "border-[hsl(var(--algebra)/0.45)]" },
+  topologie: { text: "text-[hsl(var(--topology))]", bg: "bg-[hsl(var(--topology))]", border: "border-[hsl(var(--topology)/0.45)]" },
+  arithmetique: { text: "text-[hsl(var(--arithmetic))]", bg: "bg-[hsl(var(--arithmetic))]", border: "border-[hsl(var(--arithmetic)/0.45)]" },
+  proba: { text: "text-[hsl(var(--probability))]", bg: "bg-[hsl(var(--probability))]", border: "border-[hsl(var(--probability)/0.45)]" },
+  "maths-renfo": { text: "text-[hsl(var(--renfo))]", bg: "bg-[hsl(var(--renfo))]", border: "border-[hsl(var(--renfo)/0.45)]" },
+  "devoirs-libres": { text: "text-[hsl(var(--annales))]", bg: "bg-[hsl(var(--annales))]", border: "border-[hsl(var(--annales)/0.45)]" },
+};
+
+export function ThemeCard({ id, title, description, color, border = 'border-border', professor, icon, chapters = [] }: ThemeCardProps) {
   const IconComponent = iconMap[icon];
   const { user } = useAuth();
   const { open: openLoginModal } = useLoginModal();
   const navigate = useNavigate();
+  const accent = subjectAccents[id] ?? { text: color, bg: "bg-primary", border };
 
   const handleClick = () => {
     if (!user) {
@@ -32,44 +43,60 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
   if (!IconComponent) return null;
 
   const availableCount = chapters.filter(c => c.available).length;
+  const totalCount = chapters.length;
+  const progress = totalCount > 0 ? Math.round((availableCount / totalCount) * 100) : 0;
 
   return (
-    <div
+    <button
+      type="button"
       onClick={handleClick}
-      className={`
-        neo-panel neo-panel-interactive group relative flex flex-col h-full
-        bg-card hover:bg-card/80
-        border border-border/30 hover:border-border/60
-        cursor-pointer overflow-hidden
-      `}
+      className={`archive-card group grid min-h-[220px] w-full grid-cols-[0.8rem_1fr] rounded-[1.35rem] text-left ${accent.border}`}
     >
-      {/* Barre colorée en haut uniquement */}
-      <div className={`h-0.5 w-full ${color} opacity-70`} style={{ background: 'currentColor' }} />
+      <div className={`subject-marker m-5 mr-0 ${accent.bg}`} aria-hidden="true" />
 
-      <div className="flex flex-col flex-1 p-5">
-        {/* Icône + Titre */}
-        <div className="flex items-start gap-3 flex-1">
-          <div className={`neo-icon mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-border/40 bg-background/45 ${color}`}>
-              <IconComponent className="h-5 w-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-base font-semibold text-foreground leading-snug">
+      <div className="flex min-w-0 flex-col p-5 pl-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="font-ui text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Module</p>
+            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary">
               {title}
             </h3>
-            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              {description}
-            </p>
+          </div>
+
+          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-background/50 ${accent.text} ${accent.border}`}>
+            <IconComponent className="h-4 w-4" />
           </div>
         </div>
 
-        {/* Compteur chapitres */}
-        <div className="mt-4 pt-3 border-t border-border/20 flex items-center gap-1.5">
-          <span className={`text-xs font-medium ${color}`}>{availableCount}</span>
-          <span className="text-xs text-muted-foreground">
-            {availableCount === 1 ? 'chapitre disponible' : 'chapitres disponibles'}
-          </span>
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+          {description}
+        </p>
+        {professor && <p className="mt-3 font-ui text-xs text-muted-foreground">Professeur : {professor}</p>}
+
+        <div className="mt-auto pt-5">
+          <div className="mb-2 flex items-center justify-between font-ui text-xs text-muted-foreground">
+            <span>{availableCount}/{totalCount || 0} chapitres ouverts</span>
+            <span className="inline-flex items-center gap-1.5">
+              {user ? <CheckCircle2 className="h-3.5 w-3.5 text-accent" /> : <Lock className="h-3.5 w-3.5" />}
+              {user ? 'accessible' : 'connexion'}
+            </span>
+          </div>
+
+          <div className="h-px w-full bg-border">
+            <div
+              className={`h-px ${accent.bg} transition-all duration-500`}
+              style={{ width: `${totalCount === 0 ? 6 : progress}%` }}
+            />
+          </div>
+
+          <div className="mt-4 flex items-center justify-between font-ui text-xs font-bold uppercase tracking-[0.16em] text-foreground">
+            <span>{progress}% indexé</span>
+            <span className="inline-flex items-center gap-1.5 transition-colors group-hover:text-primary">
+              Ouvrir <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
