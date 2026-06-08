@@ -92,7 +92,7 @@ export const subjects: Subject[] = [
     code: 'L2-AN-S2',
     title: 'Analyse S2',
     semester: 'S2',
-    professor: 'Professeur à renseigner',
+    professor: 'Pascal Gamblin',
     status: 'chantier',
     description: 'Suites et séries de fonctions, convergence, intégrales et outils d’analyse du semestre 4.',
     chapters: commonChapters('Analyse S2'),
