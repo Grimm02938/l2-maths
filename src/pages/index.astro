@@ -19,36 +19,34 @@ const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((c
       </div>
 
       <section class="section" id="licence-2">
-        <h2>Licence 2 — 2025/2026</h2>
-        <table class="archive-table">
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Matière</th>
-              <th>État</th>
-              <th>Contenu</th>
-            </tr>
-          </thead>
-          <tbody>
-            {subjects.map((subject) => {
-              const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
-              return (
-                <tr>
-                  <td>{subject.code}</td>
-                  <td>
-                    <a href={`/l2/${subject.slug}/`}><b>{subject.title}</b></a><br />
-                    <span class="small">{subject.description}</span>
-                  </td>
-                  <td>
-                    <span class="tag">{subject.semester}</span>
-                    <span class="tag">{subject.status}</span>
-                  </td>
-                  <td>{subject.chapters.length} chapitres · {resources} ressources</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div class="section-line-heading">
+          <h2>Licence 2 — 2025/2026</h2>
+          <p class="small">Fiches de dossiers : moins tableau Excel, plus bureau de prof.</p>
+        </div>
+
+        <div class="subject-cabinet">
+          {subjects.map((subject, index) => {
+            const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
+            const openChapters = subject.chapters.filter((chapter) => chapter.status === 'ouvert').length;
+            return (
+              <a class="subject-folder" href={`/l2/${subject.slug}/`}>
+                <span class="folder-index">{String(index + 1).padStart(2, '0')}</span>
+                <span class="folder-code">{subject.code}</span>
+                <span class="folder-body">
+                  <span class="folder-kicker">{subject.semester} · {subject.status}</span>
+                  <span class="folder-title">{subject.title}</span>
+                  <span class="folder-desc">{subject.description}</span>
+                  <span class="folder-meta">
+                    <span>{subject.chapters.length} chapitres</span>
+                    <span>{resources} ressources</span>
+                    <span>{openChapters} ouverts</span>
+                  </span>
+                </span>
+                <span class="folder-arrow">ouvrir →</span>
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       <section class="section">
