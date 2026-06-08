@@ -33,37 +33,23 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
         </div>
 
         <div class="subject-register semester-panel s1-panel" aria-label="Registre des matières du semestre 1">
-          {s1Subjects.map((subject) => {
-            const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
-            return (
-              <a class="subject-entry" href={`/l2/${subject.slug}/`}>
-                <span class="entry-main">
-                  <span class="entry-title">{subject.title}</span>
-                  <span class="entry-prof">Prof. {subject.professor}</span>
-                  <span class="entry-desc">{subject.description}</span>
-                  <span class="entry-note">{subject.status} · {subject.chapters.length} chapitres · {resources} ressources</span>
-                </span>
-                <span class="entry-open" aria-hidden="true"><span></span><b>→</b></span>
-              </a>
-            );
-          })}
+          {s1Subjects.map((subject) => (
+            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+              <span class="entry-title">{subject.title}</span>
+              <span class="entry-prof">Prof. {subject.professor}</span>
+              <span class="entry-desc">{subject.description}</span>
+            </a>
+          ))}
         </div>
 
         <div class="subject-register semester-panel s2-panel" aria-label="Registre des matières du semestre 2">
-          {s2Subjects.map((subject) => {
-            const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
-            return (
-              <a class="subject-entry" href={`/l2/${subject.slug}/`}>
-                <span class="entry-main">
-                  <span class="entry-title">{subject.title}</span>
-                  <span class="entry-prof">Prof. {subject.professor}</span>
-                  <span class="entry-desc">{subject.description}</span>
-                  <span class="entry-note">{subject.status} · {subject.chapters.length} chapitres · {resources} ressources</span>
-                </span>
-                <span class="entry-open" aria-hidden="true"><span></span><b>→</b></span>
-              </a>
-            );
-          })}
+          {s2Subjects.map((subject) => (
+            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+              <span class="entry-title">{subject.title}</span>
+              <span class="entry-prof">Prof. {subject.professor}</span>
+              <span class="entry-desc">{subject.description}</span>
+            </a>
+          ))}
         </div>
       </section>
 
