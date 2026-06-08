@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import { subjects, logbook, externalSeeds } from '../data/archive';
+
+const totalChapters = subjects.flatMap((subject) => subject.chapters).length;
+const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((chapter) => chapter.resources)).length;
+---
+<Base title="Archives mathématiques — Adame Abdelmoula">
+  <main class="main-grid">
+    <section>
+      <p class="small">version expérimentale / Astro / HTML sobre</p>
+      <h1 class="main-title">Archives mathématiques personnelles.</h1>
+      <p class="lede">
+        Une page de travail simple, faite pour retrouver vite les cours, TD, annales et corrections. Pas un portfolio. Pas un dashboard. Une table d'archives qui doit rester lisible dans dix ans.
+      </p>
+
+      <div class="notice">
+        <b>Principe :</b> chaque matière a une page. Chaque chapitre indique ce qui existe, ce qui manque, et ce qui doit être repris. Les liens PDF sont directs quand le fichier existe.
+      </div>
+
+      <section class="section" id="licence-2">
+        <h2>Licence 2 — 2025/2026</h2>
+        <table class="archive-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Matière</th>
+              <th>État</th>
+              <th>Contenu</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subjects.map((subject) => {
+              const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
+              return (
+                <tr>
+                  <td>{subject.code}</td>
+                  <td>
+                    <a href={`/l2/${subject.slug}/`}><b>{subject.title}</b></a><br />
+                    <span class="small">{subject.description}</span>
+                  </td>
+                  <td>
+                    <span class="tag">{subject.semester}</span>
+                    <span class="tag">{subject.status}</span>
+                  </td>
+                  <td>{subject.chapters.length} chapitres · {resources} ressources</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Carnet récent</h2>
+        <ul class="link-list">
+          {logbook.map((entry) => (
+            <li>
+              <b>{entry.date}</b> — <a href="/carnet/">{entry.title}</a><br />
+              <span class="small">{entry.text}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Arborescence prévue</h2>
+        <pre class="directory">public/pdf/
+├── analyse/
+│   ├── cours.pdf
+│   ├── td.pdf
+│   └── corriges/
+├── algebre-lineaire/
+├── topologie/
+├── probabilites/
+└── annales/
+
+src/pages/
+├── index.astro
+├── l2/[slug].astro
+├── carnet/index.astro
+└── magistere/index.astro</pre>
+      </section>
+    </section>
+
+    <aside class="sidebar">
+      <div class="box">
+        <h2>État de l'archive</h2>
+        <ul class="compact-list">
+          <li>{subjects.length} matières</li>
+          <li>{totalChapters} chapitres</li>
+          <li>{totalResources} entrées de ressources</li>
+          <li>déploiement : Firebase Hosting</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>À faire</h2>
+        <ul class="compact-list">
+          <li>remplacer les faux liens par les vrais PDF</li>
+          <li>ajouter les corrigés personnels</li>
+          <li>classer les annales</li>
+          <li>rédiger les notes d'erreurs</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Inspirations structurelles</h2>
+        <ul class="compact-list">
+          {externalSeeds.map((seed) => (
+            <li><b>{seed.label}</b><br /><span class="small">{seed.text}</span></li>
+          ))}
+        </ul>
+      </div>
+    </aside>
+  </main>
+</Base>
