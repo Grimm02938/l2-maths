@@ -6,6 +6,68 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      {
+        "source": "/l2/analyse",
+        "destination": "/l2/analyse-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/analyse/**",
+        "destination": "/l2/analyse-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/algebre-lineaire",
+        "destination": "/l2/algebre-lineaire-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/algebre-lineaire/**",
+        "destination": "/l2/algebre-lineaire-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/topologie",
+        "destination": "/l2/topologie-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/topologie/**",
+        "destination": "/l2/topologie-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/arithmetique",
+        "destination": "/l2/arithmetique-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/arithmetique/**",
+        "destination": "/l2/arithmetique-s1/",
+        "type": 301
+      },
+      {
+        "source": "/l2/probabilites",
+        "destination": "/l2/probabilites-s2/",
+        "type": 301
+      },
+      {
+        "source": "/l2/probabilites/**",
+        "destination": "/l2/probabilites-s2/",
+        "type": 301
+      },
+      {
+        "source": "/l2/courbes-surfaces",
+        "destination": "/l2/courbes-surfaces-s2/",
+        "type": 301
+      },
+      {
+        "source": "/l2/courbes-surfaces/**",
+        "destination": "/l2/courbes-surfaces-s2/",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
