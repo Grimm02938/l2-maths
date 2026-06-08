@@ -21,28 +21,30 @@ const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((c
       <section class="section" id="licence-2">
         <div class="section-line-heading">
           <h2>Licence 2 — 2025/2026</h2>
-          <p class="small">Fiches de dossiers : moins tableau Excel, plus bureau de prof.</p>
+          <p class="small">Registre compact : spécial, mais pas décoratif.</p>
         </div>
 
-        <div class="subject-cabinet">
+        <div class="subject-register" aria-label="Registre des matières de licence 2">
           {subjects.map((subject, index) => {
             const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
             const openChapters = subject.chapters.filter((chapter) => chapter.status === 'ouvert').length;
             return (
-              <a class="subject-folder" href={`/l2/${subject.slug}/`}>
-                <span class="folder-index">{String(index + 1).padStart(2, '0')}</span>
-                <span class="folder-code">{subject.code}</span>
-                <span class="folder-body">
-                  <span class="folder-kicker">{subject.semester} · {subject.status}</span>
-                  <span class="folder-title">{subject.title}</span>
-                  <span class="folder-desc">{subject.description}</span>
-                  <span class="folder-meta">
-                    <span>{subject.chapters.length} chapitres</span>
-                    <span>{resources} ressources</span>
-                    <span>{openChapters} ouverts</span>
-                  </span>
+              <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+                <span class="entry-mark">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>{subject.code}</span>
                 </span>
-                <span class="folder-arrow">ouvrir →</span>
+                <span class="entry-main">
+                  <span class="entry-title">{subject.title}</span>
+                  <span class="entry-desc">{subject.description}</span>
+                </span>
+                <span class="entry-stats">
+                  <span>{subject.semester}</span>
+                  <span>{subject.status}</span>
+                  <span>{subject.chapters.length} ch. · {resources} ress.</span>
+                  <span>{openChapters} ouverts</span>
+                </span>
+                <span class="entry-open">→</span>
               </a>
             );
           })}
