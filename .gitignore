@@ -17,6 +17,10 @@ dist-ssr
 .env.local
 .env.production
 
+# Private local downloads
+private-ecampus/
+.ecampus-browser/
+
 # Firebase
 firebase-debug.log
 .firebase/

@@ -1,0 +1,115 @@
+---
+import Base from '../../layouts/Base.astro';
+import { logbook } from '../../data/archive';
+---
+<Base title="Carnet de travail — Archives mathématiques">
+  <main class="carnet-main">
+    <section class="carnet-header">
+      <h1>Carnet de travail.</h1>
+      <p>
+        Trace sobre des ajouts, corrections et décisions de classement. Cette page sert d'historique de travail : ce qui a été rangé, ce qui reste à vérifier, ce qui devra être repris plus tard.
+      </p>
+    </section>
+
+    <section class="carnet-section" aria-label="Entrées du carnet">
+      <h2>Journal des modifications</h2>
+
+      <div class="carnet-list">
+        {logbook.map((entry) => (
+          <article class="carnet-entry">
+            <time datetime={entry.date}>{entry.date}</time>
+            <div>
+              <h3>{entry.title}</h3>
+              <p>{entry.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .carnet-main {
+    max-width: 1180px;
+    margin: 0;
+    padding: 56px 32px 96px 96px;
+  }
+
+  .carnet-header {
+    max-width: 860px;
+    padding-bottom: 34px;
+    border-bottom: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-header h1 {
+    margin: 0;
+    font-size: clamp(3.2rem, 7vw, 6.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+  }
+
+  .carnet-header p {
+    max-width: 760px;
+    margin: 22px 0 0;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--text, #22180f);
+  }
+
+  .carnet-section {
+    margin-top: 46px;
+    max-width: 980px;
+  }
+
+  .carnet-section h2 {
+    margin: 0 0 20px;
+    font-size: 1.35rem;
+  }
+
+  .carnet-list {
+    border-top: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-entry {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 28px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-entry time {
+    font-family: var(--mono, monospace);
+    font-size: 0.88rem;
+    color: var(--muted, #725f4a);
+  }
+
+  .carnet-entry h3 {
+    margin: 0 0 8px;
+    font-size: 1.08rem;
+  }
+
+  .carnet-entry p {
+    margin: 0;
+    color: var(--muted, #725f4a);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .carnet-main {
+      padding-left: 32px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .carnet-main {
+      padding: 36px 18px 72px;
+    }
+
+    .carnet-entry {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>

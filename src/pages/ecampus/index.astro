@@ -1,0 +1,44 @@
+---
+import { ecampusDocuments } from '../../data/ecampus.generated';
+
+const grouped = ecampusDocuments.reduce((acc, doc) => {
+  acc[doc.subject] ??= [];
+  acc[doc.subject].push(doc);
+  return acc;
+}, {});
+const subjects = Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
+---
+
+<main class="ecampus-page">
+  <a href="/" class="back">← Retour</a>
+
+  <h1>Archive eCampus</h1>
+  <p class="intro">
+    Documents de L2 classés automatiquement : cours, TD, annales, corrigés et administratif.
+  </p>
+
+  {subjects.map(([subject, docs]) => (
+    <section class="subject">
+      <h2>{subject}</h2>
+
+      {['cours', 'td', 'annales', 'corriges', 'administratif', 'autres'].map((category) => {
+        const items = docs?.filter((doc) => doc.category === category) ?? [];
+        if (items.length === 0) return null;
+
+        return (
+          <div class="category">
+            <h3>{category}</h3>
+            <ul>
+              {items.map((doc) => (
+                <li>
+                  <a href={doc.href} target="_blank">{doc.title}</a>
+                  <span>{doc.kind}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </section>
+  ))}
+</main>

@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import { contenuFinalL2 } from '../../data/contenu-final-l2';
+
+const hiddenSections = new Set(contenuFinalL2.rules.hiddenSections);
+const displayOrder = contenuFinalL2.rules.displayOrder.filter(
+  (section) => !hiddenSections.has(section) && section !== 'À vérifier'
+);
+
+export function getStaticPaths() {
+  const hiddenSectionsForPaths = new Set(contenuFinalL2.rules.hiddenSections);
+
+  const visibleSubjects = new Set(
+    contenuFinalL2.documents
+      .filter((doc) => !doc.hidden && !hiddenSectionsForPaths.has(doc.section))
+      .map((doc) => doc.subject)
+  );
+
+  return Object.entries(contenuFinalL2.subjects)
+    .filter(([slug]) => visibleSubjects.has(slug))
+    .map(([slug, subject]) => ({
+      params: { slug },
+      props: {
+        subject: {
+          slug,
+          title: subject.title,
+          description: subject.subtitle,
+          semester: subject.semester,
+          sourceSlugs: [slug],
+        },
+      },
+    }));
+}
+
+const { subject } = Astro.props;
+
+const sourceSlugs = subject.sourceSlugs ?? [subject.slug];
+
+const subjectDocs = contenuFinalL2.documents.filter(
+  (doc) => sourceSlugs.includes(doc.subject) && !doc.hidden && !hiddenSections.has(doc.section)
+);
+
+const sections = displayOrder
+  .map((section) => ({
+    title: section,
+    docs: subjectDocs
+      .filter((doc) => doc.section === section)
+      .sort((a, b) => {
+        if (a.subjectOrder !== b.subjectOrder) return a.subjectOrder - b.subjectOrder;
+        return a.displayTitle.localeCompare(b.displayTitle, 'fr', { numeric: true });
+      }),
+  }))
+  .filter((section) => section.docs.length > 0);
+
+const sourceLabels = {
+  officiel_2025_2026: 'Officiel',
+  drive_etudiant: 'Drive',
+  archive: 'Archive',
+  unknown: 'Source inconnue',
+};
+---
+<Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
+  <main class="subject-main">
+    <header class="subject-header">
+      <h1>{subject.title}</h1>
+      <p class="lede subject-lede">{subject.description}</p>
+    </header>
+
+    <section class="subject-resources">
+      {sections.map((section, index) => (
+        <article class="resource-block">
+          <h2>{String(index + 1).padStart(2, '0')} — {section.title}</h2>
+          <div class="resource-grid">
+            {section.docs.map((doc) => (
+              <a href={doc.publicHref} target="_blank">
+                <b>{doc.displayTitle}</b><br />
+                <span>{sourceLabels[doc.sourceType] ?? doc.source}</span>
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</Base>
+
+<style>
+  .resource-grid a small,
+  .resource-grid a .source,
+  .resource-grid a .origin,
+  .resource-grid a .provenance,
+  .resource-grid a span:not(:first-child) {
+    display: none !important;
+  }
+
+  .resource-grid a {
+    min-height: 56px;
+    padding: 12px 14px;
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import { subjects, logbook } from '../data/archive';
+
+const s1Subjects = subjects.filter((subject) => subject.semester === 'S1' || subject.semester === 'Annuel');
+const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || subject.semester === 'Annuel');
+---
+<Base title="Archives mathématiques — Adame Abdelmoula">
+  <main class="main-grid">
+    <section>
+      <h1 class="main-title">Archives mathématiques personnelles.</h1>
+      <p class="lede">
+        Une archive de Licence 2 Mathématiques à Paris-Saclay, faite pour retrouver vite les cours, TD, annales et corrections. Une table de travail lisible, pensée pour garder une trace durable du semestre.
+      </p>
+
+      <div class="notice">
+        <b>Principe :</b> chaque matière a une page. Les documents sont classés par cours, TD, évaluations et corrigés, avec des liens directs vers les PDF quand le fichier existe.
+      </div>
+
+      <section class="section semester-switcher" id="licence-2">
+        <input type="radio" id="semestre-1" name="semestre" checked />
+        <input type="radio" id="semestre-2" name="semestre" />
+
+        <div class="section-line-heading">
+          <h2>Licence 2 Mathématiques — Paris-Saclay — 2025/2026</h2>
+          <div class="semester-control" aria-label="Choix du semestre">
+            <label for="semestre-1">Semestre 1</label>
+            <label for="semestre-2">Semestre 2</label>
+          </div>
+        </div>
+
+        <div class="subject-register semester-panel s1-panel" aria-label="Registre des matières du semestre 1">
+          {s1Subjects.map((subject) => (
+            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
+              <span class="entry-title">{subject.title}</span>
+              <span class="entry-prof">Prof. {subject.professor}</span>
+              <span class="entry-desc">{subject.description}</span>
+            </a>
+          ))}
+        </div>
+
+        <div class="subject-register semester-panel s2-panel" aria-label="Registre des matières du semestre 2">
+          {s2Subjects.map((subject) => (
+            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
+              <span class="entry-title">{subject.title}</span>
+              <span class="entry-prof">Prof. {subject.professor}</span>
+              <span class="entry-desc">{subject.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Carnet récent</h2>
+        <ul class="link-list">
+          {logbook.map((entry) => (
+            <li>
+              <b>{entry.date}</b> — <a href="/carnet/">{entry.title}</a><br />
+              <span class="small">{entry.text}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </section>
+
+    <aside class="sidebar">
+      <div class="box">
+        <h2>Inspirations structurelles</h2>
+        <ul class="compact-list">
+          <li><b>Sites d’enseignants</b></li>
+          <li><b>WebGirand</b><br /><span class="small">site d’Arnaud Girand</span></li>
+          <li><b>vb.webprepa.eu</b><br /><span class="small">site de Joël Sagayaradje</span></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Nota bene</h2>
+        <p class="small">
+          Remerciements à Joël Sagayaradje pour ses notes personnelles, amicalement partagées, et pour son site vb.webprepa.eu.
+        </p>
+      </div>
+    </aside>
+  </main>
+</Base>

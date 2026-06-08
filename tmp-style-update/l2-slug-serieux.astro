@@ -1,0 +1,257 @@
+---
+import Base from '../../layouts/Base.astro';
+import { contenuFinalL2 } from '../../data/contenu-final-l2';
+
+const hiddenSections = new Set(contenuFinalL2.rules.hiddenSections);
+const displayOrder = contenuFinalL2.rules.displayOrder.filter(
+  (section) => !hiddenSections.has(section) && section !== 'À vérifier'
+);
+
+export function getStaticPaths() {
+  return Object.entries(contenuFinalL2.subjects).map(([slug, subject]) => ({
+    params: { slug },
+    props: {
+      subject: {
+        slug,
+        title: subject.title,
+        description: subject.subtitle,
+        semester: subject.semester,
+      },
+    },
+  }));
+}
+
+const { subject } = Astro.props;
+
+const subjectDocs = contenuFinalL2.documents.filter(
+  (doc) => doc.subject === subject.slug && !doc.hidden && !hiddenSections.has(doc.section)
+);
+
+const sectionSubtitles = {
+  'Cours': 'Supports de référence',
+  'TD': 'Feuilles et exercices',
+  'Tests / CC': 'Entraînement court',
+  'Partiels': 'Sujets de mi-semestre',
+  'Examens': 'Sujets finaux',
+  'Corrigés TD': 'Solutions de TD',
+  'Corrigés Tests / CC': 'Corrections de tests',
+  'Corrigés Partiels': 'Corrections de partiels',
+  'Corrigés Examens': 'Corrections d’examens',
+};
+
+const sectionIcons = {
+  'Cours': 'I',
+  'TD': 'II',
+  'Tests / CC': 'III',
+  'Partiels': 'IV',
+  'Examens': 'V',
+  'Corrigés TD': 'VI',
+  'Corrigés Tests / CC': 'VII',
+  'Corrigés Partiels': 'VIII',
+  'Corrigés Examens': 'IX',
+};
+
+const sections = displayOrder
+  .map((section) => ({
+    title: section,
+    docs: subjectDocs
+      .filter((doc) => doc.section === section)
+      .sort((a, b) => {
+        if (a.subjectOrder !== b.subjectOrder) return a.subjectOrder - b.subjectOrder;
+        return a.displayTitle.localeCompare(b.displayTitle, 'fr', { numeric: true });
+      }),
+  }))
+  .filter((section) => section.docs.length > 0);
+---
+<Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
+  <main class="subject-main refined-subject">
+    <p class="subject-back"><a href="/">‹ accueil</a></p>
+
+    <header class="subject-header refined-header">
+      <p class="eyebrow">{subject.semester}</p>
+      <h1>{subject.title}</h1>
+      <p class="lede subject-lede">{subject.description}</p>
+    </header>
+
+    <section class="subject-resources refined-resources">
+      {sections.map((section, index) => (
+        <article class="resource-block refined-block">
+          <div class="section-heading">
+            <span class="section-number">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h2>{section.title}</h2>
+              <p>{sectionSubtitles[section.title] ?? 'Documents associés'}</p>
+            </div>
+          </div>
+
+          <div class="resource-grid refined-grid">
+            {section.docs.map((doc) => (
+              <a class="resource-card" href={doc.publicHref} target="_blank" aria-label={`Ouvrir ${doc.displayTitle}`}>
+                <span class="card-mark" aria-hidden="true">{sectionIcons[section.title] ?? '•'}</span>
+                <span class="card-copy">
+                  <b>{doc.displayTitle}</b>
+                  <small>{sectionSubtitles[section.title] ?? 'Document PDF'}</small>
+                </span>
+                <span class="card-arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</Base>
+
+<style>
+  .refined-subject {
+    --ink: #18130d;
+    --muted: rgba(24, 19, 13, 0.58);
+    --line: rgba(44, 34, 22, 0.16);
+    --paper: rgba(255, 252, 244, 0.62);
+    --paper-strong: rgba(255, 252, 244, 0.9);
+    --accent: #6f4b24;
+  }
+
+  .refined-header {
+    padding-bottom: 30px;
+    border-bottom: 2px solid rgba(24, 19, 13, 0.82);
+  }
+
+  .refined-header .eyebrow {
+    margin-bottom: 18px;
+    color: var(--accent);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .refined-resources {
+    margin-top: 34px;
+  }
+
+  .refined-block {
+    padding: 30px 0 34px;
+    border-top: 1px solid var(--line);
+  }
+
+  .refined-block:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 32px;
+    border: 1px solid rgba(111, 75, 36, 0.28);
+    background: rgba(111, 75, 36, 0.08);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: 1.32rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .section-heading p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+  }
+
+  .refined-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+    gap: 12px;
+  }
+
+  .resource-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 74px;
+    padding: 14px 42px 14px 14px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,.58), rgba(255,255,255,.18)), var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 1px 0 rgba(24, 19, 13, 0.03);
+    transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+
+  .resource-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(111, 75, 36, 0.36);
+    background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.28)), var(--paper-strong);
+    box-shadow: 0 10px 24px rgba(24, 19, 13, 0.075);
+  }
+
+  .card-mark {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(24, 19, 13, 0.16);
+    background: rgba(255,255,255,.46);
+    color: rgba(24, 19, 13, 0.72);
+    font-family: Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  .card-copy {
+    min-width: 0;
+  }
+
+  .card-copy b {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ink);
+    font-size: 0.98rem;
+    line-height: 1.15;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .card-copy small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.2;
+  }
+
+  .card-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translate(-4px, -50%);
+    opacity: 0.42;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+
+  .resource-card:hover .card-arrow {
+    transform: translate(0, -50%);
+    opacity: 0.86;
+  }
+
+  @media (max-width: 720px) {
+    .refined-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

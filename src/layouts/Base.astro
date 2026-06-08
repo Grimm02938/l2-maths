@@ -1,0 +1,42 @@
+---
+import '../styles/site.css';
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const {
+  title = 'Adame Abdelmoula — Archives mathématiques',
+  description = 'Archive personnelle de cours, TD, corrections et notes de travail en mathématiques.',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site">
+      <header class="topbar">
+        <div class="identity">
+          <h1><a href="/">Adame Abdelmoula — archives mathématiques</a></h1>
+          <p>Licence 2 Mathématiques — Paris-Saclay. Cours, TD, annales, corrections personnelles.</p>
+        </div>
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="/">Accueil</a>
+          <a href="/#licence-2">Licence 2</a>
+          <a href="/carnet/">Carnet</a>
+        </nav>
+      </header>
+      <slot />
+      <footer class="footer">
+        Site personnel non affilié à l'université. Dernière intention : garder une archive utile, lisible, durable.
+      </footer>
+    </div>
+  </body>
+</html>
