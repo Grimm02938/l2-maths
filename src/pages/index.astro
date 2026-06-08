@@ -41,13 +41,9 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
                   <span class="entry-title">{subject.title}</span>
                   <span class="entry-prof">Prof. {subject.professor}</span>
                   <span class="entry-desc">{subject.description}</span>
+                  <span class="entry-note">{subject.status} · {subject.chapters.length} chapitres · {resources} ressources</span>
                 </span>
-                <span class="entry-stats">
-                  <span>{subject.status}</span>
-                  <span>{subject.chapters.length} ch.</span>
-                  <span>{resources} ress.</span>
-                </span>
-                <span class="entry-open">→</span>
+                <span class="entry-open" aria-hidden="true"><span></span><b>→</b></span>
               </a>
             );
           })}
@@ -62,13 +58,9 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
                   <span class="entry-title">{subject.title}</span>
                   <span class="entry-prof">Prof. {subject.professor}</span>
                   <span class="entry-desc">{subject.description}</span>
+                  <span class="entry-note">{subject.status} · {subject.chapters.length} chapitres · {resources} ressources</span>
                 </span>
-                <span class="entry-stats">
-                  <span>{subject.status}</span>
-                  <span>{subject.chapters.length} ch.</span>
-                  <span>{resources} ress.</span>
-                </span>
-                <span class="entry-open">→</span>
+                <span class="entry-open" aria-hidden="true"><span></span><b>→</b></span>
               </a>
             );
           })}
