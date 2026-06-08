@@ -1,160 +1,78 @@
-import { useParams, Link } from "react-router-dom";
-import { getChapterResources, themes } from "@/lib/themes";
-import { iconMap } from "@/lib/iconMap";
-import {
-  Archive,
-  ArrowLeft,
-  BookOpen,
-  ChevronRight,
-  ClipboardList,
-  ExternalLink,
-  FilePlus2,
-  Lock,
-  NotebookPen,
-} from "lucide-react";
-import type { Chapter, ChapterResource, ResourceType } from "@/lib/themes";
-import type { ReactNode } from "react";
 import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getChapterResources, themes, type Chapter, type ChapterResource } from "@/lib/themes";
 
-const resourceTypeConfig: Record<ResourceType, {
-  label: string;
-  icon: ReactNode;
-}> = {
-  cours: {
-    label: "Cours",
-    icon: <BookOpen className="h-3 w-3" />,
-  },
-  td: {
-    label: "TD",
-    icon: <ClipboardList className="h-3 w-3" />,
-  },
-  "corrige-perso": {
-    label: "Corrige perso",
-    icon: <NotebookPen className="h-3 w-3" />,
-  },
-  annale: {
-    label: "Annale",
-    icon: <Archive className="h-3 w-3" />,
-  },
-  complement: {
-    label: "Complement",
-    icon: <FilePlus2 className="h-3 w-3" />,
-  },
-};
+function GardenNav() {
+  return (
+    <nav className="garden-nav garden-frame">
+      <Link to="/" className="garden-brand garden-link">Adame Abdelmoula · L2 Maths</Link>
+      <div className="garden-menu">
+        <Link className="garden-link" to="/">Archive</Link>
+        <Link className="garden-link" to="/blog">Logbook</Link>
+        <Link className="garden-link" to="/contact">Contact</Link>
+      </div>
+    </nav>
+  );
+}
+
+function resourceLabel(resource: ChapterResource) {
+  const labels: Record<string, string> = {
+    cours: "Cours",
+    td: "TD",
+    "corrige-perso": "Corrigé perso",
+    annale: "Annale",
+    complement: "Complément",
+  };
+  return labels[resource.type] ?? resource.type;
+}
 
 function getResourceHref(resource: ChapterResource) {
   if (!resource.url || resource.visibility === "private") return null;
-
   if (resource.url.startsWith("/") && resource.url.toLowerCase().endsWith(".pdf")) {
     const src = encodeURIComponent(resource.url);
     const title = encodeURIComponent(resource.title);
     return `/document?src=${src}&title=${title}`;
   }
-
   return resource.url;
 }
 
-function ChapterAction({
-  resource,
-}: {
-  resource: ChapterResource;
-}) {
-  const config = resourceTypeConfig[resource.type];
-  const isPrivate = resource.visibility === "private";
-  const href = getResourceHref(resource);
-  const content = (
-    <>
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-background/60 text-muted-foreground">
-        {config.icon}
-      </span>
-      <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground">
-        {resource.title}
-      </span>
-      {isPrivate ? (
-        <Lock className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
-      ) : (
-        <ExternalLink className="h-2.5 w-2.5 shrink-0 text-muted-foreground" />
-      )}
-    </>
-  );
-
-  if (!href) {
-    return (
-      <span
-        aria-label={`${config.label} - ${resource.title}`}
-        className="neo-button-shape inline-flex items-center gap-1.5 border border-border/60 bg-background/35 px-2 py-1.5 whitespace-nowrap opacity-70"
-      >
-        {content}
-      </span>
-    );
-  }
-
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${config.label} - ${resource.title}`}
-      className="neo-button-shape group inline-flex items-center gap-1.5 border border-border/60 bg-background/35 px-2 py-1.5 transition-colors whitespace-nowrap hover:border-border hover:bg-background/60"
-    >
-      {content}
-    </a>
-  );
-}
-
-function ChapterRow({ chapter, index, color, border }: {
-  chapter: Chapter;
-  index: number;
-  color: string;
-  border: string;
-}) {
-  const [open, setOpen] = useState(false);
-
-  if (!chapter.available) {
-    return (
-      <div className="neo-panel flex items-center justify-between px-5 py-4 bg-card border border-border opacity-50">
-        <div className="flex items-center gap-3">
-          <Lock className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">{chapter.title}</span>
-        </div>
-        <span className="text-xs text-muted-foreground border border-border rounded-full px-3 py-0.5">
-          Bientôt
-        </span>
-      </div>
-    );
-  }
-
+function ResourceSheet({ chapter, index }: { chapter: Chapter; index: number }) {
+  const [open, setOpen] = useState(index === 0 && chapter.available);
   const resources = getChapterResources(chapter);
 
   return (
-    <div className={`neo-panel bg-card border ${open ? border : "border-border"} overflow-hidden transition-all`}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-accent/30 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <span className={`text-sm font-mono ${color}`}>
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="text-sm font-medium text-foreground">{chapter.title}</span>
-        </div>
-        <ChevronRight className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-90" : ""} text-muted-foreground`} />
+    <article className="resource-sheet">
+      <button onClick={() => setOpen(!open)} className="subject-number" aria-expanded={open}>
+        {String(index + 1).padStart(2, "0")}
       </button>
+      <div>
+        <button onClick={() => setOpen(!open)} className="w-full text-left">
+          <p className="garden-kicker">{chapter.available ? `${resources.length} ressources` : "à cultiver"}</p>
+          <h2 className="mt-2 font-serif text-3xl font-normal leading-none tracking-[-0.035em] sm:text-5xl">
+            {chapter.title}
+          </h2>
+        </button>
 
-      {open && (
-        <div className="px-5 pb-4 pt-3 border-t border-border">
-          {resources.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
-              {resources.map((resource) => (
-                <ChapterAction key={resource.id} resource={resource} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground">Ressources a ajouter.</p>
-          )}
-        </div>
-      )}
-    </div>
+        {open && (
+          <div className="resource-links">
+            {resources.length > 0 ? resources.map((resource) => {
+              const href = getResourceHref(resource);
+              const label = `${resourceLabel(resource)} · ${resource.title}`;
+              if (!href) {
+                return <span key={resource.id} className="resource-pill opacity-60">{label} · privé</span>;
+              }
+              return (
+                <a key={resource.id} href={href} target="_blank" rel="noopener noreferrer" className="resource-pill">
+                  {label} ↗
+                </a>
+              );
+            }) : (
+              <span className="resource-pill opacity-60">Ressources à ajouter</span>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -164,46 +82,37 @@ export default function SubjectPage() {
 
   if (!theme) {
     return (
-      <div className="py-20 text-center text-muted-foreground">
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> Retour
-        </Link>
-      </div>
+      <>
+        <GardenNav />
+        <main className="subject-page">
+          <Link to="/" className="garden-link garden-kicker">← retour à l’archive</Link>
+          <p className="mt-8 text-xl">Matière introuvable.</p>
+        </main>
+      </>
     );
   }
 
-  const IconComponent = iconMap[theme.icon];
+  const resources = theme.chapters.flatMap((chapter) => getChapterResources(chapter)).length;
+  const available = theme.chapters.filter((chapter) => chapter.available).length;
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-        <ArrowLeft className="h-4 w-4" />
-        Toutes les matieres
-      </Link>
+    <>
+      <GardenNav />
+      <main className="subject-page">
+        <Link to="/" className="garden-link garden-kicker">← retour à l’archive</Link>
 
-      <div className="flex items-center gap-4 mb-8">
-        {IconComponent && (
-          <div className={`neo-icon flex h-12 w-12 items-center justify-center border ${theme.border} ${theme.color} bg-card`}>
-            <IconComponent className="h-6 w-6" />
-          </div>
-        )}
-        <div>
-          <h1 className={`text-2xl font-semibold ${theme.color}`}>{theme.title}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{theme.description}</p>
-        </div>
-      </div>
+        <header className="subject-header">
+          <p className="garden-kicker">Module · {available}/{theme.chapters.length || 0} chapitres · {resources} ressources</p>
+          <h1 className="subject-title mt-5">{theme.title}</h1>
+          <p className="garden-subtitle">{theme.description}</p>
+        </header>
 
-      <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3">Chapitres</p>
-      <div className="space-y-2">
-        {theme.chapters.map((chapter, i) => (
-          <ChapterRow
-            key={chapter.id}
-            chapter={chapter}
-            index={i}
-            color={theme.color}
-            border={theme.border}
-          />
-        ))}
-      </div>
-    </div>
+        <section className="pt-8">
+          {theme.chapters.map((chapter, index) => (
+            <ResourceSheet key={chapter.id} chapter={chapter} index={index} />
+          ))}
+        </section>
+      </main>
+    </>
   );
 }
