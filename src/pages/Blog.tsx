@@ -1,113 +1,81 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Clock3, Sparkles } from 'lucide-react';
 
-type BlogPost = {
-  id: string;
+type Note = {
+  stage: 'seedling' | 'growing' | 'evergreen';
   title: string;
-  excerpt: string;
   date: string;
-  readTime: string;
-  category: string;
+  text: string;
 };
 
-const posts: BlogPost[] = [
+const notes: Note[] = [
   {
-    id: 'demarrer-l2-maths',
-    title: 'Demarrer proprement sa L2 de mathematiques',
-    excerpt:
-      'Une strategie simple pour organiser ses chapitres, ses exos et son rythme de revision sans se perdre.',
-    date: '20 Mars 2026',
-    readTime: '6 min',
-    category: 'Methodologie',
+    stage: 'evergreen',
+    title: 'Démarrer proprement sa L2 de mathématiques',
+    date: '20 mars 2026',
+    text: 'Le vrai problème n’est pas seulement de trouver les fichiers. C’est de savoir où ils vivent, à quel chapitre ils appartiennent, et ce qu’ils m’ont appris.',
   },
   {
-    id: 'algebre-erreurs',
-    title: 'Algebre: les erreurs qui coutent des points',
-    excerpt:
-      'Signes, quantificateurs, hypothese oubliee: voici les pieges les plus frequents et comment les eviter.',
-    date: '18 Mars 2026',
-    readTime: '8 min',
-    category: 'Algebre',
+    stage: 'growing',
+    title: 'Algèbre : les erreurs qui coûtent des points',
+    date: '18 mars 2026',
+    text: 'Une erreur de quantificateur révèle souvent une image mentale floue de l’objet étudié.',
   },
   {
-    id: 'probas-intuition',
-    title: 'Probas: construire une intuition solide',
-    excerpt:
-      'Des exemples concrets pour relier formules et intuition, et arreter de faire du par coeur.',
-    date: '15 Mars 2026',
-    readTime: '7 min',
-    category: 'Probabilites',
-  },
-  {
-    id: 'oral-maths',
-    title: 'Parler maths a l oral sans paniquer',
-    excerpt:
-      'Une mini check-list pour structurer ton raisonnement et rester clair pendant une presentation.',
-    date: '12 Mars 2026',
-    readTime: '5 min',
-    category: 'Communication',
+    stage: 'seedling',
+    title: 'Probabilités : construire une intuition solide',
+    date: '15 mars 2026',
+    text: 'Relier les variables aléatoires à des expériences mentales simples, pas seulement à des formules récitées.',
   },
 ];
 
+function GardenNav() {
+  return (
+    <nav className="garden-nav garden-frame">
+      <Link to="/" className="garden-brand garden-link">L2 Maths Garden</Link>
+      <div className="garden-menu">
+        <Link className="garden-link" to="/">Archive</Link>
+        <Link className="garden-link" to="/blog">Logbook</Link>
+        <Link className="garden-link" to="/contact">Contact</Link>
+      </div>
+    </nav>
+  );
+}
+
 const BlogPage = () => {
   return (
-    <div className="relative min-h-full py-10 bg-background">
+    <>
+      <GardenNav />
+      <main className="garden-frame">
+        <section className="garden-hero" style={{ gridTemplateColumns: '1fr' }}>
+          <div>
+            <p className="garden-kicker">Working notes</p>
+            <h1 className="garden-title">Logbook.</h1>
+            <p className="garden-subtitle">
+              Un carnet ouvert : pas des articles parfaits, mais les traces d’une pensée mathématique en construction.
+            </p>
+          </div>
+        </section>
 
-      <section className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="mb-10 rounded-3xl border border-border bg-card p-6 sm:p-10 shadow-[0_8px_24px_rgba(0,0,0,0.22)] overflow-hidden">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5" />
-            L2 Maths Logbook
-          </p>
-
-          <h1 className="blog-typewriter-wrap font-['Space_Grotesk',sans-serif] text-3xl sm:text-5xl font-bold leading-tight text-foreground max-w-full">
-            <span className="blog-typewriter">Math Notes_ Building intuition, rigor and speed</span>
-            <span className="blog-cursor" aria-hidden="true" />
-          </h1>
-
-          <p className="mt-5 max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed break-words">
-            Un blog futuriste pour etudiants en maths: methodes, strategies, routine de revision et analyse
-            fine des erreurs qui font perdre des points.
-          </p>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          {posts.map((post, index) => (
-            <article
-              key={post.id}
-              className="group min-w-0 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-[0_6px_18px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_12px_28px_rgba(0,0,0,0.26)] overflow-hidden"
-              style={{ animationDelay: `${index * 70}ms` }}
-            >
-              <p className="mb-4 inline-flex rounded-full border border-border/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                {post.category}
-              </p>
-
-              <h2 className="font-['Space_Grotesk',sans-serif] text-xl font-semibold leading-snug text-foreground break-words">
-                {post.title}
-              </h2>
-
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground break-words">{post.excerpt}</p>
-
-              <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground/85">
-                <span>{post.date}</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock3 className="h-3.5 w-3.5" />
-                  {post.readTime}
-                </span>
-              </div>
-
-              <Link
-                to="/contact"
-                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/90 transition-colors group-hover:text-foreground"
-              >
-                Lire l article
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-            </article>
-          ))}
-        </div>
-      </section>
-    </div>
+        <section className="garden-section">
+          <div className="subject-list">
+            {notes.map((note, index) => (
+              <article className="subject-row" key={note.title}>
+                <div className="subject-number">{String(index + 1).padStart(2, '0')}</div>
+                <div>
+                  <p className="garden-kicker">{note.stage} · {note.date}</p>
+                  <h3>{note.title}</h3>
+                  <p>{note.text}</p>
+                </div>
+                <div className="subject-meta">
+                  <span>note</span>
+                  <span>working</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </>
   );
 };
 
