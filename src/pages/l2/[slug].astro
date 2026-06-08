@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import { subjects } from '../../data/archive';
+
+export function getStaticPaths() {
+  return subjects.map((subject) => ({
+    params: { slug: subject.slug },
+    props: { subject },
+  }));
+}
+
+const { subject } = Astro.props;
+---
+<Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
+  <main>
+    <p class="small" style="margin-top: 22px;"><a href="/">← retour à l'accueil</a></p>
+
+    <header class="subject-header">
+      <p class="small">{subject.code} · {subject.semester} · état : {subject.status}</p>
+      <h1>{subject.title}</h1>
+      <p class="lede">{subject.description}</p>
+    </header>
+
+    <section>
+      {subject.chapters.map((chapter, index) => (
+        <article class="resource-block">
+          <h2>{String(index + 1).padStart(2, '0')} — {chapter.title}</h2>
+          <p class="small">statut : <span class="tag">{chapter.status}</span></p>
+          <div class="resource-grid">
+            {chapter.resources.map((resource) => resource.href ? (
+              <a href={resource.href}>
+                <b>{resource.kind}</b><br />
+                {resource.title}
+              </a>
+            ) : (
+              <span>
+                <b>{resource.kind}</b><br />
+                {resource.title}<br />
+                <em>à ajouter</em>
+              </span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</Base>
