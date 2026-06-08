@@ -18,14 +18,14 @@ const collections = [
   },
   {
     id: 'mpsi',
-    eyebrow: 'Archive préparatoire',
-    title: 'MPSI',
+    eyebrow: 'Archive mathématique',
+    title: 'MPSI Mathématiques',
     institution: 'Jean-Baptiste-Corot',
     years: '2024/2025',
     description:
-      'La réserve de fondation : documents de prépa, méthodes, devoirs et exercices pour solidifier les bases avant la suite.',
+      'Le bloc de prépa en mathématiques : cours, TD, devoirs, corrections et colles, séparé proprement du corpus L2.',
     href: '#mpsi-corpus',
-    action: 'Voir le bloc MPSI',
+    action: 'Voir le bloc MPSI maths',
   },
 ];
 
@@ -36,7 +36,7 @@ function GardenNav() {
       <div className="garden-menu">
         <a className="garden-link" href="#collections">Corpus</a>
         <a className="garden-link" href="#l2-catalogue">L2</a>
-        <a className="garden-link" href="#mpsi-corpus">MPSI</a>
+        <a className="garden-link" href="#mpsi-corpus">MPSI maths</a>
         <Link className="garden-link" to="/blog">Logbook</Link>
         <Link className="garden-link" to="/contact">Contact</Link>
       </div>
@@ -65,12 +65,12 @@ function GardenIllustration({ resourceCount, chapterCount }: { resourceCount: nu
           Paris-Saclay · 2025/2026
         </div>
         <div className="seed-note" style={{ right: '8%', top: '34%', transform: 'rotate(2deg)' }}>
-          <b>MPSI</b>
+          <b>MPSI maths</b>
           Jean-Baptiste-Corot · 2024/2025
         </div>
         <div className="seed-note" style={{ left: '17%', bottom: '12%', transform: 'rotate(2.6deg)' }}>
-          <b>Index</b>
-          {chapterCount} chapitres · {resourceCount} ressources L2
+          <b>Index L2</b>
+          {chapterCount} chapitres · {resourceCount} ressources
         </div>
       </div>
     </div>
@@ -107,10 +107,10 @@ const Index = () => {
           <div>
             <p className="garden-kicker">Archive de travail</p>
             <h1 className="garden-title">
-              Deux <em>corpus</em>, une trajectoire.
+              Deux <em>corpus</em>, nettement séparés.
             </h1>
             <p className="garden-subtitle">
-              Pour l’instant, le site se concentre sur deux blocs précis : la Licence 2 Mathématiques à Paris-Saclay et l’archive MPSI du lycée Jean-Baptiste-Corot. Le reste viendra après, sans brouiller la page.
+              Le site garde son corpus Licence 2 Mathématiques — Paris-Saclay — 2025/2026 intact, et ajoute seulement un second bloc : MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025.
             </p>
             <div className="garden-actions">
               <a href="#collections" className="garden-button">Voir les deux corpus</a>
@@ -128,7 +128,7 @@ const Index = () => {
               <h2>Le périmètre actuel.</h2>
             </div>
             <p>
-              Pas encore de Magistère affiché, pas de catégories parasites. La page doit respirer autour de ces deux années : une année universitaire et une année de prépa.
+              Deux années, deux usages : la L2 comme cœur actif du site ; la MPSI mathématiques comme réserve de méthodes et d’exercices de prépa.
             </p>
           </div>
 
@@ -202,21 +202,21 @@ const Index = () => {
         <section id="mpsi-corpus" className="garden-section">
           <div className="section-heading">
             <div>
-              <p className="garden-kicker">MPSI · Jean-Baptiste-Corot · 2024/2025</p>
-              <h2>L’archive de prépa.</h2>
+              <p className="garden-kicker">MPSI Mathématiques · Jean-Baptiste-Corot · 2024/2025</p>
+              <h2>L’archive maths de MPSI.</h2>
             </div>
             <p>
-              Ce bloc est posé comme deuxième pilier du site. L’étape suivante sera de l’indexer proprement par matière, type de document et chapitre, sans l’afficher comme une simple liste de fichiers.
+              Ce bloc doit rester strictement mathématique : cours, TD, devoirs, corrections, programmes de colles et documents de méthode.
             </p>
           </div>
 
           <div className="mpsi-panel">
             <div>
               <p className="garden-kicker">À structurer</p>
-              <h3>Mathématiques · Physique · Colles · DS · TD</h3>
+              <h3>Cours · TD · DS · DM · Colles · Corrections</h3>
             </div>
             <p>
-              La MPSI sert ici de socle : une archive exigeante pour consolider les méthodes de prépa et alimenter le travail de L2. Elle n’est pas encore éclatée en centaines de documents sur la page d’accueil ; elle reste un bloc clair, sérieux, identifiable.
+              Cette archive MPSI n’est pas mélangée au catalogue L2. Elle sert de second rayon mathématique, proprement identifié, pour retrouver les outils de prépa utiles au travail universitaire.
             </p>
           </div>
         </section>
