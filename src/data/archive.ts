@@ -24,222 +24,108 @@ export type Subject = {
   chapters: Chapter[];
 };
 
+const commonChapters = (title: string): Chapter[] => [
+  {
+    title,
+    status: 'a reprendre',
+    resources: [
+      { kind: 'Cours', title: 'Cours' },
+      { kind: 'TD', title: 'TD' },
+      { kind: 'Annale', title: 'Annales et évaluations' },
+    ],
+  },
+];
+
 export const subjects: Subject[] = [
   {
     slug: 'analyse-s1',
     code: 'L2-AN-S1',
     title: 'Analyse S1',
-    semester: 'S3',
-    professor: 'Prof. Professeur à renseigner',
-    status: 'chantier',
-    description: 'Suites, séries, intégrales, fonctions, estimations. La matière où chaque détail finit par coûter des points.',
-    chapters: [
-      {
-        title: 'Analyse S1',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'Cours', title: 'Cours et formulaire' },
-          { kind: 'TD', title: 'Feuilles de TD' },
-          { kind: 'Annales', title: 'Tests, partiels et examens' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'analyse',
-    code: 'L2-AN',
-    title: 'Analyse',
-    semester: 'S3',
+    semester: 'S1',
     professor: 'Professeur à renseigner',
     status: 'chantier',
-    description: 'Suites, series, integrales, fonctions, estimations. La matiere ou chaque detail finit par couter des points.',
-    chapters: [
-      {
-        title: 'Suites et series',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'Cours', title: 'Cours complet', href: '/pdf/analyse/cours.pdf' },
-          { kind: 'TD', title: 'Feuille de TD', href: '/pdf/analyse/td.pdf' },
-          { kind: 'Corrige perso', title: 'Corrections en reconstruction' },
-          { kind: 'Note', title: 'Erreurs de convergence' },
-        ],
-      },
-      {
-        title: 'Integrales et convergence',
-        status: 'a creer',
-        resources: [
-          { kind: 'TD', title: 'Feuille a ajouter' },
-          { kind: 'Annale', title: 'Sujets a classer' },
-        ],
-      },
-    ],
+    description: 'Suites, séries, intégrales, fonctions, estimations. La matière où chaque détail finit par coûter des points.',
+    chapters: commonChapters('Analyse S1'),
+  },
+  {
+    slug: 'algebre-lineaire',
+    code: 'L2-AL-S1',
+    title: 'Algèbre linéaire',
+    semester: 'S1',
+    professor: 'Professeur à renseigner',
+    status: 'archive',
+    description: 'Espaces vectoriels, applications linéaires, matrices, réduction. Le socle à rendre parfaitement propre.',
+    chapters: commonChapters('Algèbre linéaire S1'),
+  },
+  {
+    slug: 'topologie',
+    code: 'L2-TO-S1',
+    title: 'Topologie',
+    semester: 'S1',
+    professor: 'Professeur à renseigner',
+    status: 'chantier',
+    description: 'Ouverts, fermés, compacité, connexité. Une matière à organiser par définitions, exemples, contre-exemples.',
+    chapters: commonChapters('Topologie S1'),
+  },
+  {
+    slug: 'arithmetique',
+    code: 'L2-AR-S1',
+    title: 'Arithmétique',
+    semester: 'S1',
+    professor: 'Professeur à renseigner',
+    status: 'archive',
+    description: 'Congruences, groupes cycliques, nombres premiers, anneaux quotients. Un terrain parfait pour des fiches sèches.',
+    chapters: commonChapters('Arithmétique S1'),
+  },
+  {
+    slug: 'maths-approfondies-s1',
+    code: 'L2-MA-S1',
+    title: 'Maths approfondies',
+    semester: 'S1',
+    professor: 'Professeur à renseigner',
+    status: 'chantier',
+    description: 'Exercices plus longs, méthodes transversales, problèmes à refaire. Le bloc qui sert à consolider les liens entre les matières.',
+    chapters: commonChapters('Maths approfondies S1'),
   },
   {
     slug: 'analyse-s2',
     code: 'L2-AN-S2',
     title: 'Analyse S2',
-    semester: 'S4',
-    professor: 'Prof. Professeur à renseigner',
-    status: 'chantier',
-    description: 'Suites et séries de fonctions, convergence, intégrales et outils d’analyse du semestre 4.',
-    chapters: [
-      {
-        title: 'Analyse S2',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'Cours', title: 'Cours' },
-          { kind: 'TD', title: 'Feuilles de TD' },
-          { kind: 'Annales', title: 'Tests, partiels et examens' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'algebre-lineaire',
-    code: 'L2-AL',
-    title: 'Algebre lineaire',
-    semester: 'Annuel',
-    professor: 'Professeur à renseigner',
-    status: 'archive',
-    description: 'Espaces vectoriels, applications lineaires, matrices, reduction. Le socle a rendre parfaitement propre.',
-    chapters: [
-      {
-        title: 'Espaces vectoriels et applications lineaires',
-        status: 'ouvert',
-        resources: [
-          { kind: 'Cours', title: 'Poly de cours', href: '/pdf/algebre-lineaire/cours.pdf' },
-          { kind: 'TD', title: 'TD 1-3', href: '/pdf/algebre-lineaire/td.pdf' },
-          { kind: 'Corrige perso', title: 'Base, noyau, image' },
-        ],
-      },
-      {
-        title: 'Reduction',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'TD', title: 'Exercices reduction' },
-          { kind: 'Note', title: 'Diagonalisation : criteres utiles' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'topologie',
-    code: 'L2-TO',
-    title: 'Topologie',
-    semester: 'S1',
-    professor: 'Professeur à renseigner',
-    status: 'chantier',
-    description: 'Ouverts, fermes, compacite, connexite. Une matiere a organiser par definitions, exemples, contre-exemples.',
-    chapters: [
-      {
-        title: 'Ouverts, fermes, adherences',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'Cours', title: 'Definitions a recopier proprement' },
-          { kind: 'TD', title: 'Feuille de TD', href: '/pdf/topologie/td.pdf' },
-          { kind: 'Note', title: 'Exemples et contre-exemples' },
-        ],
-      },
-      {
-        title: 'Compacite',
-        status: 'a creer',
-        resources: [
-          { kind: 'Annale', title: 'Exercices classiques a indexer' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'arithmetique',
-    code: 'L2-AR',
-    title: 'Arithmetique',
-    semester: 'S1',
-    professor: 'Professeur à renseigner',
-    status: 'archive',
-    description: 'Congruences, groupes cycliques, nombres premiers, anneaux quotients. Un terrain parfait pour des fiches seches.',
-    chapters: [
-      {
-        title: 'Congruences et divisibilite',
-        status: 'ouvert',
-        resources: [
-          { kind: 'Cours', title: 'Cours annote' },
-          { kind: 'TD', title: 'Feuille exercices' },
-          { kind: 'Corrige perso', title: 'Euclide, Bezout, Gauss' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'probabilites',
-    code: 'L2-PR',
-    title: 'Probabilites',
     semester: 'S2',
     professor: 'Professeur à renseigner',
     status: 'chantier',
-    description: 'Variables aleatoires, lois, esperance, variance, convergence. Le cours doit devenir calculable et intuitif.',
-    chapters: [
-      {
-        title: 'Variables aleatoires discretes',
-        status: 'ouvert',
-        resources: [
-          { kind: 'Cours', title: 'Cours a classer' },
-          { kind: 'TD', title: 'TD variables aleatoires', href: '/pdf/probabilites/td.pdf' },
-          { kind: 'Corrige perso', title: 'Esperance et variance' },
-        ],
-      },
-      {
-        title: 'Convergences',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'Note', title: 'Distinguer presque sure, proba, loi' },
-        ],
-      },
-    ],
+    description: 'Suites et séries de fonctions, convergence, intégrales et outils d’analyse du semestre 4.',
+    chapters: commonChapters('Analyse S2'),
+  },
+  {
+    slug: 'algebre-lineaire-s2',
+    code: 'L2-AL-S2',
+    title: 'Algèbre linéaire',
+    semester: 'S2',
+    professor: 'Professeur à renseigner',
+    status: 'archive',
+    description: 'Produit scalaire, orthogonalité, isométries et géométrie affine.',
+    chapters: commonChapters('Algèbre linéaire S2'),
+  },
+  {
+    slug: 'probabilites',
+    code: 'L2-PR-S2',
+    title: 'Probabilités',
+    semester: 'S2',
+    professor: 'Professeur à renseigner',
+    status: 'chantier',
+    description: 'Variables aléatoires, lois, espérance, variance, convergence. Le cours doit devenir calculable et intuitif.',
+    chapters: commonChapters('Probabilités S2'),
   },
   {
     slug: 'courbes-surfaces',
-    code: 'L2-CS',
+    code: 'L2-CS-S2',
     title: 'Courbes et surfaces',
     semester: 'S2',
     professor: 'Professeur à renseigner',
     status: 'chantier',
-    description: 'Courbes parametrees, surfaces, geometrie differentielle elementaire. Le pont entre calcul, intuition et formes.',
-    chapters: [
-      {
-        title: 'Courbes parametrees',
-        status: 'a creer',
-        resources: [
-          { kind: 'Cours', title: 'Cours a ajouter' },
-          { kind: 'TD', title: 'Feuille de TD a ajouter' },
-        ],
-      },
-      {
-        title: 'Surfaces',
-        status: 'a creer',
-        resources: [
-          { kind: 'Note', title: 'Definitions et exemples a construire' },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'maths-approfondies-s1',
-    code: 'L2-MA',
-    title: 'Maths approfondies',
-    semester: 'S3',
-    professor: 'Professeur à renseigner',
-    status: 'chantier',
-    description: 'Exercices plus longs, methodes transversales, problemes a refaire. Le bloc qui sert a consolider les liens entre les matieres.',
-    chapters: [
-      {
-        title: 'Methodes et problemes',
-        status: 'a reprendre',
-        resources: [
-          { kind: 'TD', title: 'Problemes a classer' },
-          { kind: 'Note', title: 'Methodes de demonstration' },
-        ],
-      },
-    ],
+    description: 'Courbes paramétrées, surfaces, géométrie différentielle élémentaire. Le pont entre calcul, intuition et formes.',
+    chapters: commonChapters('Courbes et surfaces S2'),
   },
 ];
 
@@ -247,66 +133,61 @@ export const logbook = [
   {
     date: '2026-06-08',
     title: 'Ajout documents — Analyse S1',
-    text: '41 fichiers ajoutes depuis eCampus.',
+    text: '41 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
-    title: 'Ajout documents — Algebre lineaire S1',
-    text: '34 fichiers ajoutes depuis eCampus.',
+    title: 'Ajout documents — Algèbre linéaire S1',
+    text: '34 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
     title: 'Ajout documents — Topologie S1',
-    text: '36 fichiers ajoutes depuis eCampus.',
+    text: '36 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
-    title: 'Ajout documents — Arithmetique S1',
-    text: '14 fichiers ajoutes depuis eCampus.',
+    title: 'Ajout documents — Arithmétique S1',
+    text: '14 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
     title: 'Ajout documents — Maths approfondies S1',
-    text: '30 fichiers ajoutes depuis eCampus.',
+    text: '30 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
     title: 'Ajout documents — Analyse S2',
-    text: '42 fichiers ajoutes depuis eCampus.',
+    text: '42 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
-    title: 'Ajout documents — Algebre lineaire S2',
-    text: '23 fichiers ajoutes depuis eCampus.',
+    title: 'Ajout documents — Algèbre linéaire S2',
+    text: '23 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
-    title: 'Ajout documents — Probabilites S2',
-    text: '26 fichiers ajoutes depuis eCampus.',
+    title: 'Ajout documents — Probabilités S2',
+    text: '26 fichiers ajoutés depuis eCampus.',
   },
   {
     date: '2026-06-08',
     title: 'Ajout documents — Courbes et surfaces S2',
-    text: '7 fichiers ajoutes depuis eCampus.',
-  },
-  {
-    date: '2026-06-08',
-    title: 'Ajout documents — Maths approfondies S2',
-    text: '5 fichiers ajoutes depuis eCampus.',
+    text: '7 fichiers ajoutés depuis eCampus.',
   },
 ];
 
 export const externalSeeds = [
   {
     label: 'Pages perso de profs',
-    text: 'enseignement, TD, PDF, corrections, archives par annee',
+    text: 'enseignement, TD, PDF, corrections, archives par année',
   },
   {
     label: 'Vieux index universitaires',
-    text: 'liens bleus, dossiers, titres secs, peu de decoration',
+    text: 'liens bleus, dossiers, titres secs, peu de décoration',
   },
   {
-    label: 'Carnets mathematiques',
-    text: 'notes courtes, erreurs, methodes, questions a reprendre',
+    label: 'Carnets mathématiques',
+    text: 'notes courtes, erreurs, méthodes, questions à reprendre',
   },
 ];
