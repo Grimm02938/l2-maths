@@ -189,7 +189,7 @@ export const subjects: Subject[] = [
     semester: 'Annuel',
     professor: 'Professeur à renseigner',
     status: 'chantier',
-    description: 'Exercices plus longs, methodes transversales, problemes a refaire. Le bloc qui sert de passerelle vers le magistere.',
+    description: 'Exercices plus longs, methodes transversales, problemes a refaire. Le bloc qui sert a consolider les liens entre les matieres.',
     chapters: [
       {
         title: 'Methodes et problemes',
@@ -206,18 +206,18 @@ export const subjects: Subject[] = [
 export const logbook = [
   {
     date: '2026-06-08',
-    title: 'Repartir sobrement',
-    text: 'Le site doit d abord etre utile : retrouver un PDF, savoir ce qui est corrige, voir ce qui reste en dette.',
+    title: 'Ajout documents — Analyse S1',
+    text: '41 fichiers ajoutes : poly, TD, controles, partiels, examens et corriges.',
   },
   {
     date: '2026-06-08',
-    title: 'Pas un portfolio',
-    text: 'La valeur vient de l archive elle-meme : cours, TD, annales, corrections, notes de methode.',
+    title: 'Ajout documents — Algebre lineaire S1',
+    text: '34 fichiers ajoutes depuis eCampus.',
   },
   {
     date: '2026-06-08',
-    title: 'Magistere ensuite',
-    text: 'La L2 sert de socle. Chaque chapitre propre maintenant devient un appui pour la suite.',
+    title: 'Ajout documents — Topologie S1',
+    text: '36 fichiers ajoutes depuis eCampus.',
   },
 ];
 
