@@ -12,16 +12,16 @@ export function getStaticPaths() {
 const { subject } = Astro.props;
 ---
 <Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
-  <main>
-    <p class="small" style="margin-top: 22px;"><a href="/">← retour à l'accueil</a></p>
+  <main class="subject-main">
+    <p class="subject-back small"><a href="/">← retour à l'accueil</a></p>
 
     <header class="subject-header">
       <p class="small">{subject.code} · {subject.semester} · état : {subject.status}</p>
       <h1>{subject.title}</h1>
-      <p class="lede">{subject.description}</p>
+      <p class="lede subject-lede">{subject.description}</p>
     </header>
 
-    <section>
+    <section class="subject-resources">
       {subject.chapters.map((chapter, index) => (
         <article class="resource-block">
           <h2>{String(index + 1).padStart(2, '0')} — {chapter.title}</h2>
