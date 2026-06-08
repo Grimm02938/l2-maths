@@ -15,11 +15,22 @@ interface ThemeCardProps {
   chapters?: { id: string; title: string; available: boolean }[];
 }
 
+const subjectAccents: Record<string, { text: string; bg: string; border: string }> = {
+  analyse: { text: "text-[hsl(var(--analysis))]", bg: "bg-[hsl(var(--analysis))]", border: "border-[hsl(var(--analysis)/0.45)]" },
+  algebre: { text: "text-[hsl(var(--algebra))]", bg: "bg-[hsl(var(--algebra))]", border: "border-[hsl(var(--algebra)/0.45)]" },
+  topologie: { text: "text-[hsl(var(--topology))]", bg: "bg-[hsl(var(--topology))]", border: "border-[hsl(var(--topology)/0.45)]" },
+  arithmetique: { text: "text-[hsl(var(--arithmetic))]", bg: "bg-[hsl(var(--arithmetic))]", border: "border-[hsl(var(--arithmetic)/0.45)]" },
+  proba: { text: "text-[hsl(var(--probability))]", bg: "bg-[hsl(var(--probability))]", border: "border-[hsl(var(--probability)/0.45)]" },
+  "maths-renfo": { text: "text-[hsl(var(--renfo))]", bg: "bg-[hsl(var(--renfo))]", border: "border-[hsl(var(--renfo)/0.45)]" },
+  "devoirs-libres": { text: "text-[hsl(var(--annales))]", bg: "bg-[hsl(var(--annales))]", border: "border-[hsl(var(--annales)/0.45)]" },
+};
+
 export function ThemeCard({ id, title, description, color, border = 'border-border', professor, icon, chapters = [] }: ThemeCardProps) {
   const IconComponent = iconMap[icon];
   const { user } = useAuth();
   const { open: openLoginModal } = useLoginModal();
   const navigate = useNavigate();
+  const accent = subjectAccents[id] ?? { text: color, bg: "bg-primary", border };
 
   const handleClick = () => {
     if (!user) {
@@ -39,9 +50,9 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
     <button
       type="button"
       onClick={handleClick}
-      className={`archive-card group grid min-h-[220px] w-full grid-cols-[0.8rem_1fr] rounded-[1.35rem] text-left ${border}`}
+      className={`archive-card group grid min-h-[220px] w-full grid-cols-[0.8rem_1fr] rounded-[1.35rem] text-left ${accent.border}`}
     >
-      <div className={`subject-marker m-5 mr-0 ${color.replace('text-', 'bg-')}`} aria-hidden="true" />
+      <div className={`subject-marker m-5 mr-0 ${accent.bg}`} aria-hidden="true" />
 
       <div className="flex min-w-0 flex-col p-5 pl-4">
         <div className="flex items-start justify-between gap-4">
@@ -52,7 +63,7 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
             </h3>
           </div>
 
-          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border ${border} bg-background/50 ${color}`}>
+          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-background/50 ${accent.text} ${accent.border}`}>
             <IconComponent className="h-4 w-4" />
           </div>
         </div>
@@ -73,7 +84,7 @@ export function ThemeCard({ id, title, description, color, border = 'border-bord
 
           <div className="h-px w-full bg-border">
             <div
-              className={`h-px ${color.replace('text-', 'bg-')} transition-all duration-500`}
+              className={`h-px ${accent.bg} transition-all duration-500`}
               style={{ width: `${totalCount === 0 ? 6 : progress}%` }}
             />
           </div>
