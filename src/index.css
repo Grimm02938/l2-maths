@@ -1,333 +1,589 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 220 13% 13%;
-    --foreground: 0 0% 95%;
- 
-    --card: 220 13% 18%;
-    --card-foreground: 0 0% 95%;
- 
-    --popover: 220 13% 13%;
-    --popover-foreground: 0 0% 95%;
- 
-    --primary: 0 0% 95%;
-    --primary-foreground: 220 13% 10%;
- 
-    --secondary: 220 10% 22%;
-    --secondary-foreground: 0 0% 90%;
- 
-    --muted: 220 10% 22%;
-    --muted-foreground: 220 8% 55%;
- 
-    --accent: 220 10% 22%;
-    --accent-foreground: 0 0% 95%;
- 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+    --background: 44 42% 91%;
+    --foreground: 23 19% 14%;
+    --card: 46 47% 95%;
+    --card-foreground: 23 19% 14%;
+    --popover: 46 47% 95%;
+    --popover-foreground: 23 19% 14%;
+    --primary: 21 48% 47%;
+    --primary-foreground: 46 47% 95%;
+    --secondary: 78 20% 72%;
+    --secondary-foreground: 23 19% 14%;
+    --muted: 43 33% 84%;
+    --muted-foreground: 27 18% 33%;
+    --accent: 266 24% 53%;
+    --accent-foreground: 46 47% 95%;
+    --destructive: 0 68% 42%;
+    --destructive-foreground: 46 47% 95%;
+    --border: 28 25% 62%;
+    --input: 28 25% 62%;
+    --ring: 190 46% 37%;
+    --radius: 0px;
 
-    --border: 220 10% 22%;
-    --input: 220 10% 22%;
-    --ring: 220 10% 70%;
- 
-    --radius: 0.5rem;
+    --ink: #2b211b;
+    --paper: #eee4cf;
+    --paper-light: #f8f0df;
+    --soil: #7a5138;
+    --moss: #7e8d60;
+    --leaf: #4f6f52;
+    --violet: #7c668f;
+    --sky: #6f98a2;
+    --rose: #bd756c;
+    --ochre: #c49a48;
+    --line: rgba(74, 54, 41, 0.34);
+
+    --font-serif: Georgia, "Times New Roman", ui-serif, serif;
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
   }
- 
+
   .dark {
-    --background: 220 13% 13%;
-    --foreground: 0 0% 95%;
- 
-    --card: 220 13% 18%;
-    --card-foreground: 0 0% 95%;
- 
-    --popover: 220 13% 13%;
-    --popover-foreground: 0 0% 95%;
- 
-    --primary: 0 0% 95%;
-    --primary-foreground: 220 13% 10%;
- 
-    --secondary: 220 10% 22%;
-    --secondary-foreground: 0 0% 90%;
- 
-    --muted: 220 10% 22%;
-    --muted-foreground: 220 8% 55%;
- 
-    --accent: 220 10% 22%;
-    --accent-foreground: 0 0% 95%;
- 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 220 10% 22%;
-    --input: 220 10% 22%;
-    --ring: 220 10% 70%;
+    --background: 44 42% 91%;
+    --foreground: 23 19% 14%;
+    --card: 46 47% 95%;
+    --card-foreground: 23 19% 14%;
+    --popover: 46 47% 95%;
+    --popover-foreground: 23 19% 14%;
+    --primary: 21 48% 47%;
+    --primary-foreground: 46 47% 95%;
+    --secondary: 78 20% 72%;
+    --secondary-foreground: 23 19% 14%;
+    --muted: 43 33% 84%;
+    --muted-foreground: 27 18% 33%;
+    --accent: 266 24% 53%;
+    --accent-foreground: 46 47% 95%;
+    --border: 28 25% 62%;
+    --input: 28 25% 62%;
+    --ring: 190 46% 37%;
   }
-}
- 
-@layer base {
+
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--paper);
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    background: var(--paper);
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: rgba(196, 154, 72, 0.35);
   }
 }
 
 @layer utilities {
-  @keyframes page-fade-slide-in {
-    from {
-      opacity: 0;
-      transform: translateY(18px) scale(0.995);
-      filter: blur(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-  }
-
-  .page-transition-in {
-    animation: page-fade-slide-in 340ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
-    will-change: transform, opacity, filter;
-  }
-
-  @keyframes semester-catalogue-in-from-right {
-    from {
-      opacity: 0;
-      filter: blur(3px);
-      transform: translateX(70px) rotateY(-13deg) rotateX(3deg) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
-    }
-  }
-
-  @keyframes semester-catalogue-in-from-left {
-    from {
-      opacity: 0;
-      filter: blur(3px);
-      transform: translateX(-70px) rotateY(13deg) rotateX(3deg) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateX(0) rotateY(0) rotateX(0) scale(1);
-    }
-  }
-
-  .semester-catalogue-flow {
-    perspective: 1300px;
-    transform-style: preserve-3d;
-  }
-
-  .semester-card-in-from-right {
-    animation: semester-catalogue-in-from-right 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
-  }
-
-  .semester-card-in-from-left {
-    animation: semester-catalogue-in-from-left 460ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
-  }
-
-  .catalogue-3d-card {
-    transform-style: preserve-3d;
-    will-change: transform, box-shadow;
-    transition: transform 280ms ease, box-shadow 280ms ease, filter 280ms ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .catalogue-3d-card:hover {
-      transform: perspective(1100px) rotateX(5deg) rotateY(-6deg) translateY(-6px) scale(1.01);
-    }
-  }
-
-  .catalogue-3d-layer {
-    transform: translateZ(26px);
-  }
-
-  .semester-switch-3d {
-    perspective: 900px;
-    transform-style: preserve-3d;
-  }
-
-  .semester-tab-3d {
-    transform-style: preserve-3d;
-    will-change: transform, box-shadow;
-    transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .semester-tab-3d:hover {
-      transform: translateZ(8px) rotateX(8deg);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-    }
-  }
-
-  .semester-tab-3d-active {
-    transform: translateZ(12px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-  }
-
-  .neo-panel {
+  .garden-shell {
+    min-height: 100vh;
     position: relative;
-    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 7% 8%, rgba(126, 141, 96, 0.22), transparent 18rem),
+      radial-gradient(circle at 88% 12%, rgba(124, 102, 143, 0.16), transparent 22rem),
+      radial-gradient(circle at 78% 82%, rgba(196, 154, 72, 0.16), transparent 24rem),
+      var(--paper);
   }
 
-  .neo-panel::before {
+  .garden-shell::before {
     content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.42;
+    background-image: url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23paperNoise)' opacity='0.22'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  .garden-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .garden-frame {
+    width: min(1180px, calc(100vw - 32px));
+    margin: 0 auto;
+  }
+
+  .garden-nav {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 2rem;
+    padding: 2rem 0 1.25rem;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .garden-brand {
+    font-family: var(--font-sans);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .garden-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .garden-link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 140ms ease, color 140ms ease;
+  }
+
+  .garden-link:hover {
+    color: var(--soil);
+    text-decoration-color: currentColor;
+  }
+
+  .garden-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    padding: clamp(2.5rem, 7vw, 6.75rem) 0 3.5rem;
+    align-items: center;
+  }
+
+  .garden-kicker {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.21em;
+    font-weight: 850;
+    font-size: 0.74rem;
+    color: var(--soil);
+  }
+
+  .garden-title {
+    margin-top: 1.15rem;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+    font-size: clamp(4rem, 12vw, 9.5rem);
+    max-width: 8.5ch;
+  }
+
+  .garden-title em {
+    font-style: italic;
+    color: var(--violet);
+  }
+
+  .garden-subtitle {
+    margin-top: 1.8rem;
+    max-width: 36rem;
+    font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+    line-height: 1.7;
+    color: rgba(43, 33, 27, 0.78);
+  }
+
+  .garden-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-weight: 850;
+    font-size: 0.75rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .garden-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper-light);
+    padding: 0.85rem 1rem;
+    box-shadow: 4px 4px 0 rgba(43, 33, 27, 0.18);
+    transition: transform 140ms ease, box-shadow 140ms ease;
+  }
+
+  .garden-button:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(43, 33, 27, 0.16);
+  }
+
+  .garden-button.secondary {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .garden-illustration {
+    min-height: 540px;
+    position: relative;
+  }
+
+  .garden-plot {
+    position: absolute;
+    inset: 2rem 0 0 auto;
+    width: min(100%, 520px);
+    min-height: 500px;
+    border: 1.5px solid var(--line);
+    background: rgba(248, 240, 223, 0.62);
+    transform: rotate(1.2deg);
+    box-shadow: 10px 14px 0 rgba(122, 81, 56, 0.08);
+  }
+
+  .garden-plot::before,
+  .garden-plot::after {
+    content: "";
+    position: absolute;
+    border: 1.4px solid var(--line);
+    background: rgba(238, 228, 207, 0.55);
+  }
+
+  .garden-plot::before {
+    left: 8%;
+    top: 9%;
+    width: 52%;
+    height: 22%;
+    transform: rotate(-5deg);
+  }
+
+  .garden-plot::after {
+    right: 8%;
+    bottom: 9%;
+    width: 46%;
+    height: 25%;
+    transform: rotate(6deg);
+  }
+
+  .vine {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    border: 1px solid hsl(var(--border) / 0.72);
-    clip-path: inherit;
   }
 
-  .neo-panel-interactive {
-    transition: transform 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  .vine svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .neo-panel-interactive:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
+  .seed-note {
+    position: absolute;
+    max-width: 190px;
+    padding: 0.75rem 0.8rem;
+    background: var(--paper-light);
+    border: 1.5px solid var(--line);
+    font-family: var(--font-sans);
+    font-size: 0.74rem;
+    line-height: 1.45;
+    box-shadow: 5px 5px 0 rgba(43, 33, 27, 0.12);
+  }
+
+  .seed-note b {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--soil);
+  }
+
+  .garden-section {
+    padding: 3.5rem 0;
+    border-top: 1.5px solid var(--line);
+  }
+
+  .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.45fr);
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: 2rem;
+  }
+
+  .section-heading h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.3rem, 5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+
+  .section-heading p {
+    color: rgba(43, 33, 27, 0.68);
+    line-height: 1.65;
+  }
+
+  .catalogue-tools {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .garden-input {
+    border: 1.5px solid var(--line);
+    background: rgba(248, 240, 223, 0.58);
+    height: 3rem;
+    padding: 0 1rem;
+    font-family: var(--font-sans);
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    outline: none;
+  }
+
+  .garden-input:focus {
+    border-color: var(--soil);
+    box-shadow: 4px 4px 0 rgba(122, 81, 56, 0.16);
+  }
+
+  .semester-tabs {
+    display: flex;
+    border: 1.5px solid var(--line);
+    background: rgba(248, 240, 223, 0.56);
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 850;
+  }
+
+  .semester-tabs button {
+    padding: 0 1rem;
+    border-left: 1.5px solid var(--line);
+  }
+
+  .semester-tabs button:first-child {
+    border-left: 0;
+  }
+
+  .semester-tabs [data-active="true"] {
+    background: var(--ink);
+    color: var(--paper-light);
+  }
+
+  .subject-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .subject-row {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: start;
+    border-top: 1.5px solid var(--line);
+    padding: 1.3rem 0;
+  }
+
+  .subject-row:last-child {
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .subject-number {
+    font-family: var(--font-serif);
+    font-size: clamp(2.1rem, 4vw, 3.6rem);
+    line-height: 0.9;
+    color: var(--soil);
+  }
+
+  .subject-row h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3vw, 3.2rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+
+  .subject-row p {
+    margin-top: 0.55rem;
+    max-width: 44rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(43, 33, 27, 0.7);
+  }
+
+  .subject-meta {
+    justify-self: end;
+    display: grid;
+    gap: 0.45rem;
+    text-align: right;
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-size: 0.68rem;
+    font-weight: 850;
+    color: rgba(43, 33, 27, 0.58);
+  }
+
+  .growth-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .growth-card {
+    border: 1.5px solid var(--line);
+    background: rgba(248, 240, 223, 0.55);
+    padding: 1.25rem;
+    min-height: 220px;
+    position: relative;
+  }
+
+  .growth-card:nth-child(2) { transform: translateY(1.25rem) rotate(0.8deg); }
+  .growth-card:nth-child(3) { transform: translateY(-0.6rem) rotate(-0.7deg); }
+
+  .growth-card h3 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+
+  .growth-card p {
+    margin-top: 1rem;
+    line-height: 1.65;
+    color: rgba(43, 33, 27, 0.72);
+  }
+
+  .tagline-hand {
+    display: inline-block;
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--violet);
+    transform: rotate(-2deg);
+  }
+
+  .subject-page {
+    width: min(980px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 2rem 0 5rem;
+  }
+
+  .subject-header {
+    border-bottom: 1.5px solid var(--line);
+    padding: 2rem 0 2.5rem;
+  }
+
+  .subject-title {
+    font-family: var(--font-serif);
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: 0.88;
+    letter-spacing: -0.06em;
+    font-weight: 500;
+  }
+
+  .resource-sheet {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1rem;
+    border-bottom: 1.5px solid var(--line);
+    padding: 1.2rem 0;
+  }
+
+  .resource-sheet button {
+    text-align: left;
+  }
+
+  .resource-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding-top: 0.9rem;
+  }
+
+  .resource-pill {
+    border: 1.5px solid var(--line);
+    background: rgba(248, 240, 223, 0.58);
+    padding: 0.45rem 0.6rem;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .resource-pill:hover {
+    background: var(--ink);
+    color: var(--paper-light);
+  }
+
+  .page-transition-in {
+    animation: page-in 180ms ease-out both;
+  }
+
+  @keyframes page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 860px) {
+    .garden-nav,
+    .garden-hero,
+    .section-heading,
+    .catalogue-tools,
+    .subject-row {
+      grid-template-columns: 1fr;
+    }
+
+    .garden-menu {
+      justify-content: flex-start;
+    }
+
+    .garden-illustration {
+      min-height: 420px;
+    }
+
+    .garden-plot {
+      inset: 1rem auto 0 0;
+      width: 100%;
+      min-height: 390px;
+    }
+
+    .subject-meta {
+      justify-self: start;
+      text-align: left;
+    }
+
+    .growth-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .growth-card:nth-child(2),
+    .growth-card:nth-child(3) {
+      transform: none;
     }
   }
 
-  .neo-icon {
-    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  @media (prefers-reduced-motion: reduce) {
+    .page-transition-in,
+    .garden-button,
+    .garden-link {
+      animation: none;
+      transition: none;
+    }
   }
-
-  .neo-button-shape {
-    clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-transition-in,
-  .semester-card-in-from-right,
-  .semester-card-in-from-left,
-  .catalogue-3d-card,
-  .semester-tab-3d,
-  .semester-tab-3d-active {
-    animation: none;
-    transition: none;
-    transform: none;
-  }
-
-  .catalogue-3d-layer {
-    transform: none;
-  }
-}
-
-.blog-typewriter-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 0.25rem;
-  max-width: 100%;
-}
-
-.blog-typewriter {
-  display: inline-block;
-  width: 52ch;
-  max-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: blog-type 3.4s steps(52, end) 260ms forwards;
-}
-
-.blog-cursor {
-  width: 0.7ch;
-  height: 1.05em;
-  border-radius: 2px;
-  background: hsl(var(--foreground));
-  transform: translateY(-0.05em);
-  animation: blog-caret-blink 1s step-end infinite, blog-caret-drift 620ms ease-in-out infinite;
-}
-
-@keyframes blog-type {
-  from {
-    max-width: 0;
-  }
-  to {
-    max-width: 52ch;
-  }
-}
-
-@keyframes blog-caret-blink {
-  0%,
-  48% {
-    opacity: 1;
-  }
-  52%,
-  100% {
-    opacity: 0.1;
-  }
-}
-
-@keyframes blog-caret-drift {
-  0% {
-    transform: translateY(-0.05em) translateX(0);
-  }
-  50% {
-    transform: translateY(-0.02em) translateX(1px);
-  }
-  100% {
-    transform: translateY(-0.05em) translateX(0);
-  }
-}
-
-@media (max-width: 640px) {
-  .blog-typewriter {
-    white-space: normal;
-    width: 100%;
-    max-width: 100%;
-    animation: none;
-  }
-
-  .blog-cursor {
-    animation: blog-caret-blink 1s step-end infinite;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .blog-typewriter {
-    animation: none;
-    width: 100%;
-    max-width: 100%;
-    white-space: normal;
-  }
-
-  .blog-cursor {
-    animation: none;
-    opacity: 0.65;
-  }
-}
-
-/* Donation amount input styling */
-input[type="number"] {
-  cursor: pointer;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 200ms ease;
-}
-
-input[type="number"]:hover::-webkit-outer-spin-button,
-input[type="number"]:hover::-webkit-inner-spin-button {
-  opacity: 1;
-}
-
-/* Firefox number input spinner styling */
-input[type="number"] {
-  font-variant-numeric: tabular-nums;
 }
