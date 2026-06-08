@@ -3,47 +3,130 @@ import Base from '../../layouts/Base.astro';
 import { logbook } from '../../data/archive';
 ---
 <Base title="Carnet de travail — Archives mathématiques">
-  <main class="main-grid">
-    <section>
-      <p class="small"><a href="/">← retour à l'accueil</a></p>
-      <h1 class="main-title">Carnet de travail.</h1>
-      <p class="lede">
-        Notes courtes, dettes, erreurs fréquentes, méthodes à stabiliser. Cette partie n'est pas faite pour être parfaite : elle sert à garder la trace du travail réel.
+  <main class="carnet-main">
+    <section class="carnet-header">
+      <p class="eyebrow">Carnet</p>
+      <h1>Carnet de travail.</h1>
+      <p>
+        Trace sobre des ajouts, corrections et décisions de classement. Cette page sert d'historique de travail : ce qui a été rangé, ce qui reste à vérifier, ce qui devra être repris plus tard.
       </p>
-
-      <section class="section">
-        <h2>Entrées</h2>
-        <table class="archive-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Note</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logbook.map((entry) => (
-              <tr>
-                <td>{entry.date}</td>
-                <td><b>{entry.title}</b><br /><span class="small">{entry.text}</span></td>
-                <td><span class="tag">working</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
     </section>
 
-    <aside class="sidebar">
-      <div class="box">
-        <h2>Rubriques prévues</h2>
-        <ul class="compact-list">
-          <li>erreurs classiques</li>
-          <li>méthodes de démonstration</li>
-          <li>questions ouvertes</li>
-          <li>résumés de livres</li>
-        </ul>
+    <section class="carnet-section" aria-label="Entrées du carnet">
+      <h2>Journal des modifications</h2>
+
+      <div class="carnet-list">
+        {logbook.map((entry) => (
+          <article class="carnet-entry">
+            <time datetime={entry.date}>{entry.date}</time>
+            <div>
+              <h3>{entry.title}</h3>
+              <p>{entry.text}</p>
+            </div>
+          </article>
+        ))}
       </div>
-    </aside>
+    </section>
+
+    <section class="carnet-section carnet-notes" aria-label="Notes de méthode">
+      <h2>Règles de tenue</h2>
+      <p>
+        Une entrée doit rester courte, vérifiable, et utile pour retrouver l'état réel de l'archive. Les grandes décisions de tri se font matière par matière, sans mélanger les semestres.
+      </p>
+    </section>
   </main>
 </Base>
+
+<style>
+  .carnet-main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  .carnet-header {
+    max-width: 760px;
+    padding-bottom: 34px;
+    border-bottom: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-header .eyebrow {
+    margin: 0 0 16px;
+    font-family: var(--mono, monospace);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted, #725f4a);
+  }
+
+  .carnet-header h1 {
+    margin: 0;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+  }
+
+  .carnet-header p,
+  .carnet-notes p {
+    max-width: 720px;
+    margin: 22px 0 0;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--text, #22180f);
+  }
+
+  .carnet-section {
+    margin-top: 46px;
+  }
+
+  .carnet-section h2 {
+    margin: 0 0 20px;
+    font-size: 1.35rem;
+  }
+
+  .carnet-list {
+    border-top: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-entry {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 28px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line, #c9bea9);
+  }
+
+  .carnet-entry time {
+    font-family: var(--mono, monospace);
+    font-size: 0.88rem;
+    color: var(--muted, #725f4a);
+  }
+
+  .carnet-entry h3 {
+    margin: 0 0 8px;
+    font-size: 1.08rem;
+  }
+
+  .carnet-entry p {
+    margin: 0;
+    color: var(--muted, #725f4a);
+    line-height: 1.55;
+  }
+
+  .carnet-notes {
+    max-width: 760px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line, #c9bea9);
+  }
+
+  @media (max-width: 720px) {
+    .carnet-main {
+      padding: 36px 18px 72px;
+    }
+
+    .carnet-entry {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>
