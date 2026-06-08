@@ -5,7 +5,6 @@ import { logbook } from '../../data/archive';
 <Base title="Carnet de travail — Archives mathématiques">
   <main class="carnet-main">
     <section class="carnet-header">
-      <p class="eyebrow">Carnet</p>
       <h1>Carnet de travail.</h1>
       <p>
         Trace sobre des ajouts, corrections et décisions de classement. Cette page sert d'historique de travail : ce qui a été rangé, ce qui reste à vérifier, ce qui devra être repris plus tard.
@@ -39,36 +38,27 @@ import { logbook } from '../../data/archive';
 
 <style>
   .carnet-main {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 56px 24px 96px;
+    max-width: 1180px;
+    margin: 0;
+    padding: 56px 32px 96px 96px;
   }
 
   .carnet-header {
-    max-width: 760px;
+    max-width: 860px;
     padding-bottom: 34px;
     border-bottom: 1px solid var(--line, #c9bea9);
   }
 
-  .carnet-header .eyebrow {
-    margin: 0 0 16px;
-    font-family: var(--mono, monospace);
-    font-size: 0.78rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted, #725f4a);
-  }
-
   .carnet-header h1 {
     margin: 0;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    line-height: 0.9;
+    font-size: clamp(3.2rem, 7vw, 6.2rem);
+    line-height: 0.92;
     letter-spacing: -0.05em;
   }
 
   .carnet-header p,
   .carnet-notes p {
-    max-width: 720px;
+    max-width: 760px;
     margin: 22px 0 0;
     font-size: 1.08rem;
     line-height: 1.75;
@@ -77,6 +67,7 @@ import { logbook } from '../../data/archive';
 
   .carnet-section {
     margin-top: 46px;
+    max-width: 980px;
   }
 
   .carnet-section h2 {
@@ -117,6 +108,12 @@ import { logbook } from '../../data/archive';
     max-width: 760px;
     padding-top: 28px;
     border-top: 1px solid var(--line, #c9bea9);
+  }
+
+  @media (max-width: 900px) {
+    .carnet-main {
+      padding-left: 32px;
+    }
   }
 
   @media (max-width: 720px) {
