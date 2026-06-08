@@ -207,7 +207,7 @@ export const logbook = [
   {
     date: '2026-06-08',
     title: 'Ajout documents — Analyse S1',
-    text: '41 fichiers ajoutes : poly, TD, controles, partiels, examens et corriges.',
+    text: '41 fichiers ajoutes depuis eCampus.',
   },
   {
     date: '2026-06-08',
@@ -218,6 +218,41 @@ export const logbook = [
     date: '2026-06-08',
     title: 'Ajout documents — Topologie S1',
     text: '36 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Arithmetique S1',
+    text: '14 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Maths approfondies S1',
+    text: '30 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Analyse S2',
+    text: '42 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Algebre lineaire S2',
+    text: '23 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Probabilites S2',
+    text: '26 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Courbes et surfaces S2',
+    text: '7 fichiers ajoutes depuis eCampus.',
+  },
+  {
+    date: '2026-06-08',
+    title: 'Ajout documents — Maths approfondies S2',
+    text: '5 fichiers ajoutes depuis eCampus.',
   },
 ];
 
