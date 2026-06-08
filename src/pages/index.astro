@@ -1,9 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { subjects, logbook, externalSeeds } from '../data/archive';
+import { subjects, logbook } from '../data/archive';
 
-const totalChapters = subjects.flatMap((subject) => subject.chapters).length;
-const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((chapter) => chapter.resources)).length;
 const s1Subjects = subjects.filter((subject) => subject.semester === 'S1' || subject.semester === 'Annuel');
 const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || subject.semester === 'Annuel');
 ---
@@ -12,11 +10,11 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
     <section>
       <h1 class="main-title">Archives mathématiques personnelles.</h1>
       <p class="lede">
-        Une page de travail simple, faite pour retrouver vite les cours, TD, annales et corrections. Pas un portfolio. Pas un dashboard. Une table d'archives qui doit rester lisible dans dix ans.
+        Une archive de Licence 2 Mathématiques à Paris-Saclay, faite pour retrouver vite les cours, TD, annales et corrections. Une table de travail lisible, pensée pour garder une trace durable du semestre.
       </p>
 
       <div class="notice">
-        <b>Principe :</b> chaque matière a une page. Chaque chapitre indique les ressources disponibles : cours, TD, corrections personnelles et annales. Les liens PDF sont directs quand le fichier existe.
+        <b>Principe :</b> chaque matière a une page. Les documents sont classés par cours, TD, évaluations et corrigés, avec des liens directs vers les PDF quand le fichier existe.
       </div>
 
       <section class="section semester-switcher" id="licence-2">
@@ -24,7 +22,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
         <input type="radio" id="semestre-2" name="semestre" />
 
         <div class="section-line-heading">
-          <h2>Licence 2 — 2025/2026</h2>
+          <h2>Licence 2 Mathématiques — Paris-Saclay — 2025/2026</h2>
           <div class="semester-control" aria-label="Choix du semestre">
             <label for="semestre-1">Semestre 1</label>
             <label for="semestre-2">Semestre 2</label>
@@ -33,7 +31,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 
         <div class="subject-register semester-panel s1-panel" aria-label="Registre des matières du semestre 1">
           {s1Subjects.map((subject) => (
-            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
               <span class="entry-title">{subject.title}</span>
               <span class="entry-prof">Prof. {subject.professor}</span>
               <span class="entry-desc">{subject.description}</span>
@@ -43,7 +41,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 
         <div class="subject-register semester-panel s2-panel" aria-label="Registre des matières du semestre 2">
           {s2Subjects.map((subject) => (
-            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
               <span class="entry-title">{subject.title}</span>
               <span class="entry-prof">Prof. {subject.professor}</span>
               <span class="entry-desc">{subject.description}</span>
@@ -63,43 +61,24 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
           ))}
         </ul>
       </section>
-
-      <section class="section">
-        <h2>Arborescence prévue</h2>
-        <pre class="directory">public/pdf/
-├── analyse/
-│   ├── cours.pdf
-│   ├── td.pdf
-│   └── corriges/
-├── algebre-lineaire/
-├── topologie/
-├── probabilites/
-└── annales/
-
-src/pages/
-├── index.astro
-├── l2/[slug].astro
-├── carnet/index.astro
-└── a-propos/index.astro</pre>
-      </section>
     </section>
 
     <aside class="sidebar">
       <div class="box">
-        <h2>État de l'archive</h2>
+        <h2>Pour travailler vite</h2>
         <ul class="compact-list">
-          <li>{subjects.length} matières</li>
-          <li>{totalChapters} chapitres</li>
-          <li>{totalResources} entrées de ressources</li>
+          <li><b>Retrouver un document</b><br /><span class="small">cours, TD, partiels, examens et corrigés rangés par matière</span></li>
+          <li><b>Comparer les années</b><br /><span class="small">repérer les sujets qui reviennent et les formats de contrôle</span></li>
+          <li><b>Reprendre une matière</b><br /><span class="small">partir des annales puis revenir aux chapitres faibles</span></li>
         </ul>
       </div>
 
       <div class="box">
-        <h2>Inspirations structurelles</h2>
+        <h2>Mode d'emploi</h2>
         <ul class="compact-list">
-          {externalSeeds.map((seed) => (
-            <li><b>{seed.label}</b><br /><span class="small">{seed.text}</span></li>
-          ))}
+          <li><b>Avant un TD</b><br /><span class="small">ouvrir le cours puis la feuille correspondante</span></li>
+          <li><b>Avant un examen</b><br /><span class="small">travailler les anciens sujets avec les corrigés</span></li>
+          <li><b>Après correction</b><br /><span class="small">noter les erreurs importantes dans le carnet</span></li>
         </ul>
       </div>
     </aside>
