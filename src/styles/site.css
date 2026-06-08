@@ -247,7 +247,20 @@ a:hover { color: var(--accent); }
 }
 
 .subject-main { padding-top: 18px; }
-.subject-back { margin: 0 0 16px; }
+.subject-back {
+  margin: 0 0 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+.subject-back a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.subject-back a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .subject-header {
   margin: 0 0 18px;
   padding-bottom: 18px;
