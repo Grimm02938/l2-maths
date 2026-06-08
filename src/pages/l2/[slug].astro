@@ -16,7 +16,6 @@ const { subject } = Astro.props;
     <p class="subject-back small"><a href="/">← retour à l'accueil</a></p>
 
     <header class="subject-header">
-      <p class="small">{subject.code} · {subject.semester} · état : {subject.status}</p>
       <h1>{subject.title}</h1>
       <p class="lede subject-lede">{subject.description}</p>
     </header>
@@ -25,7 +24,6 @@ const { subject } = Astro.props;
       {subject.chapters.map((chapter, index) => (
         <article class="resource-block">
           <h2>{String(index + 1).padStart(2, '0')} — {chapter.title}</h2>
-          <p class="small">statut : <span class="tag">{chapter.status}</span></p>
           <div class="resource-grid">
             {chapter.resources.map((resource) => resource.href ? (
               <a href={resource.href}>
@@ -35,8 +33,7 @@ const { subject } = Astro.props;
             ) : (
               <span>
                 <b>{resource.kind}</b><br />
-                {resource.title}<br />
-                <em>à ajouter</em>
+                {resource.title}
               </span>
             ))}
           </div>
