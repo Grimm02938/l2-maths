@@ -4,6 +4,8 @@ import { subjects, logbook, externalSeeds } from '../data/archive';
 
 const totalChapters = subjects.flatMap((subject) => subject.chapters).length;
 const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((chapter) => chapter.resources)).length;
+const s1Subjects = subjects.filter((subject) => subject.semester === 'S1' || subject.semester === 'Annuel');
+const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || subject.semester === 'Annuel');
 ---
 <Base title="Archives mathématiques — Adame Abdelmoula">
   <main class="main-grid">
@@ -18,31 +20,53 @@ const totalResources = subjects.flatMap((subject) => subject.chapters.flatMap((c
         <b>Principe :</b> chaque matière a une page. Chaque chapitre indique ce qui existe, ce qui manque, et ce qui doit être repris. Les liens PDF sont directs quand le fichier existe.
       </div>
 
-      <section class="section" id="licence-2">
+      <section class="section semester-switcher" id="licence-2">
+        <input type="radio" id="semestre-1" name="semestre" checked />
+        <input type="radio" id="semestre-2" name="semestre" />
+
         <div class="section-line-heading">
           <h2>Licence 2 — 2025/2026</h2>
-          <p class="small">Registre compact : spécial, mais pas décoratif.</p>
+          <div class="semester-control" aria-label="Choix du semestre">
+            <label for="semestre-1">Semestre 1</label>
+            <label for="semestre-2">Semestre 2</label>
+          </div>
         </div>
 
-        <div class="subject-register" aria-label="Registre des matières de licence 2">
-          {subjects.map((subject, index) => {
+        <div class="subject-register semester-panel s1-panel" aria-label="Registre des matières du semestre 1">
+          {s1Subjects.map((subject) => {
             const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
-            const openChapters = subject.chapters.filter((chapter) => chapter.status === 'ouvert').length;
             return (
               <a class="subject-entry" href={`/l2/${subject.slug}/`}>
-                <span class="entry-mark">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <span>{subject.code}</span>
-                </span>
                 <span class="entry-main">
                   <span class="entry-title">{subject.title}</span>
+                  <span class="entry-prof">Prof. {subject.professor}</span>
                   <span class="entry-desc">{subject.description}</span>
                 </span>
                 <span class="entry-stats">
-                  <span>{subject.semester}</span>
                   <span>{subject.status}</span>
-                  <span>{subject.chapters.length} ch. · {resources} ress.</span>
-                  <span>{openChapters} ouverts</span>
+                  <span>{subject.chapters.length} ch.</span>
+                  <span>{resources} ress.</span>
+                </span>
+                <span class="entry-open">→</span>
+              </a>
+            );
+          })}
+        </div>
+
+        <div class="subject-register semester-panel s2-panel" aria-label="Registre des matières du semestre 2">
+          {s2Subjects.map((subject) => {
+            const resources = subject.chapters.flatMap((chapter) => chapter.resources).length;
+            return (
+              <a class="subject-entry" href={`/l2/${subject.slug}/`}>
+                <span class="entry-main">
+                  <span class="entry-title">{subject.title}</span>
+                  <span class="entry-prof">Prof. {subject.professor}</span>
+                  <span class="entry-desc">{subject.description}</span>
+                </span>
+                <span class="entry-stats">
+                  <span>{subject.status}</span>
+                  <span>{subject.chapters.length} ch.</span>
+                  <span>{resources} ress.</span>
                 </span>
                 <span class="entry-open">→</span>
               </a>
