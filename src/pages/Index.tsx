@@ -4,31 +4,39 @@ import { getChapterResources, themes } from '@/lib/themes';
 
 type Semester = 's1' | 's2';
 
-const growthStages = [
+const collections = [
   {
-    label: 'Seedlings',
-    title: 'Notions en germe',
-    text: 'Les idées que je commence à comprendre : elles sont fragiles, parfois incomplètes, mais déjà reliées au reste du cours.',
+    id: 'l2',
+    eyebrow: 'Corpus principal',
+    title: 'Licence 2 Mathématiques',
+    institution: 'Paris-Saclay',
+    years: '2025/2026',
+    description:
+      'Le noyau vivant du site : cours, TD, corrections, annales et traces personnelles organisés par matière.',
+    href: '#l2-catalogue',
+    action: 'Explorer la L2',
   },
   {
-    label: 'Growing',
-    title: 'Chapitres en croissance',
-    text: 'Les cours, TD et corrections que je retravaille jusqu’à voir la structure derrière les calculs.',
-  },
-  {
-    label: 'Evergreen',
-    title: 'Méthodes durables',
-    text: 'Les raisonnements qui doivent survivre à la L2 et devenir des outils pour le magistère.',
+    id: 'mpsi',
+    eyebrow: 'Archive préparatoire',
+    title: 'MPSI',
+    institution: 'Jean-Baptiste-Corot',
+    years: '2024/2025',
+    description:
+      'La réserve de fondation : documents de prépa, méthodes, devoirs et exercices pour solidifier les bases avant la suite.',
+    href: '#mpsi-corpus',
+    action: 'Voir le bloc MPSI',
   },
 ];
 
 function GardenNav() {
   return (
     <nav className="garden-nav garden-frame">
-      <Link to="/" className="garden-brand garden-link">Adame Abdelmoula · L2 Maths</Link>
+      <Link to="/" className="garden-brand garden-link">Adame Abdelmoula · Archives mathématiques</Link>
       <div className="garden-menu">
-        <a className="garden-link" href="#catalogue">Archive</a>
-        <a className="garden-link" href="#garden">Garden</a>
+        <a className="garden-link" href="#collections">Corpus</a>
+        <a className="garden-link" href="#l2-catalogue">L2</a>
+        <a className="garden-link" href="#mpsi-corpus">MPSI</a>
         <Link className="garden-link" to="/blog">Logbook</Link>
         <Link className="garden-link" to="/contact">Contact</Link>
       </div>
@@ -53,16 +61,16 @@ function GardenIllustration({ resourceCount, chapterCount }: { resourceCount: nu
           </svg>
         </div>
         <div className="seed-note" style={{ left: '7%', top: '10%', transform: 'rotate(-3deg)' }}>
-          <b>Archive</b>
-          {resourceCount} ressources indexées
+          <b>Licence 2</b>
+          Paris-Saclay · 2025/2026
         </div>
         <div className="seed-note" style={{ right: '8%', top: '34%', transform: 'rotate(2deg)' }}>
-          <b>Garden</b>
-          notions reliées par chapitre
+          <b>MPSI</b>
+          Jean-Baptiste-Corot · 2024/2025
         </div>
         <div className="seed-note" style={{ left: '17%', bottom: '12%', transform: 'rotate(2.6deg)' }}>
-          <b>Magistère</b>
-          {chapterCount} chapitres pour construire la suite
+          <b>Index</b>
+          {chapterCount} chapitres · {resourceCount} ressources L2
         </div>
       </div>
     </div>
@@ -97,52 +105,58 @@ const Index = () => {
       <main className="garden-frame">
         <section className="garden-hero">
           <div>
-            <p className="garden-kicker">A living mathematical garden</p>
+            <p className="garden-kicker">Archive de travail</p>
             <h1 className="garden-title">
-              Maths as a <em>garden</em>, not a drive.
+              Deux <em>corpus</em>, une trajectoire.
             </h1>
             <p className="garden-subtitle">
-              Une archive personnelle pour les cours, TD, annales et corrections de L2 — mais pensée comme un jardin de notions : vivant, annoté, relié, destiné à survivre jusqu’au magistère.
+              Pour l’instant, le site se concentre sur deux blocs précis : la Licence 2 Mathématiques à Paris-Saclay et l’archive MPSI du lycée Jean-Baptiste-Corot. Le reste viendra après, sans brouiller la page.
             </p>
             <div className="garden-actions">
-              <a href="#catalogue" className="garden-button">Entrer dans l’archive</a>
-              <a href="#garden" className="garden-button secondary">Voir la logique garden</a>
+              <a href="#collections" className="garden-button">Voir les deux corpus</a>
+              <a href="#l2-catalogue" className="garden-button secondary">Entrer dans la L2</a>
             </div>
           </div>
 
           <GardenIllustration resourceCount={stats.resources} chapterCount={stats.chapters} />
         </section>
 
-        <section id="garden" className="garden-section">
+        <section id="collections" className="garden-section">
           <div className="section-heading">
             <div>
-              <p className="garden-kicker">Growth stages</p>
-              <h2>Une bibliothèque qui pousse.</h2>
+              <p className="garden-kicker">Corpus</p>
+              <h2>Le périmètre actuel.</h2>
             </div>
             <p>
-              Chaque contenu a un statut. Un TD brut n’est pas une correction personnelle. Une fiche fragile n’est pas encore une idée evergreen. Le site doit le montrer.
+              Pas encore de Magistère affiché, pas de catégories parasites. La page doit respirer autour de ces deux années : une année universitaire et une année de prépa.
             </p>
           </div>
 
-          <div className="growth-grid">
-            {growthStages.map((stage) => (
-              <article className="growth-card" key={stage.label}>
-                <p className="garden-kicker">{stage.label}</p>
-                <h3>{stage.title}</h3>
-                <p>{stage.text}</p>
-              </article>
+          <div className="corpus-grid">
+            {collections.map((collection, index) => (
+              <a className="corpus-card garden-link" href={collection.href} key={collection.id}>
+                <div className="corpus-card-topline">
+                  <span>{collection.eyebrow}</span>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                </div>
+                <h3>{collection.title}</h3>
+                <p className="corpus-institution">{collection.institution}</p>
+                <p className="corpus-years">{collection.years}</p>
+                <p className="corpus-description">{collection.description}</p>
+                <span className="corpus-action">{collection.action} →</span>
+              </a>
             ))}
           </div>
         </section>
 
-        <section id="catalogue" className="garden-section">
+        <section id="l2-catalogue" className="garden-section">
           <div className="section-heading">
             <div>
-              <p className="garden-kicker">Catalogue</p>
+              <p className="garden-kicker">Licence 2 Mathématiques · Paris-Saclay · 2025/2026</p>
               <h2>Le corpus L2.</h2>
             </div>
             <p>
-              Pas de cartes molles. Juste une table de jardin : matière, description, disponibilité, et entrée directe vers les ressources.
+              Matières, chapitres et ressources déjà indexées. Cette partie reste le cœur actif du site.
             </p>
           </div>
 
@@ -185,14 +199,24 @@ const Index = () => {
           )}
         </section>
 
-        <section className="garden-section">
+        <section id="mpsi-corpus" className="garden-section">
           <div className="section-heading">
             <div>
-              <p className="garden-kicker">Personal proof</p>
-              <h2>Montrer que je deviens quelqu’un.</h2>
+              <p className="garden-kicker">MPSI · Jean-Baptiste-Corot · 2024/2025</p>
+              <h2>L’archive de prépa.</h2>
             </div>
             <p>
-              Le site n’est pas seulement un rangement. C’est une trace publique : je lis, je classe, je corrige, je relie, je progresse. <span className="tagline-hand">La L2 devient un terrain.</span>
+              Ce bloc est posé comme deuxième pilier du site. L’étape suivante sera de l’indexer proprement par matière, type de document et chapitre, sans l’afficher comme une simple liste de fichiers.
+            </p>
+          </div>
+
+          <div className="mpsi-panel">
+            <div>
+              <p className="garden-kicker">À structurer</p>
+              <h3>Mathématiques · Physique · Colles · DS · TD</h3>
+            </div>
+            <p>
+              La MPSI sert ici de socle : une archive exigeante pour consolider les méthodes de prépa et alimenter le travail de L2. Elle n’est pas encore éclatée en centaines de documents sur la page d’accueil ; elle reste un bloc clair, sérieux, identifiable.
             </p>
           </div>
         </section>
