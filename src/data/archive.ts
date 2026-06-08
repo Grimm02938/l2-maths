@@ -18,6 +18,7 @@ export type Subject = {
   code: string;
   title: string;
   semester: 'S1' | 'S2' | 'Annuel';
+  professor: string;
   description: string;
   status: 'archive' | 'chantier' | 'bientot';
   chapters: Chapter[];
@@ -29,6 +30,7 @@ export const subjects: Subject[] = [
     code: 'L2-AN',
     title: 'Analyse',
     semester: 'S1',
+    professor: 'Professeur à renseigner',
     status: 'chantier',
     description: 'Suites et series, integrales, fonctions, estimations. La matiere ou chaque detail finit par couter des points.',
     chapters: [
@@ -57,6 +59,7 @@ export const subjects: Subject[] = [
     code: 'L2-AL',
     title: 'Algebre lineaire',
     semester: 'S1',
+    professor: 'Professeur à renseigner',
     status: 'archive',
     description: 'Espaces vectoriels, applications lineaires, matrices, reduction. Le socle a rendre parfaitement propre.',
     chapters: [
@@ -84,6 +87,7 @@ export const subjects: Subject[] = [
     code: 'L2-TO',
     title: 'Topologie',
     semester: 'S2',
+    professor: 'Professeur à renseigner',
     status: 'chantier',
     description: 'Ouverts, fermes, compacite, connexite. Une matiere a organiser par definitions, exemples, contre-exemples.',
     chapters: [
@@ -110,6 +114,7 @@ export const subjects: Subject[] = [
     code: 'L2-PR',
     title: 'Probabilites',
     semester: 'S2',
+    professor: 'Professeur à renseigner',
     status: 'chantier',
     description: 'Variables aleatoires, lois, esperance, variance, convergence. Le cours doit devenir calculable et intuitif.',
     chapters: [
@@ -136,6 +141,7 @@ export const subjects: Subject[] = [
     code: 'L2-AR',
     title: 'Arithmetique',
     semester: 'S2',
+    professor: 'Professeur à renseigner',
     status: 'archive',
     description: 'Congruences, groupes cycliques, nombres premiers, anneaux quotients. Un terrain parfait pour des fiches seches.',
     chapters: [
