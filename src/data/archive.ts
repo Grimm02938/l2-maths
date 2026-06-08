@@ -26,10 +26,30 @@ export type Subject = {
 
 export const subjects: Subject[] = [
   {
+    slug: 'analyse-s1',
+    code: 'L2-AN-S1',
+    title: 'Analyse S1',
+    semester: 'S3',
+    professor: 'Prof. Professeur à renseigner',
+    status: 'chantier',
+    description: 'Suites, séries, intégrales, fonctions, estimations. La matière où chaque détail finit par coûter des points.',
+    chapters: [
+      {
+        title: 'Analyse S1',
+        status: 'a reprendre',
+        resources: [
+          { kind: 'Cours', title: 'Cours et formulaire' },
+          { kind: 'TD', title: 'Feuilles de TD' },
+          { kind: 'Annales', title: 'Tests, partiels et examens' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'analyse',
     code: 'L2-AN',
     title: 'Analyse',
-    semester: 'Annuel',
+    semester: 'S3',
     professor: 'Professeur à renseigner',
     status: 'chantier',
     description: 'Suites, series, integrales, fonctions, estimations. La matiere ou chaque detail finit par couter des points.',
@@ -50,6 +70,26 @@ export const subjects: Subject[] = [
         resources: [
           { kind: 'TD', title: 'Feuille a ajouter' },
           { kind: 'Annale', title: 'Sujets a classer' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'analyse-s2',
+    code: 'L2-AN-S2',
+    title: 'Analyse S2',
+    semester: 'S4',
+    professor: 'Prof. Professeur à renseigner',
+    status: 'chantier',
+    description: 'Suites et séries de fonctions, convergence, intégrales et outils d’analyse du semestre 4.',
+    chapters: [
+      {
+        title: 'Analyse S2',
+        status: 'a reprendre',
+        resources: [
+          { kind: 'Cours', title: 'Cours' },
+          { kind: 'TD', title: 'Feuilles de TD' },
+          { kind: 'Annales', title: 'Tests, partiels et examens' },
         ],
       },
     ],
@@ -183,10 +223,10 @@ export const subjects: Subject[] = [
     ],
   },
   {
-    slug: 'maths-approfondies',
+    slug: 'maths-approfondies-s1',
     code: 'L2-MA',
     title: 'Maths approfondies',
-    semester: 'Annuel',
+    semester: 'S3',
     professor: 'Professeur à renseigner',
     status: 'chantier',
     description: 'Exercices plus longs, methodes transversales, problemes a refaire. Le bloc qui sert a consolider les liens entre les matieres.',

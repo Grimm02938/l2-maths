@@ -1,0 +1,380 @@
+---
+import Base from '../../layouts/Base.astro';
+import { contenuFinalL2 } from '../../data/contenu-final-l2';
+
+const hiddenSections = new Set(contenuFinalL2.rules.hiddenSections);
+const baseOrder = contenuFinalL2.rules.displayOrder.filter(
+  (section) => !hiddenSections.has(section) && section !== 'À vérifier'
+);
+
+export function getStaticPaths() {
+  const visibleSubjects = new Set(
+    contenuFinalL2.documents
+      .filter((doc) => !doc.hidden && !hiddenSections.has(doc.section))
+      .map((doc) => doc.subject)
+  );
+
+  return Object.entries(contenuFinalL2.subjects)
+    .filter(([slug]) => visibleSubjects.has(slug))
+    .map(([slug, subject]) => ({
+      params: { slug },
+      props: {
+        subject: {
+          slug,
+          title: subject.title,
+          description: subject.subtitle,
+          semester: subject.semester,
+        },
+      },
+    }));
+}
+
+const { subject } = Astro.props;
+
+const subjectDocs = contenuFinalL2.documents.filter(
+  (doc) => doc.subject === subject.slug && !doc.hidden && !hiddenSections.has(doc.section)
+);
+
+const sections = baseOrder
+  .map((section) => ({
+    title: section,
+    docs: subjectDocs
+      .filter((doc) => doc.section === section)
+      .sort((a, b) => {
+        if (a.subjectOrder !== b.subjectOrder) return a.subjectOrder - b.subjectOrder;
+        return a.displayTitle.localeCompare(b.displayTitle, 'fr', { numeric: true });
+      }),
+  }))
+  .filter((section) => section.docs.length > 0);
+
+const totalDocuments = sections.reduce((sum, section) => sum + section.docs.length, 0);
+
+function detailFor(section, doc) {
+  const title = doc.displayTitle.toLowerCase();
+
+  if (section === 'Cours') {
+    if (title.includes('formulaire')) return 'référence';
+    if (title.includes('poly')) return 'polycopié';
+    if (title.includes('notes')) return 'notes';
+    return 'cours';
+  }
+
+  if (section === 'TD') return 'feuille d’exercices';
+  if (section === 'Tests / CC') return 'contrôle';
+  if (section === 'Partiels') return 'sujet';
+  if (section === 'Examens') return 'sujet';
+  if (section.includes('Corrigés')) return 'correction';
+
+  return doc.extension?.toUpperCase() ?? 'PDF';
+}
+---
+<Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
+  <main class="course-page">
+    <nav class="breadcrumb" aria-label="Fil d’Ariane">
+      <a href="/">Accueil</a>
+      <span>/</span>
+      <a href="/#licence-2">Licence 2</a>
+      <span>/</span>
+      <span>{subject.title}</span>
+    </nav>
+
+    <header class="course-hero">
+      <div>
+        <p class="semester">{subject.semester}</p>
+        <h1>{subject.title}</h1>
+        <p>{subject.description}</p>
+      </div>
+
+      <aside class="course-meta" aria-label="Résumé">
+        <div>
+          <strong>{totalDocuments}</strong>
+          <span>documents</span>
+        </div>
+        <div>
+          <strong>{sections.length}</strong>
+          <span>sections</span>
+        </div>
+      </aside>
+    </header>
+
+    <section class="archive-list" aria-label="Documents">
+      {sections.map((section, index) => (
+        <article class="archive-section">
+          <header class="section-head">
+            <div>
+              <span class="section-number">{String(index + 1).padStart(2, '0')}</span>
+              <h2>{section.title}</h2>
+            </div>
+            <p>{section.docs.length} document{section.docs.length > 1 ? 's' : ''}</p>
+          </header>
+
+          <div class="document-list">
+            {section.docs.map((doc) => (
+              <a class="document-row" href={doc.publicHref} target="_blank" rel="noreferrer">
+                <span class="document-title">{doc.displayTitle}</span>
+                <span class="document-detail">{detailFor(section.title, doc)}</span>
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</Base>
+
+<style>
+  :global(body) {
+    background:
+      linear-gradient(rgba(125, 96, 54, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(125, 96, 54, 0.025) 1px, transparent 1px),
+      #f5f0e6;
+    background-size: 44px 44px;
+  }
+
+  .course-page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 34px 24px 80px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 44px;
+    color: rgba(27, 23, 17, 0.58);
+    font-size: 0.88rem;
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: #1f1a13;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .course-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 48px;
+    align-items: end;
+    padding-bottom: 34px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(31, 26, 19, 0.22);
+  }
+
+  .semester {
+    width: fit-content;
+    margin: 0 0 18px;
+    padding: 4px 9px;
+    border: 1px solid rgba(101, 73, 35, 0.18);
+    border-radius: 999px;
+    color: #7c5520;
+    background: rgba(255, 248, 235, 0.6);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .course-hero h1 {
+    margin: 0;
+    color: #111827;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(3.2rem, 8vw, 5.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.065em;
+    font-weight: 500;
+  }
+
+  .course-hero p:not(.semester) {
+    max-width: 620px;
+    margin: 18px 0 0;
+    color: rgba(31, 26, 19, 0.72);
+    font-size: 1.12rem;
+    line-height: 1.6;
+  }
+
+  .course-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(112px, 1fr));
+    gap: 10px;
+  }
+
+  .course-meta div {
+    min-width: 118px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(31, 26, 19, 0.18);
+  }
+
+  .course-meta strong {
+    display: block;
+    color: #111827;
+    font-size: 1.38rem;
+    line-height: 1;
+  }
+
+  .course-meta span {
+    display: block;
+    margin-top: 6px;
+    color: rgba(31, 26, 19, 0.55);
+    font-size: 0.8rem;
+  }
+
+  .archive-list {
+    display: grid;
+    gap: 0;
+  }
+
+  .archive-section {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 48px;
+    padding: 34px 0;
+    border-bottom: 1px solid rgba(31, 26, 19, 0.14);
+  }
+
+  .section-head {
+    position: sticky;
+    top: 18px;
+    align-self: start;
+  }
+
+  .section-head div {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .section-number {
+    color: #9a6a2f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.84rem;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    color: #15130f;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.55rem;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .section-head p {
+    margin: 9px 0 0 34px;
+    color: rgba(31, 26, 19, 0.5);
+    font-size: 0.86rem;
+  }
+
+  .document-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 34px;
+  }
+
+  .document-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(31, 26, 19, 0.1);
+    color: #15130f;
+    text-decoration: none;
+  }
+
+  .document-row::after {
+    content: "↗";
+    position: absolute;
+    right: 0;
+    opacity: 0;
+    transform: translateX(-4px);
+    color: rgba(31, 26, 19, 0.5);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+  }
+
+  .document-row:hover {
+    border-bottom-color: rgba(31, 26, 19, 0.32);
+  }
+
+  .document-row:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .document-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 20px;
+    font-size: 0.98rem;
+    font-weight: 560;
+    letter-spacing: -0.008em;
+  }
+
+  .document-detail {
+    color: rgba(31, 26, 19, 0.46);
+    font-size: 0.76rem;
+    text-transform: lowercase;
+    white-space: nowrap;
+    padding-right: 18px;
+  }
+
+  @media (max-width: 900px) {
+    .course-hero {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .course-meta {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .archive-section {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .section-head {
+      position: static;
+    }
+
+    .section-head p {
+      margin-left: 0;
+    }
+
+    .document-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .course-page {
+      padding-inline: 18px;
+    }
+
+    .course-hero h1 {
+      font-size: 3.1rem;
+    }
+
+    .course-meta {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .document-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .document-detail {
+      padding-right: 0;
+    }
+  }
+</style>

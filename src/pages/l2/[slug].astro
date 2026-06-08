@@ -1,40 +1,179 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { subjects } from '../../data/archive';
+import { contenuFinalL2 } from '../../data/contenu-final-l2';
+
+const hiddenSections = new Set(contenuFinalL2.rules.hiddenSections);
+const displayOrder = contenuFinalL2.rules.displayOrder.filter(
+  (section) => !hiddenSections.has(section) && section !== 'À vérifier'
+);
+
+const subjectAliases = {
+  "analyse": {
+    title: "Analyse",
+    subtitle: "Cours, TD, évaluations et corrigés d’analyse.",
+    semester: "L2",
+    sourceSlugs: ["analyse-s1", "analyse-s2"],
+  },
+  "algebre-lineaire": {
+    title: "Algèbre linéaire",
+    subtitle: "Cours, TD, évaluations et corrigés d’algèbre linéaire.",
+    semester: "L2",
+    sourceSlugs: ["algebre-lineaire-s1", "algebre-lineaire-s2"],
+  },
+  "topologie": {
+    title: "Topologie",
+    subtitle: "Cours, TD, évaluations et corrigés de topologie.",
+    semester: "S3",
+    sourceSlugs: ["topologie-s1"],
+  },
+  "arithmetique": {
+    title: "Arithmétique",
+    subtitle: "Cours, TD, évaluations et corrigés d’arithmétique.",
+    semester: "S3",
+    sourceSlugs: ["arithmetique-s1"],
+  },
+  "probabilites": {
+    title: "Probabilités",
+    subtitle: "Cours, TD, évaluations et corrigés de probabilités.",
+    semester: "S4",
+    sourceSlugs: ["probabilites-s2"],
+  },
+  "courbes-surfaces": {
+    title: "Courbes et surfaces",
+    subtitle: "Cours, TD, évaluations et corrigés de courbes et surfaces.",
+    semester: "S4",
+    sourceSlugs: ["courbes-surfaces-s2"],
+  },
+};
 
 export function getStaticPaths() {
-  return subjects.map((subject) => ({
-    params: { slug: subject.slug },
-    props: { subject },
-  }));
+  const hiddenSectionsForPaths = new Set(contenuFinalL2.rules.hiddenSections);
+
+  const subjectAliases = {
+    "analyse": {
+      title: "Analyse",
+      subtitle: "Cours, TD, évaluations et corrigés d’analyse.",
+      semester: "L2",
+      sourceSlugs: ["analyse-s1", "analyse-s2"],
+    },
+    "algebre-lineaire": {
+      title: "Algèbre linéaire",
+      subtitle: "Cours, TD, évaluations et corrigés d’algèbre linéaire.",
+      semester: "L2",
+      sourceSlugs: ["algebre-lineaire-s1", "algebre-lineaire-s2"],
+    },
+    "topologie": {
+      title: "Topologie",
+      subtitle: "Cours, TD, évaluations et corrigés de topologie.",
+      semester: "S3",
+      sourceSlugs: ["topologie-s1"],
+    },
+    "arithmetique": {
+      title: "Arithmétique",
+      subtitle: "Cours, TD, évaluations et corrigés d’arithmétique.",
+      semester: "S3",
+      sourceSlugs: ["arithmetique-s1"],
+    },
+    "probabilites": {
+      title: "Probabilités",
+      subtitle: "Cours, TD, évaluations et corrigés de probabilités.",
+      semester: "S4",
+      sourceSlugs: ["probabilites-s2"],
+    },
+    "courbes-surfaces": {
+      title: "Courbes et surfaces",
+      subtitle: "Cours, TD, évaluations et corrigés de courbes et surfaces.",
+      semester: "S4",
+      sourceSlugs: ["courbes-surfaces-s2"],
+    },
+  };
+
+  const visibleSubjects = new Set(
+    contenuFinalL2.documents
+      .filter((doc) => !doc.hidden && !hiddenSectionsForPaths.has(doc.section))
+      .map((doc) => doc.subject)
+  );
+
+  const generatedPaths = Object.entries(contenuFinalL2.subjects)
+    .filter(([slug]) => visibleSubjects.has(slug))
+    .map(([slug, subject]) => ({
+      params: { slug },
+      props: {
+        subject: {
+          slug,
+          title: subject.title,
+          description: subject.subtitle,
+          semester: subject.semester,
+          sourceSlugs: [slug],
+        },
+      },
+    }));
+
+  const aliasPaths = Object.entries(subjectAliases)
+    .filter(([, subject]) => subject.sourceSlugs.some((slug) => visibleSubjects.has(slug)))
+    .map(([slug, subject]) => ({
+      params: { slug },
+      props: {
+        subject: {
+          slug,
+          title: subject.title,
+          description: subject.subtitle,
+          semester: subject.semester,
+          sourceSlugs: subject.sourceSlugs,
+        },
+      },
+    }));
+
+  return [...generatedPaths, ...aliasPaths];
 }
 
 const { subject } = Astro.props;
+
+const sourceSlugs = subject.sourceSlugs ?? [subject.slug];
+
+const subjectDocs = contenuFinalL2.documents.filter(
+  (doc) => sourceSlugs.includes(doc.subject) && !doc.hidden && !hiddenSections.has(doc.section)
+);
+
+const sections = displayOrder
+  .map((section) => ({
+    title: section,
+    docs: subjectDocs
+      .filter((doc) => doc.section === section)
+      .sort((a, b) => {
+        if (a.subjectOrder !== b.subjectOrder) return a.subjectOrder - b.subjectOrder;
+        return a.displayTitle.localeCompare(b.displayTitle, 'fr', { numeric: true });
+      }),
+  }))
+  .filter((section) => section.docs.length > 0);
+
+const sourceLabels = {
+  officiel_2025_2026: 'Officiel',
+  drive_etudiant: 'Drive',
+  archive: 'Archive',
+  unknown: 'Source inconnue',
+};
 ---
 <Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
   <main class="subject-main">
     <p class="subject-back"><a href="/">‹ accueil</a></p>
 
     <header class="subject-header">
+      <p class="eyebrow">{subject.semester}</p>
       <h1>{subject.title}</h1>
       <p class="lede subject-lede">{subject.description}</p>
     </header>
 
     <section class="subject-resources">
-      {subject.chapters.map((chapter, index) => (
+      {sections.map((section, index) => (
         <article class="resource-block">
-          <h2>{String(index + 1).padStart(2, '0')} — {chapter.title}</h2>
+          <h2>{String(index + 1).padStart(2, '0')} — {section.title}</h2>
           <div class="resource-grid">
-            {chapter.resources.map((resource) => resource.href ? (
-              <a href={resource.href}>
-                <b>{resource.kind}</b><br />
-                {resource.title}
+            {section.docs.map((doc) => (
+              <a href={doc.publicHref} target="_blank">
+                <b>{doc.displayTitle}</b><br />
+                <span>{sourceLabels[doc.sourceType] ?? doc.source}</span>
               </a>
-            ) : (
-              <span>
-                <b>{resource.kind}</b><br />
-                {resource.title}
-              </span>
             ))}
           </div>
         </article>
@@ -42,3 +181,18 @@ const { subject } = Astro.props;
     </section>
   </main>
 </Base>
+
+<style>
+  .resource-grid a small,
+  .resource-grid a .source,
+  .resource-grid a .origin,
+  .resource-grid a .provenance,
+  .resource-grid a span:not(:first-child) {
+    display: none !important;
+  }
+
+  .resource-grid a {
+    min-height: 56px;
+    padding: 12px 14px;
+  }
+</style>

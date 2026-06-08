@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import { contenuFinalL2 } from '../../data/contenu-final-l2';
+
+const hiddenSections = new Set(contenuFinalL2.rules.hiddenSections);
+const displayOrder = contenuFinalL2.rules.displayOrder.filter(
+  (section) => !hiddenSections.has(section) && section !== 'À vérifier'
+);
+
+export function getStaticPaths() {
+  return Object.entries(contenuFinalL2.subjects).map(([slug, subject]) => ({
+    params: { slug },
+    props: {
+      subject: {
+        slug,
+        title: subject.title,
+        description: subject.subtitle,
+        semester: subject.semester,
+      },
+    },
+  }));
+}
+
+const { subject } = Astro.props;
+
+const subjectDocs = contenuFinalL2.documents.filter(
+  (doc) => doc.subject === subject.slug && !doc.hidden && !hiddenSections.has(doc.section)
+);
+
+const sections = displayOrder
+  .map((section) => ({
+    title: section,
+    docs: subjectDocs
+      .filter((doc) => doc.section === section)
+      .sort((a, b) => {
+        if (a.subjectOrder !== b.subjectOrder) return a.subjectOrder - b.subjectOrder;
+        return a.displayTitle.localeCompare(b.displayTitle, 'fr', { numeric: true });
+      }),
+  }))
+  .filter((section) => section.docs.length > 0);
+
+const sourceLabels = {
+  officiel_2025_2026: 'Officiel',
+  drive_etudiant: 'Drive',
+  archive: 'Archive',
+  unknown: 'Source inconnue',
+};
+---
+<Base title={`${subject.title} — Archives mathématiques`} description={subject.description}>
+  <main class="subject-main">
+    <p class="subject-back"><a href="/">‹ accueil</a></p>
+
+    <header class="subject-header">
+      <p class="eyebrow">{subject.semester}</p>
+      <h1>{subject.title}</h1>
+      <p class="lede subject-lede">{subject.description}</p>
+    </header>
+
+    <section class="subject-resources">
+      {sections.map((section, index) => (
+        <article class="resource-block">
+          <h2>{String(index + 1).padStart(2, '0')} — {section.title}</h2>
+          <div class="resource-grid">
+            {section.docs.map((doc) => (
+              <a href={doc.publicHref} target="_blank">
+                <b>{doc.displayTitle}</b><br />
+                <span>{sourceLabels[doc.sourceType] ?? doc.source}</span>
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</Base>
