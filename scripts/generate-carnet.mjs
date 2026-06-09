@@ -23,21 +23,43 @@ function today() {
 function readableCorpus(relativePath) {
   if (relativePath.startsWith('mpsi-mathematiques/')) return 'MPSI Mathématiques';
   if (relativePath.startsWith('l2/')) return 'Licence 2 Mathématiques';
-  return 'Archive';
+  return 'Archive générale';
 }
 
 function readableSection(relativePath) {
   const parts = relativePath.split('/');
+
   if (relativePath.startsWith('mpsi-mathematiques/')) {
     const second = parts[1] ?? '';
+    const fileName = parts.at(-1)?.toLowerCase() ?? '';
     if (second === 'Chap') return 'Cours';
+    if (second === 'TD' && fileName.includes('_corr')) return 'Corrigés de TD';
+    if (second === 'TD' && fileName.includes('_appr')) return 'TD d’approfondissement';
     if (second === 'TD') return 'TD';
+    if (second === 'DS' && fileName.includes('_corr')) return 'Corrigés de DS';
     if (second === 'DS') return 'DS';
+    if (second === 'DL' && fileName.includes('_corr')) return 'Corrigés de DM / DL';
     if (second === 'DL') return 'DM / DL';
-    if (second === 'ProgrammesColles') return 'Colles';
+    if (second === 'ProgrammesColles') return 'Programmes de colles';
     return 'Compléments';
   }
-  return parts[1] ?? 'Documents';
+
+  const raw = parts[1] ?? 'Documents';
+  return raw
+    .replaceAll('-', ' ')
+    .replaceAll('_', ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function editorialTitle(corpus, section) {
+  if (corpus === 'Archive générale') return `Classement de l’archive — ${section}`;
+  return `${section} — ${corpus}`;
+}
+
+function editorialText(count, corpus, section) {
+  const plural = count > 1 ? 'documents ont été intégrés' : 'document a été intégré';
+  const zone = corpus === 'Archive générale' ? section : `${section.toLowerCase()} du corpus ${corpus}`;
+  return `${count} ${plural} dans ${zone}. L’index a été reconstruit pour rendre cette partie plus lisible, plus stable et plus facile à retrouver.`;
 }
 
 const pdfs = walkFiles(archiveDir)
@@ -47,16 +69,20 @@ const pdfs = walkFiles(archiveDir)
 
 const groups = new Map();
 for (const pdf of pdfs) {
-  const key = `${readableCorpus(pdf)} — ${readableSection(pdf)}`;
-  if (!groups.has(key)) groups.set(key, []);
-  groups.get(key).push(pdf);
+  const corpus = readableCorpus(pdf);
+  const section = readableSection(pdf);
+  const key = `${corpus}|||${section}`;
+  if (!groups.has(key)) groups.set(key, { corpus, section, files: [] });
+  groups.get(key).files.push(pdf);
 }
 
-const entries = [...groups.entries()].map(([key, files]) => ({
+const entries = [...groups.values()].map(({ corpus, section, files }) => ({
   date: today(),
-  title: `Index automatique — ${key}`,
-  text: `${files.length} PDF détecté(s) dans public/archive. Dernier scan local avant build.`,
+  title: editorialTitle(corpus, section),
+  text: editorialText(files.length, corpus, section),
   count: files.length,
+  corpus,
+  section,
 }));
 
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });
