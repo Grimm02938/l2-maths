@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const rarCandidates = [
@@ -39,15 +39,21 @@ fs.mkdirSync(tmp, { recursive: true });
 console.log(`📦 Archive trouvée : ${rarPath}`);
 console.log(`🔧 Extracteur utilisé : ${extractor}`);
 
+let extraction;
 if (extractor === 'unar') {
-  execFileSync('unar', ['-q', '-f', '-o', tmp, rarPath], { stdio: 'inherit' });
+  extraction = spawnSync('unar', ['-q', '-f', '-o', tmp, rarPath], { stdio: 'inherit' });
 } else if (extractor.startsWith('7z')) {
-  execFileSync(extractor, ['x', '-y', `-o${tmp}`, rarPath], { stdio: 'inherit' });
+  extraction = spawnSync(extractor, ['x', '-y', `-o${tmp}`, rarPath], { stdio: 'inherit' });
 } else {
-  execFileSync('unrar', ['x', '-y', rarPath, tmp + path.sep], { stdio: 'inherit' });
+  extraction = spawnSync('unrar', ['x', '-y', rarPath, tmp + path.sep], { stdio: 'inherit' });
+}
+
+if (extraction.status !== 0) {
+  console.warn('⚠️  Extraction incomplète : le RAR semble abîmé ou tronqué. Je continue avec les fichiers récupérés.');
 }
 
 function walkDirs(dir) {
+  if (!fs.existsSync(dir)) return [];
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   const dirs = [dir];
   for (const entry of entries) {
@@ -85,7 +91,84 @@ function copyPdfTree(srcDir, destDir) {
 }
 
 const copied = copyPdfTree(mathSrc, destination);
+
+function walkFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...walkFiles(full));
+    else files.push(full);
+  }
+  return files;
+}
+
+function cleanTitle(filePath) {
+  const base = path.basename(filePath, path.extname(filePath));
+  return base
+    .replaceAll('_', ' ')
+    .replaceAll('-', ' ')
+    .replace(/\bcorr\b/i, 'corrigé')
+    .replace(/\bappr\b/i, 'approfondissement')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function classify(relativePath) {
+  const base = path.basename(relativePath).toLowerCase();
+  if (relativePath.startsWith('Chap/') || relativePath === 'poly_MPSI-Corot.pdf') return 'cours';
+  if (relativePath.startsWith('TD/') || relativePath.startsWith('TD17b_Rev2') || relativePath.startsWith('TD21b_Rev3')) {
+    if (base.includes('_corr')) return 'td-corriges';
+    if (base.includes('_appr')) return 'td-approfondissement';
+    return 'td';
+  }
+  if (relativePath.startsWith('DS/')) return base.includes('_corr') ? 'ds-corriges' : 'ds';
+  if (relativePath.startsWith('DL/')) return base.includes('_corr') ? 'dm-dl-corriges' : 'dm-dl';
+  if (relativePath.startsWith('ProgrammesColles/')) return 'colles';
+  return 'complements';
+}
+
+const categories = [
+  { id: 'cours', title: 'Cours', description: 'Chapitres, polycopié et documents de cours.' },
+  { id: 'td', title: 'TD', description: 'Feuilles de travaux dirigés.' },
+  { id: 'td-approfondissement', title: 'TD approfondissement', description: 'Feuilles complémentaires et approfondissements.' },
+  { id: 'td-corriges', title: 'Corrigés de TD', description: 'Corrections des feuilles de TD.' },
+  { id: 'ds', title: 'DS', description: 'Devoirs surveillés.' },
+  { id: 'ds-corriges', title: 'Corrigés de DS', description: 'Corrections des devoirs surveillés.' },
+  { id: 'dm-dl', title: 'DM / DL', description: 'Devoirs maison et devoirs libres.' },
+  { id: 'dm-dl-corriges', title: 'Corrigés DM / DL', description: 'Corrections des devoirs maison et devoirs libres.' },
+  { id: 'colles', title: 'Colles', description: 'Programmes de colles.' },
+  { id: 'complements', title: 'Compléments', description: 'Notations, alphabet grec et documents généraux.' },
+];
+
+const pdfFiles = walkFiles(destination)
+  .filter((file) => file.toLowerCase().endsWith('.pdf'))
+  .map((file) => path.relative(destination, file).replaceAll('\\', '/'))
+  .sort((a, b) => a.localeCompare(b, 'fr', { numeric: true }));
+
+const documents = pdfFiles.map((relativePath) => ({
+  title: cleanTitle(relativePath),
+  path: `/archive/mpsi-mathematiques/${relativePath}`,
+  originalPath: relativePath,
+  category: classify(relativePath),
+}));
+
+const grouped = categories.map((category) => ({
+  ...category,
+  documents: documents.filter((document) => document.category === category.id),
+}));
+
+const dataFile = path.join(root, 'src', 'data', 'mpsi-maths.ts');
+const output = `export const mpsiMathsCategories = ${JSON.stringify(grouped, null, 2)} as const;\n\nexport const mpsiMathsDocumentCount = ${documents.length};\n`;
+fs.writeFileSync(dataFile, output);
+
 fs.rmSync(tmp, { recursive: true, force: true });
 
+if (copied === 0) {
+  console.error('❌ 0 PDF copié. Le RAR est probablement inutilisable ou le dossier webMathematiques ne contient pas de PDF récupérables.');
+  process.exit(1);
+}
+
 console.log(`✅ ${copied} PDF copiés dans public/archive/mpsi-mathematiques/`);
-console.log('➡️  Lance maintenant : npm run deploy:hosting');
+console.log(`✅ Index régénéré avec ${documents.length} PDF réellement présents.`);
+console.log('➡️  Lance maintenant : npm run build && firebase deploy --only hosting');
