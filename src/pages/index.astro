@@ -62,7 +62,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 
         <div class="subject-register">
           {mpsiMathsCategories.map((category) => (
-            <a class="subject-entry" href={`/mpsi/#${category.id}`}>
+            <a class="subject-entry" href={`/mpsi/${category.id}/`}>
               <span class="entry-title">{category.title}</span>
               <span class="entry-prof">{category.documents.length} document(s)</span>
               <span class="entry-desc">{category.description}</span>
