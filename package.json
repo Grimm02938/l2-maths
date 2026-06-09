@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/generate-carnet.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "install:mpsi": "node scripts/install-mpsi-maths-from-rar.mjs",
