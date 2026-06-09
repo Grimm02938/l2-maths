@@ -88,6 +88,7 @@ function shortDocumentTitle(doc) {
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 10px;
     margin-top: 16px;
+    align-items: stretch;
   }
 
   .mpsi-doc-card {
@@ -157,17 +158,23 @@ function shortDocumentTitle(doc) {
     .mpsi-doc-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
+      grid-auto-flow: row;
     }
 
     .mpsi-doc-card {
-      display: block;
-      min-height: 58px;
-      padding: 8px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      height: 72px;
+      min-height: 72px;
+      padding: 10px;
     }
 
     .mpsi-doc-title {
       display: block;
+      width: 100%;
       font-size: 18px;
+      line-height: 0.96;
     }
 
     .mpsi-doc-meta {
@@ -179,6 +186,11 @@ function shortDocumentTitle(doc) {
     .mpsi-archive-header h1 {
       font-size: 42px;
       letter-spacing: -0.045em;
+    }
+
+    .mpsi-doc-card {
+      height: 68px;
+      min-height: 68px;
     }
   }
 </style>
