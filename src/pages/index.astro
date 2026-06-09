@@ -109,23 +109,29 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
         </p>
       </div>
 
-      <div class="box site-skeleton-box">
-        <h2>Squelette du site</h2>
-        <div class="site-skeleton" aria-label="Plan visuel du site">
-          <a class="node root" href="/">Accueil</a>
-          <div class="branch two">
-            <a class="node" href="/#licence-2">Licence 2</a>
-            <a class="node" href="/mpsi/">MPSI</a>
-          </div>
-          <div class="branch three">
-            <span class="node muted-node">Matières</span>
-            <a class="node" href="/mpsi/cours/">Cours</a>
-            <a class="node" href="/mpsi/td/">TD</a>
-          </div>
-          <div class="branch three lower">
-            <a class="node" href="/mpsi/ds/">DS</a>
-            <a class="node" href="/mpsi/dm-dl/">DM / DL</a>
-            <a class="node" href="/mpsi/colles/">Colles</a>
+      <div class="box folder-map-box">
+        <div class="folder-window-title">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <b>arborescence</b>
+        </div>
+        <div class="folder-tree" aria-label="Arborescence du site">
+          <a class="folder-line root-folder" href="/">📁 l2-maths.web.app</a>
+          <div class="folder-children">
+            <a class="folder-line" href="/#licence-2">📁 Licence 2 Mathématiques</a>
+            <div class="folder-children thin">
+              <span class="folder-line ghost">📄 Analyse · Algèbre · Topologie</span>
+              <span class="folder-line ghost">📄 Probas · Arithmétique · Maths appro.</span>
+            </div>
+            <a class="folder-line" href="/mpsi/">📁 MPSI Mathématiques</a>
+            <div class="folder-children thin">
+              <a class="folder-line" href="/mpsi/cours/">📂 Cours</a>
+              <a class="folder-line" href="/mpsi/td/">📂 TD</a>
+              <a class="folder-line" href="/mpsi/td-corriges/">📂 Corrigés TD</a>
+              <a class="folder-line" href="/mpsi/ds/">📂 DS</a>
+              <a class="folder-line" href="/mpsi/dm-dl/">📂 DM / DL</a>
+              <a class="folder-line" href="/mpsi/colles/">📂 Colles</a>
+            </div>
+            <a class="folder-line" href="/carnet/">📁 Carnet</a>
           </div>
         </div>
       </div>
@@ -134,86 +140,95 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 </Base>
 
 <style>
-  .site-skeleton-box {
-    position: relative;
+  .folder-map-box {
+    padding: 0 !important;
     overflow: hidden;
   }
 
-  .site-skeleton {
-    position: relative;
-    display: grid;
-    gap: 13px;
-    padding: 4px 0 2px;
+  .folder-window-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(239,230,212,0.72);
+    padding: 8px 10px;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
-  .site-skeleton::before {
-    content: '';
-    position: absolute;
-    top: 29px;
-    bottom: 25px;
-    left: 50%;
-    width: 1px;
-    background: var(--line);
-    opacity: 0.75;
+  .folder-window-title .dot {
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
   }
 
-  .site-skeleton .branch {
-    position: relative;
-    display: grid;
-    gap: 8px;
+  .folder-window-title b {
+    margin-left: 4px;
+    color: var(--ink);
   }
 
-  .site-skeleton .branch.two { grid-template-columns: 1fr 1fr; }
-  .site-skeleton .branch.three { grid-template-columns: repeat(3, 1fr); }
-
-  .site-skeleton .branch::before {
-    content: '';
-    position: absolute;
-    top: -7px;
-    left: 13%;
-    right: 13%;
-    height: 1px;
-    background: var(--line);
-    opacity: 0.75;
+  .folder-tree {
+    padding: 12px 12px 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 1.25;
   }
 
-  .site-skeleton .lower::before {
-    left: 8%;
-    right: 8%;
-  }
-
-  .node {
+  .folder-line {
     position: relative;
     display: block;
-    border: 1px solid var(--line);
-    background: rgba(255,253,246,0.82);
-    padding: 6px 7px;
+    padding: 4px 0 4px 4px;
     color: var(--ink);
     text-decoration: none;
-    text-align: center;
-    font-size: 11px;
-    line-height: 1.1;
+    white-space: normal;
   }
 
-  .node::before {
+  .folder-line:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .root-folder {
+    font-weight: 700;
+    border-bottom: 1px solid rgba(189,177,160,0.55);
+    margin-bottom: 5px;
+    padding-bottom: 7px;
+  }
+
+  .folder-children {
+    position: relative;
+    margin-left: 13px;
+    padding-left: 12px;
+    border-left: 1px solid var(--line);
+  }
+
+  .folder-children.thin {
+    margin-left: 10px;
+    padding-left: 10px;
+    opacity: 0.94;
+  }
+
+  .folder-children > .folder-line::before {
     content: '';
     position: absolute;
-    top: -8px;
-    left: 50%;
-    width: 1px;
-    height: 8px;
-    background: var(--line);
-    opacity: 0.75;
+    left: -12px;
+    top: 13px;
+    width: 10px;
+    border-top: 1px solid var(--line);
   }
 
-  .node.root {
-    width: 58%;
-    margin: 0 auto;
-    font-weight: 700;
+  .folder-children.thin > .folder-line::before {
+    left: -10px;
+    width: 8px;
   }
 
-  .node.root::before { display: none; }
-  .node:hover { border-color: var(--ink); background: var(--paper); color: var(--accent); }
-  .muted-node { color: var(--muted); }
+  .ghost {
+    color: var(--muted);
+  }
 </style>
