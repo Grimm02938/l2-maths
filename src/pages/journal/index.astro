@@ -3,65 +3,128 @@ import Base from '../../layouts/Base.astro';
 import { journalEntries } from '../../data/journal';
 ---
 <Base title="Journal — Adame Abdelmoula">
-  <main class="journal-main" aria-label="Journal">
+  <main class="journal-thread" aria-label="Journal">
     {journalEntries.map((entry) => (
-      <article class="journal-entry">
-        <time datetime={entry.createdAt}>
-          {new Date(entry.createdAt).toLocaleString('fr-FR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </time>
-        <p>{entry.text}</p>
+      <article class="journal-message">
+        <div class="message-bubble">
+          <p>{entry.text}</p>
+          <time datetime={entry.createdAt}>
+            {new Date(entry.createdAt).toLocaleString('fr-FR', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </time>
+        </div>
       </article>
     ))}
   </main>
 </Base>
 
 <style>
-  .journal-main {
-    max-width: 900px;
-    margin: 0;
-    padding: 54px 32px 96px 96px;
+  .journal-thread {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    padding: 54px 22px 110px;
   }
 
-  .journal-entry {
-    display: grid;
-    grid-template-columns: 170px minmax(0, 1fr);
-    gap: 28px;
-    padding: 22px 0;
-    border-bottom: 1px solid var(--line);
+  .journal-message {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 18px;
   }
 
-  .journal-entry:first-child {
+  .journal-message:nth-child(even) {
+    justify-content: flex-start;
+  }
+
+  .message-bubble {
+    position: relative;
+    width: fit-content;
+    max-width: min(680px, 82%);
+    border: 1px solid var(--line);
+    background: rgba(255,253,246,0.88);
+    padding: 16px 18px 12px;
+    box-shadow: 8px 8px 0 rgba(189,177,160,0.18);
+  }
+
+  .journal-message:nth-child(even) .message-bubble {
+    background: rgba(239,230,212,0.48);
+    box-shadow: -8px 8px 0 rgba(189,177,160,0.15);
+  }
+
+  .message-bubble::after {
+    content: '';
+    position: absolute;
+    right: -7px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    background: inherit;
     border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    transform: rotate(45deg);
   }
 
-  .journal-entry time {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
-    color: var(--muted);
+  .journal-message:nth-child(even) .message-bubble::after {
+    left: -7px;
+    right: auto;
+    border-right: 0;
+    border-left: 1px solid var(--line);
+    transform: rotate(-45deg);
   }
 
-  .journal-entry p {
+  .message-bubble p {
     margin: 0;
     white-space: pre-wrap;
-    font-size: 19px;
-    line-height: 1.6;
+    font-size: 20px;
+    line-height: 1.58;
+    color: var(--ink);
+  }
+
+  .message-bubble time {
+    display: block;
+    margin-top: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
   }
 
   @media (max-width: 720px) {
-    .journal-main {
-      padding: 34px 18px 72px;
+    .journal-thread {
+      width: 100%;
+      padding: 32px 12px 82px;
     }
 
-    .journal-entry {
-      grid-template-columns: 1fr;
-      gap: 8px;
-      padding: 18px 0;
+    .journal-message,
+    .journal-message:nth-child(even) {
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .message-bubble,
+    .journal-message:nth-child(even) .message-bubble {
+      max-width: 92%;
+      padding: 13px 14px 10px;
+      box-shadow: 5px 5px 0 rgba(189,177,160,0.16);
+      background: rgba(255,253,246,0.9);
+    }
+
+    .journal-message:nth-child(even) .message-bubble::after {
+      left: auto;
+      right: -7px;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      transform: rotate(45deg);
+    }
+
+    .message-bubble p {
+      font-size: 18px;
+      line-height: 1.52;
     }
   }
 </style>
