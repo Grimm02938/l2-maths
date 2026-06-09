@@ -109,74 +109,49 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
         </p>
       </div>
 
-      <div class="box folder-map-box">
-        <div class="folder-window-title">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <b>arborescence</b>
-        </div>
-        <div class="folder-tree" aria-label="Arborescence du site">
-          <a class="folder-line root-folder" href="/">📁 l2-maths.web.app</a>
-          <div class="folder-children">
-            <a class="folder-line" href="/#licence-2">📁 Licence 2 Mathématiques</a>
-            <div class="folder-children thin">
-              <span class="folder-line ghost">📄 Analyse · Algèbre · Topologie</span>
-              <span class="folder-line ghost">📄 Probas · Arithmétique · Maths appro.</span>
+      <nav class="floating-folder-tree" aria-label="Arborescence du site">
+        <a class="folder-line root-folder" href="/">📁 l2-maths.web.app</a>
+        <div class="folder-children">
+          <a class="folder-line corpus-folder" href="/#licence-2">📁 Licence 2 Mathématiques</a>
+          <div class="folder-children thin">
+            <span class="folder-line semester-folder">📁 Semestre 1</span>
+            <div class="folder-children thinner">
+              {s1Subjects.map((subject) => (
+                <a class="folder-line leaf" href={`/l2/${subject.slug}/`}>📂 {subject.title}</a>
+              ))}
             </div>
-            <a class="folder-line" href="/mpsi/">📁 MPSI Mathématiques</a>
-            <div class="folder-children thin">
-              <a class="folder-line" href="/mpsi/cours/">📂 Cours</a>
-              <a class="folder-line" href="/mpsi/td/">📂 TD</a>
-              <a class="folder-line" href="/mpsi/td-corriges/">📂 Corrigés TD</a>
-              <a class="folder-line" href="/mpsi/ds/">📂 DS</a>
-              <a class="folder-line" href="/mpsi/dm-dl/">📂 DM / DL</a>
-              <a class="folder-line" href="/mpsi/colles/">📂 Colles</a>
+            <span class="folder-line semester-folder">📁 Semestre 2</span>
+            <div class="folder-children thinner">
+              {s2Subjects.map((subject) => (
+                <a class="folder-line leaf" href={`/l2/${subject.slug}/`}>📂 {subject.title}</a>
+              ))}
             </div>
-            <a class="folder-line" href="/carnet/">📁 Carnet</a>
           </div>
+
+          <a class="folder-line corpus-folder" href="/mpsi/">📁 MPSI Mathématiques</a>
+          <div class="folder-children thin">
+            <a class="folder-line leaf" href="/mpsi/cours/">📂 Cours</a>
+            <a class="folder-line leaf" href="/mpsi/td/">📂 TD</a>
+            <a class="folder-line leaf" href="/mpsi/td-corriges/">📂 Corrigés TD</a>
+            <a class="folder-line leaf" href="/mpsi/ds/">📂 DS</a>
+            <a class="folder-line leaf" href="/mpsi/dm-dl/">📂 DM / DL</a>
+            <a class="folder-line leaf" href="/mpsi/colles/">📂 Colles</a>
+          </div>
+          <a class="folder-line corpus-folder" href="/carnet/">📁 Carnet</a>
         </div>
-      </div>
+      </nav>
     </aside>
   </main>
 </Base>
 
 <style>
-  .folder-map-box {
-    padding: 0 !important;
-    overflow: hidden;
-  }
-
-  .folder-window-title {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-bottom: 1px solid var(--line);
-    background: rgba(239,230,212,0.72);
-    padding: 8px 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .folder-window-title .dot {
-    width: 7px;
-    height: 7px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--paper);
-  }
-
-  .folder-window-title b {
-    margin-left: 4px;
-    color: var(--ink);
-  }
-
-  .folder-tree {
-    padding: 12px 12px 14px;
-    font-family: Arial, Helvetica, sans-serif;
+  .floating-folder-tree {
+    margin: 22px 0 0 2px;
+    padding: 2px 0 4px;
+    background: transparent;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     font-size: 12px;
-    line-height: 1.25;
+    line-height: 1.28;
   }
 
   .folder-line {
@@ -195,23 +170,37 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
   }
 
   .root-folder {
+    display: inline-block;
+    margin-bottom: 6px;
     font-weight: 700;
-    border-bottom: 1px solid rgba(189,177,160,0.55);
-    margin-bottom: 5px;
-    padding-bottom: 7px;
+    letter-spacing: -0.02em;
+  }
+
+  .corpus-folder,
+  .semester-folder {
+    font-weight: 600;
+  }
+
+  .leaf {
+    color: #2c2925;
   }
 
   .folder-children {
     position: relative;
     margin-left: 13px;
     padding-left: 12px;
-    border-left: 1px solid var(--line);
+    border-left: 1px solid rgba(107,98,87,0.48);
   }
 
   .folder-children.thin {
     margin-left: 10px;
     padding-left: 10px;
-    opacity: 0.94;
+  }
+
+  .folder-children.thinner {
+    margin-left: 9px;
+    padding-left: 9px;
+    opacity: 0.96;
   }
 
   .folder-children > .folder-line::before {
@@ -220,7 +209,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
     left: -12px;
     top: 13px;
     width: 10px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid rgba(107,98,87,0.48);
   }
 
   .folder-children.thin > .folder-line::before {
@@ -228,7 +217,15 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
     width: 8px;
   }
 
-  .ghost {
-    color: var(--muted);
+  .folder-children.thinner > .folder-line::before {
+    left: -9px;
+    width: 7px;
+  }
+
+  @media (max-width: 820px) {
+    .floating-folder-tree {
+      margin-top: 18px;
+      font-size: 12px;
+    }
   }
 </style>
