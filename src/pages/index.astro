@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { subjects, logbook } from '../data/archive';
+import { mpsiMathsCategories, mpsiMathsDocumentCount } from '../data/mpsi-maths';
 
 const s1Subjects = subjects.filter((subject) => subject.semester === 'S1' || subject.semester === 'Annuel');
 const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || subject.semester === 'Annuel');
@@ -14,7 +15,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
       </p>
 
       <div class="notice">
-        <b>Principe :</b> chaque matière a une page. Les documents sont classés par cours, TD, évaluations et corrigés, avec des liens directs vers les PDF quand le fichier existe.
+        <b>Principe :</b> la L2 reste le cœur actif du site. Le bloc MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025 est séparé, strictement mathématique, et indexe {mpsiMathsDocumentCount} documents.
       </div>
 
       <section class="section semester-switcher" id="licence-2">
@@ -31,7 +32,7 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 
         <div class="subject-register semester-panel s1-panel" aria-label="Registre des matières du semestre 1">
           {s1Subjects.map((subject) => (
-            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
+            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
               <span class="entry-title">{subject.title}</span>
               <span class="entry-prof">Prof. {subject.professor}</span>
               <span class="entry-desc">{subject.description}</span>
@@ -41,10 +42,30 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
 
         <div class="subject-register semester-panel s2-panel" aria-label="Registre des matières du semestre 2">
           {s2Subjects.map((subject) => (
-            <a class="subject-entry" href={'/l2/' + subject.slug + '/'}>
+            <a class="subject-entry" href={`/l2/${subject.slug}/`}>
               <span class="entry-title">{subject.title}</span>
               <span class="entry-prof">Prof. {subject.professor}</span>
               <span class="entry-desc">{subject.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section" id="mpsi-maths">
+        <div class="section-line-heading">
+          <h2>MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025</h2>
+        </div>
+
+        <div class="notice">
+          <b>Archive mathématique uniquement :</b> {mpsiMathsDocumentCount} documents indexés depuis le dossier webMathematiques du RAR MPSI. Aucun document de physique n’est intégré.
+        </div>
+
+        <div class="subject-register">
+          {mpsiMathsCategories.map((category) => (
+            <a class="subject-entry" href={`/mpsi/#${category.id}`}>
+              <span class="entry-title">{category.title}</span>
+              <span class="entry-prof">{category.documents.length} document(s)</span>
+              <span class="entry-desc">{category.description}</span>
             </a>
           ))}
         </div>
@@ -64,6 +85,14 @@ const s2Subjects = subjects.filter((subject) => subject.semester === 'S2' || sub
     </section>
 
     <aside class="sidebar">
+      <div class="box">
+        <h2>Deux corpus</h2>
+        <ul class="compact-list">
+          <li><b>Licence 2 Mathématiques</b><br /><span class="small">Paris-Saclay — 2025/2026</span></li>
+          <li><b>MPSI Mathématiques</b><br /><span class="small">Jean-Baptiste-Corot — 2024/2025 · {mpsiMathsDocumentCount} documents</span></li>
+        </ul>
+      </div>
+
       <div class="box">
         <h2>Inspirations structurelles</h2>
         <ul class="compact-list">
