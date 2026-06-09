@@ -300,6 +300,65 @@ a:hover { color: var(--accent); }
 
 .resource-grid span { color: var(--muted); }
 
+.mpsi-category-page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.compact-mpsi-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+}
+
+.compact-mpsi-header h1 {
+  font-size: clamp(42px, 6vw, 76px);
+  margin-bottom: 0;
+}
+
+.mpsi-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mpsi-doc-card {
+  min-height: 74px;
+  border: 1px solid var(--line);
+  background: rgba(255,253,246,0.72);
+  padding: 10px 11px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.mpsi-doc-card:hover {
+  background: var(--paper);
+  border-color: var(--ink);
+}
+
+.mpsi-doc-title {
+  display: block;
+  color: var(--link);
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.mpsi-doc-meta {
+  display: block;
+  margin-top: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .footer {
   margin-top: 40px;
   padding-top: 14px;
@@ -338,6 +397,8 @@ a:hover { color: var(--accent); }
   .archive-table { font-size: 15px; }
   .section-line-heading { display: block; }
   .semester-control { margin-bottom: 10px; }
+  .compact-mpsi-header { display: block; }
+  .mpsi-doc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 520px) {
@@ -347,4 +408,8 @@ a:hover { color: var(--accent); }
   .resource-grid { grid-template-columns: 1fr; }
   .archive-table th:nth-child(4),
   .archive-table td:nth-child(4) { display: none; }
+  .mpsi-doc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .mpsi-doc-card { min-height: 64px; padding: 8px; }
+  .mpsi-doc-title { font-size: 18px; }
+  .mpsi-doc-meta { display: none; }
 }
