@@ -12,28 +12,24 @@ import { mpsiMathsCategories, mpsiMathsDocumentCount } from '../../data/mpsi-mat
       </p>
 
       <div class="notice">
-        <b>{mpsiMathsDocumentCount} documents indexés.</b> La physique n’est pas incluse. Les liens pointent vers l’emplacement public attendu des PDF dans /archive/mpsi-mathematiques/.
+        <b>{mpsiMathsDocumentCount} documents indexés.</b> Choisis une catégorie : chaque page n’affiche ensuite que les documents de cette catégorie.
       </div>
 
-      {mpsiMathsCategories.map((category) => (
-        <section class="section" id={category.id}>
-          <div class="section-line-heading">
-            <h2>{category.title}</h2>
-          </div>
+      <section class="section">
+        <div class="section-line-heading">
+          <h2>Catégories</h2>
+        </div>
 
-          <p class="small">{category.description} — {category.documents.length} document(s).</p>
-
-          <div class="subject-register">
-            {category.documents.map((doc) => (
-              <a class="subject-entry" href={doc.path} target="_blank" rel="noopener noreferrer">
-                <span class="entry-title">{doc.title}</span>
-                <span class="entry-prof">MPSI Jean-Baptiste-Corot</span>
-                <span class="entry-desc">{doc.originalPath}</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      ))}
+        <div class="subject-register">
+          {mpsiMathsCategories.map((category) => (
+            <a class="subject-entry" href={`/mpsi/${category.id}/`}>
+              <span class="entry-title">{category.title}</span>
+              <span class="entry-prof">{category.documents.length} document(s)</span>
+              <span class="entry-desc">{category.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
     </section>
 
     <aside class="sidebar">
@@ -42,7 +38,7 @@ import { mpsiMathsCategories, mpsiMathsDocumentCount } from '../../data/mpsi-mat
         <ul class="compact-list">
           {mpsiMathsCategories.map((category) => (
             <li>
-              <a href={`#${category.id}`}><b>{category.title}</b></a><br />
+              <a href={`/mpsi/${category.id}/`}><b>{category.title}</b></a><br />
               <span class="small">{category.documents.length} document(s)</span>
             </li>
           ))}
