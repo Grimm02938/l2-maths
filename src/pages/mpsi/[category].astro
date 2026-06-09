@@ -10,6 +10,18 @@ export function getStaticPaths() {
 }
 
 const { category } = Astro.props;
+
+function shortDocumentTitle(doc) {
+  const raw = doc.originalPath.split('/').pop()?.replace(/\.pdf$/i, '') ?? doc.title;
+
+  return raw
+    .replace(/[_\s-]+(?:appr|approfondissement)$/i, '')
+    .replace(/[_\s-]+(?:corr|corrige|corrigé)$/i, '')
+    .replaceAll('_', ' ')
+    .replaceAll('-', ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 ---
 <Base title={`${category.title} — MPSI Mathématiques`}>
   <main class="mpsi-category-page">
@@ -21,7 +33,7 @@ const { category } = Astro.props;
     <section class="mpsi-doc-grid" aria-label={`Documents MPSI — ${category.title}`}>
       {category.documents.map((doc) => (
         <a class="mpsi-doc-card" href={doc.path} target="_blank" rel="noopener noreferrer">
-          <span class="mpsi-doc-title">{doc.title}</span>
+          <span class="mpsi-doc-title">{shortDocumentTitle(doc)}</span>
           <span class="mpsi-doc-meta">{doc.originalPath}</span>
         </a>
       ))}
@@ -58,6 +70,7 @@ const { category } = Astro.props;
     line-height: 0.86;
     letter-spacing: -0.065em;
     font-weight: 500;
+    overflow-wrap: anywhere;
   }
 
   .mpsi-archive-header p {
@@ -128,6 +141,13 @@ const { category } = Astro.props;
       display: block;
     }
 
+    .mpsi-archive-header h1 {
+      font-size: clamp(42px, 12vw, 54px);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      max-width: 100%;
+    }
+
     .mpsi-archive-header p {
       max-width: none;
       margin-top: 10px;
@@ -141,7 +161,7 @@ const { category } = Astro.props;
 
     .mpsi-doc-card {
       display: block;
-      min-height: 62px;
+      min-height: 58px;
       padding: 8px;
     }
 
@@ -157,7 +177,8 @@ const { category } = Astro.props;
 
   @media (max-width: 520px) {
     .mpsi-archive-header h1 {
-      font-size: 52px;
+      font-size: 42px;
+      letter-spacing: -0.045em;
     }
   }
 </style>
