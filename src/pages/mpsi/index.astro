@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import { mpsiMathsCategories, mpsiMathsDocumentCount } from '../../data/mpsi-maths';
+---
+<Base title="MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025">
+  <main class="main-grid">
+    <section>
+      <h1 class="main-title">MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025</h1>
+
+      <p class="lede">
+        Archive mathématique uniquement : cours, TD, devoirs, programmes de colles et corrections issus du dossier webMathematiques du RAR MPSI.
+      </p>
+
+      <div class="notice">
+        <b>{mpsiMathsDocumentCount} documents indexés.</b> La physique n’est pas incluse. Les liens pointent vers l’emplacement public attendu des PDF dans /archive/mpsi-mathematiques/.
+      </div>
+
+      {mpsiMathsCategories.map((category) => (
+        <section class="section" id={category.id}>
+          <div class="section-line-heading">
+            <h2>{category.title}</h2>
+          </div>
+
+          <p class="small">{category.description} — {category.documents.length} document(s).</p>
+
+          <div class="subject-register">
+            {category.documents.map((doc) => (
+              <a class="subject-entry" href={doc.path} target="_blank" rel="noopener noreferrer">
+                <span class="entry-title">{doc.title}</span>
+                <span class="entry-prof">MPSI Jean-Baptiste-Corot</span>
+                <span class="entry-desc">{doc.originalPath}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </section>
+
+    <aside class="sidebar">
+      <div class="box">
+        <h2>Navigation MPSI</h2>
+        <ul class="compact-list">
+          {mpsiMathsCategories.map((category) => (
+            <li>
+              <a href={`#${category.id}`}><b>{category.title}</b></a><br />
+              <span class="small">{category.documents.length} document(s)</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Retour</h2>
+        <p class="small">
+          <a href="/">← revenir à l’accueil</a>
+        </p>
+      </div>
+    </aside>
+  </main>
+</Base>
