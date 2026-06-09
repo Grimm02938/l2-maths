@@ -13,8 +13,6 @@ const { category } = Astro.props;
 ---
 <Base title={`${category.title} — MPSI Mathématiques`}>
   <main class="subject-main mpsi-category-page">
-    <p class="subject-back"><a href="/mpsi/">← MPSI Mathématiques</a></p>
-
     <header class="subject-header compact-mpsi-header">
       <h1>{category.title}</h1>
       <p class="subject-lede">
@@ -26,9 +24,124 @@ const { category } = Astro.props;
       {category.documents.map((doc) => (
         <a class="mpsi-doc-card" href={doc.path} target="_blank" rel="noopener noreferrer">
           <span class="mpsi-doc-title">{doc.title}</span>
-          <span class="mpsi-doc-meta">PDF · {doc.originalPath}</span>
+          <span class="mpsi-doc-meta">{doc.originalPath}</span>
         </a>
       ))}
     </section>
   </main>
 </Base>
+
+<style>
+  .mpsi-category-page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-top: 22px;
+  }
+
+  .compact-mpsi-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 16px;
+  }
+
+  .compact-mpsi-header h1 {
+    margin: 0;
+    max-width: none;
+    font-size: clamp(54px, 7vw, 108px);
+    line-height: 0.88;
+  }
+
+  .compact-mpsi-header .subject-lede {
+    max-width: 520px;
+    margin: 0 0 8px;
+    text-align: right;
+    font-size: 16px;
+  }
+
+  .mpsi-doc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .mpsi-doc-card {
+    min-height: 68px;
+    border: 1px solid var(--line);
+    background: rgba(255,253,246,0.72);
+    padding: 10px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .mpsi-doc-card:hover {
+    background: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .mpsi-doc-title {
+    display: block;
+    color: var(--link);
+    font-size: 21px;
+    line-height: 1;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    overflow-wrap: anywhere;
+  }
+
+  .mpsi-doc-meta {
+    display: block;
+    margin-top: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 1400px) {
+    .mpsi-doc-grid {
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    }
+  }
+
+  @media (max-width: 820px) {
+    .compact-mpsi-header {
+      display: block;
+    }
+
+    .compact-mpsi-header .subject-lede {
+      max-width: none;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .mpsi-doc-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .compact-mpsi-header h1 {
+      font-size: 52px;
+    }
+
+    .mpsi-doc-card {
+      min-height: 60px;
+      padding: 8px;
+    }
+
+    .mpsi-doc-title {
+      font-size: 18px;
+    }
+
+    .mpsi-doc-meta {
+      display: none;
+    }
+  }
+</style>
