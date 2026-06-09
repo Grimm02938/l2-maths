@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import { mpsiMathsCategories } from '../../data/mpsi-maths';
+
+export function getStaticPaths() {
+  return mpsiMathsCategories.map((category) => ({
+    params: { category: category.id },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+---
+<Base title={`${category.title} — MPSI Mathématiques`}>
+  <main class="main-grid">
+    <section>
+      <h1 class="main-title">{category.title}</h1>
+
+      <p class="lede">
+        MPSI Mathématiques — Jean-Baptiste-Corot — 2024/2025. Cette page n’affiche que les documents de cette catégorie.
+      </p>
+
+      <div class="notice">
+        <b>{category.documents.length} document(s).</b> Les liens ouvrent directement les PDF quand les fichiers ont bien été copiés dans public/archive/mpsi-mathematiques/ puis déployés.
+      </div>
+
+      <section class="section">
+        <div class="subject-register">
+          {category.documents.map((doc) => (
+            <a class="subject-entry" href={doc.path} target="_blank" rel="noopener noreferrer">
+              <span class="entry-title">{doc.title}</span>
+              <span class="entry-prof">PDF</span>
+              <span class="entry-desc">{doc.originalPath}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </section>
+
+    <aside class="sidebar">
+      <div class="box">
+        <h2>Catégories MPSI</h2>
+        <ul class="compact-list">
+          {mpsiMathsCategories.map((item) => (
+            <li>
+              <a href={`/mpsi/${item.id}/`}><b>{item.title}</b></a><br />
+              <span class="small">{item.documents.length} document(s)</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Retour</h2>
+        <p class="small">
+          <a href="/mpsi/">← toutes les catégories MPSI</a><br />
+          <a href="/">← accueil</a>
+        </p>
+      </div>
+    </aside>
+  </main>
+</Base>
