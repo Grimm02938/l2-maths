@@ -44,7 +44,7 @@ export const subjects: Subject[] = [
     semester: 'S1',
     professor: 'Christophe Pallard',
     status: 'chantier',
-    description: 'Suites, séries, intégrales, fonctions, estimations. La matière où chaque détail finit par coûter des points.',
+    description: 'Suites, séries, intégrales, fonctions, estimations.',
     chapters: commonChapters('Analyse S1'),
   },
   {
@@ -54,7 +54,7 @@ export const subjects: Subject[] = [
     semester: 'S1',
     professor: 'Frédéric Menous',
     status: 'archive',
-    description: 'Espaces vectoriels, applications linéaires, matrices, réduction. Le socle à rendre parfaitement propre.',
+    description: 'Espaces vectoriels, applications linéaires, matrices, réduction.',
     chapters: commonChapters('Algèbre linéaire S1'),
   },
   {
@@ -64,7 +64,7 @@ export const subjects: Subject[] = [
     semester: 'S1',
     professor: 'Frédéric Haglund',
     status: 'chantier',
-    description: 'Ouverts, fermés, compacité, connexité. Une matière à organiser par définitions, exemples, contre-exemples.',
+    description: 'Ouverts, fermés, compacité, connexité.',
     chapters: commonChapters('Topologie S1'),
   },
   {
@@ -74,7 +74,7 @@ export const subjects: Subject[] = [
     semester: 'S1',
     professor: 'Rachid Fahlaoui',
     status: 'archive',
-    description: 'Congruences, groupes cycliques, nombres premiers, anneaux quotients. Un terrain parfait pour des fiches sèches.',
+    description: 'Congruences, groupes cycliques, nombres premiers, anneaux quotients.',
     chapters: commonChapters('Arithmétique S1'),
   },
   {
@@ -84,7 +84,7 @@ export const subjects: Subject[] = [
     semester: 'S1',
     professor: 'Frédéric Haglund',
     status: 'chantier',
-    description: 'Exercices plus longs, méthodes transversales, problèmes à refaire. Le bloc qui sert à consolider les liens entre les matières.',
+    description: 'Exercices plus longs, méthodes transversales, problèmes à refaire.',
     chapters: commonChapters('Maths approfondies S1'),
   },
   {
@@ -114,7 +114,7 @@ export const subjects: Subject[] = [
     semester: 'S2',
     professor: 'Julie Fournier',
     status: 'chantier',
-    description: 'Variables aléatoires, lois, espérance, variance, convergence. Le cours doit devenir calculable et intuitif.',
+    description: 'Variables aléatoires, lois, espérance, variance, convergence.',
     chapters: commonChapters('Probabilités S2'),
   },
   {
@@ -124,7 +124,7 @@ export const subjects: Subject[] = [
     semester: 'S2',
     professor: 'Arnaud Girand',
     status: 'chantier',
-    description: 'Courbes paramétrées, surfaces, géométrie différentielle élémentaire. Le pont entre calcul, intuition et formes.',
+    description: 'Courbes paramétrées, surfaces, géométrie différentielle élémentaire.',
     chapters: commonChapters('Courbes et surfaces S2'),
   },
 ];
